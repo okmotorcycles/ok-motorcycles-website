@@ -7,6 +7,21 @@
 (function () {
   "use strict";
 
+  /* ---------- light / dark theme toggle ---------- */
+  var themeBtn = document.getElementById("theme-toggle");
+  if (themeBtn) {
+    themeBtn.addEventListener("click", function () {
+      var dark = document.documentElement.getAttribute("data-theme") === "dark";
+      if (dark) {
+        document.documentElement.removeAttribute("data-theme");
+        try { localStorage.setItem("theme", "light"); } catch (e) {}
+      } else {
+        document.documentElement.setAttribute("data-theme", "dark");
+        try { localStorage.setItem("theme", "dark"); } catch (e) {}
+      }
+    });
+  }
+
   /* ---------- mobile rail drawer ---------- */
   var rail = document.getElementById("rail");
   var scrim = document.getElementById("rail-scrim");

@@ -6,6 +6,47 @@
 @import "constants";
 @import "fonts";
 
+// --- Theme -----------------------------------------------------------------
+//  Light is default (the black-on-white sign look); dark is opt-in via the
+//  sun/moon toggle, which sets data-theme="dark" on <html>. The freeway green
+//  and the white/black sign faces stay constant across both themes.
+:root {
+  --bg:        #f2f1ea;   // page background (off-white)
+  --panel:     #ffffff;   // cards / raised panels
+  --line:      #dcdbd0;   // hairline borders
+  --text:      #17181b;   // primary text
+  --text-dim:  #53544c;   // secondary text
+  --text-faint:#83847a;   // muted labels
+  --header-bg: #ffffff;
+  --footer-bg: #ffffff;
+  --code-bg:   #f3f2ea;
+  --code-text: #2b2c27;
+  --code-inline: #0c4d2b;
+  --accent:       #157a43;   // highway green — links / hover / active only
+  --accent-hover: #0e5e33;
+  --overlay:      rgba(0,0,0,.05);
+  --hover-border: rgba(0,0,0,.32);
+  --preview-border: rgba(0,0,0,.18);
+}
+:root[data-theme="dark"] {
+  --bg:        #16171b;
+  --panel:     #1f2027;
+  --line:      #2c2e37;
+  --text:      #ecece4;
+  --text-dim:  #a6a79f;
+  --text-faint:#6f7168;
+  --header-bg: linear-gradient(#1b1c22, #141519);
+  --footer-bg: linear-gradient(#141519, #101115);
+  --code-bg:   #0f1013;
+  --code-text: #d8d8cf;
+  --code-inline: #ffd98a;
+  --accent:       #49c07d;
+  --accent-hover: #68d295;
+  --overlay:      rgba(255,255,255,.05);
+  --hover-border: rgba(255,255,255,.35);
+  --preview-border: rgba(255,255,255,.28);
+}
+
 // --- Base -------------------------------------------------------------------
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -20,25 +61,15 @@ html, body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  // faint green wash at the top edge
-  background-image:
-    radial-gradient(circle at 50% 0, rgba(17, 107, 60, 0.10), transparent 60%);
 }
 
-a { color: $lane-yellow; text-decoration: none; transition: color .15s ease; }
-a:hover { color: lighten($lane-yellow, 12%); }
+// green is reserved for links, hovers, and active states
+a { color: var(--accent); text-decoration: none; transition: color .15s ease; }
+a:hover { color: var(--accent-hover); }
 
 img { max-width: 100%; display: block; }
 
-::selection { background: $sign-green; color: $sign-white; }
-
-// Custom scrollbar reads like a painted shoulder line
-::-webkit-scrollbar { width: 11px; height: 11px; }
-::-webkit-scrollbar-track { background: $asphalt; }
-::-webkit-scrollbar-thumb {
-  background: repeating-linear-gradient(45deg, $lane-yellow 0 6px, #111 6px 12px);
-  border-radius: 6px; border: 2px solid $asphalt;
-}
+::selection { background: var(--accent); color: #fff; }
 
 // --- App shell --------------------------------------------------------------
 .hwy-app { min-height: 100vh; display: flex; flex-direction: column; }
@@ -66,15 +97,8 @@ img { max-width: 100%; display: block; }
   display: flex; align-items: center; gap: 18px;
   padding: 12px clamp(16px, 3vw, 32px);
   min-height: $header-height;
-  background: linear-gradient(#1b1c22, #141519);
-  border-bottom: 3px solid #000;
-  box-shadow: 0 6px 18px rgba(0,0,0,.5);
-}
-// black-white hazard stripe pinned to the gantry underside
-.gantry::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 3px;
-  background: repeating-linear-gradient(45deg, $sign-white 0 14px, #111 14px 28px);
-  opacity: .75;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--line);
 }
 
 .gantry__brand { display: flex; align-items: center; gap: 12px; }
@@ -99,21 +123,27 @@ img { max-width: 100%; display: block; }
 
 .gantry__spacer { flex: 1 1 auto; }
 
-.gantry__nav { display: flex; align-items: center; gap: 10px; }
+.gantry__nav { display: flex; align-items: center; gap: 8px; }
 .gantry__nav a {
   font-family: "Highway Gothic", sans-serif;
   text-transform: uppercase; letter-spacing: .12em; font-size: .82rem;
   color: $ink; padding: 7px 12px; border-radius: 5px;
   border: 1px solid transparent;
 }
-.gantry__nav a:hover { border-color: $asphalt-line; background: rgba(255,255,255,.04); color: $sign-white; }
+.gantry__nav a:hover { color: var(--accent); }
 
-// hamburger for mobile rail
-.rail-toggle {
-  display: none; background: none; border: 1px solid $asphalt-line;
-  color: $ink; border-radius: 5px; padding: 8px 10px; cursor: pointer;
-  font-size: 1rem; line-height: 1;
+// sun/moon light-dark toggle
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; padding: 0; cursor: pointer;
+  background: none; border: 1px solid $asphalt-line; border-radius: 8px;
+  color: $ink; transition: color .15s ease, border-color .15s ease;
 }
+.theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+.theme-toggle svg { display: block; width: 18px; height: 18px; }
+.theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
 
 // ===========================================================================
 //  Left rail — the ROUTE INDEX navigation tree
@@ -205,13 +235,14 @@ img { max-width: 100%; display: block; }
   font-family: "Highway Gothic", sans-serif;
   text-transform: uppercase; letter-spacing: .1em; font-size: .66rem;
   padding: 3px 9px; border-radius: 4px; line-height: 1.4;
-  border: 1px solid rgba(255,255,255,.55); white-space: nowrap;
+  border: 1px solid $ink; color: $ink; background: transparent; white-space: nowrap;
 }
-.tag--open      { background: $sign-green; color: $sign-white; }               // evergreen
-.tag--maintained{ background: $sign-white; color: #16171b; }                   // tended
-.tag--grading   { background: transparent; color: $sign-white; border-style: dashed; border-color: rgba(255,255,255,.75); } // WIP
-.tag--planned   { background: transparent; color: $ink-dim; border-color: $asphalt-line; } // idea
-.tag--ghost     { background: transparent; color: $ink-dim; border-color: $asphalt-line; }
+// monochrome: differentiate by fill vs outline vs dash vs dot
+.tag--open      { background: $ink; color: var(--bg); border-color: $ink; }       // evergreen — filled
+.tag--maintained{ background: transparent; color: $ink; border-color: $ink; }      // tended — outline
+.tag--grading   { background: transparent; color: $ink-dim; border-style: dashed; border-color: $ink-dim; } // WIP — dashed
+.tag--planned   { background: transparent; color: $ink-faint; border-style: dotted; border-color: $ink-faint; } // idea — dotted
+.tag--ghost     { background: transparent; color: $ink-faint; border-color: $asphalt-line; }
 
 // ===========================================================================
 //  Hero — the big overhead guide sign
@@ -306,47 +337,36 @@ img { max-width: 100%; display: block; }
 }
 .sign-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(255,255,255,.35);
-  box-shadow: 0 14px 34px rgba(0,0,0,.5);
+  border-color: var(--accent);
+  box-shadow: 0 12px 30px rgba(0,0,0,.28);
 }
 
-// the sign "face" — a real guide sign with a white keyline border
+// the sign "face" — black-and-white regulatory sign; default is black-on-white
 .sign-card__face {
   position: relative; aspect-ratio: 16 / 10;
-  background: $sign-green; padding: 14px;
+  background: $sign-white; color: #16171b; padding: 14px;
   display: flex; flex-direction: column; justify-content: space-between;
 }
-.sign-card__face::before {   // inner reflective keyline
-  content: ""; position: absolute; inset: 9px; border: 2px solid $sign-white;
-  border-radius: 6px; pointer-events: none;
+.sign-card__face::before {   // inner keyline, follows the face colour
+  content: ""; position: absolute; inset: 9px; border: 2px solid currentColor;
+  border-radius: 6px; pointer-events: none; opacity: .9;
 }
-.sign-card__face::after {    // sheen that brightens on hover
-  content: ""; position: absolute; inset: 0; opacity: 0;
-  background: linear-gradient(120deg, rgba(255,255,255,.22), transparent 45%);
-  transition: opacity .2s ease; pointer-events: none;
-}
-.sign-card:hover .sign-card__face::after { opacity: 1; }
-// "white sign" — regulatory black-on-white
-.sign-card__face--yellow { background: $sign-white; }
-.sign-card__face--yellow.sign-card__face::before { border-color: #16171b; }
-.sign-card__face--yellow .sign-card__legend,
-.sign-card__face--yellow .sign-card__topline,
-.sign-card__face--yellow .sign-card__arrow { color: #16171b; }
 // "black sign" — white-on-black
-.sign-card__face--blue   { background: #101216; }
+.sign-card__face--black { background: #101216; color: #f3f3ec; }
 
 .sign-card__topline {
   position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  color: rgba(255,255,255,.9); font-family: "Highway Gothic", sans-serif;
+  color: inherit; font-family: "Highway Gothic", sans-serif;
   font-size: .58rem; letter-spacing: .05em; text-transform: uppercase;
 }
 .sign-card__topline > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sign-card__legend {
-  position: relative; color: $sign-white;
+  position: relative; color: inherit;
   font-family: "Highway Gothic", sans-serif; font-size: 1.28rem; line-height: 1.06;
   letter-spacing: .01em; margin-top: auto;
 }
-.sign-card__arrow { position: relative; color: rgba(255,255,255,.85); font-size: 1.3rem; }
+.sign-card__arrow { position: relative; color: inherit; font-size: 1.3rem; transition: color .15s ease; }
+.sign-card:hover .sign-card__arrow { color: var(--accent); }
 
 .sign-card__body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
 .sign-card__desc { color: $ink-dim; font-size: .87rem; line-height: 1.5; margin: 0; }
@@ -366,19 +386,20 @@ img { max-width: 100%; display: block; }
   letter-spacing: .08em; text-transform: uppercase;
 }
 .trail a { color: $ink-dim; }
-.trail a:hover { color: $lane-yellow; }
+.trail a:hover { color: var(--accent); }
 .trail__sep { color: $ink-faint; }
-.trail span { color: $sign-white; }
+.trail span { color: $ink; }
 
+// title as a black-bordered white sign — same plaque language as the wordmark
 .note__sign {
-  background: $sign-green; border: 3px solid $sign-white; border-radius: 14px;
-  box-shadow: inset 0 0 0 3px $sign-green-deep; padding: 26px 28px; margin-bottom: 22px;
+  background: $sign-white; border: 3px solid #16171b; border-radius: 14px;
+  box-shadow: inset 0 0 0 3px $sign-white; padding: 26px 28px; margin-bottom: 22px;
 }
 .note__title {
-  font-family: "Highway Gothic", sans-serif; color: $sign-white; margin: 0;
+  font-family: "Highway Gothic", sans-serif; color: #16171b; margin: 0;
   font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.08;
 }
-.note__standfirst { color: rgba(255,255,255,.85); margin: 12px 0 0; font-size: 1.05rem; }
+.note__standfirst { color: #45463f; margin: 12px 0 0; font-size: 1.05rem; }
 
 .note__meta {
   display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 30px;
@@ -392,34 +413,34 @@ img { max-width: 100%; display: block; }
 .prose { color: $ink; font-size: 1rem; }
 .prose > * + * { margin-top: 1.1em; }
 .prose h2 {
-  font-family: "Highway Gothic", sans-serif; color: $sign-white;
+  font-family: "Highway Gothic", sans-serif; color: $ink;
   font-size: 1.5rem; margin: 1.8em 0 .2em; padding-left: 12px;
-  border-left: 5px solid $lane-yellow; letter-spacing: .02em;
+  border-left: 5px solid $ink; letter-spacing: .02em;
 }
-.prose h3 { font-family: "Highway Gothic", sans-serif; color: $sign-white; font-size: 1.2rem; margin-top: 1.6em; }
-.prose a { color: $lane-yellow; text-decoration: underline; text-decoration-color: rgba(244,180,0,.4); text-underline-offset: 3px; }
-.prose a:hover { text-decoration-color: $lane-yellow; }
+.prose h3 { font-family: "Highway Gothic", sans-serif; color: $ink; font-size: 1.2rem; margin-top: 1.6em; }
+.prose a { color: var(--accent); text-decoration: underline; text-decoration-color: currentColor; text-underline-offset: 3px; }
+.prose a:hover { color: var(--accent-hover); }
 .prose ul, .prose ol { padding-left: 1.3em; }
 .prose li { margin: .35em 0; }
 .prose blockquote {
-  margin: 1.4em 0; padding: 4px 0 4px 20px; border-left: 4px solid $warn-yellow;
+  margin: 1.4em 0; padding: 4px 0 4px 20px; border-left: 4px solid $ink-dim;
   color: $ink-dim; font-style: italic;
 }
 .prose code {
-  background: #0f1013; border: 1px solid $asphalt-line; border-radius: 4px;
-  padding: 1px 6px; font-size: .9em; color: #ffd98a;
+  background: var(--code-bg); border: 1px solid $asphalt-line; border-radius: 4px;
+  padding: 1px 6px; font-size: .9em; color: var(--code-inline);
 }
-.prose pre { background: #0f1013; border: 1px solid $asphalt-line; border-radius: 10px;
+.prose pre { background: var(--code-bg); border: 1px solid $asphalt-line; border-radius: 10px;
   padding: 16px 18px; overflow-x: auto; }
-.prose pre code { background: none; border: 0; padding: 0; color: #d8d8cf; }
+.prose pre code { background: none; border: 0; padding: 0; color: var(--code-text); }
 .prose img { border-radius: 10px; border: 1px solid $asphalt-line; margin: 1.4em 0; }
 .prose table { width: 100%; border-collapse: collapse; margin: 1.4em 0; }
 .prose th, .prose td { border: 1px solid $asphalt-line; padding: 8px 12px; text-align: left; }
-.prose th { background: $asphalt-panel; color: $sign-white; font-family: "Highway Gothic", sans-serif;
+.prose th { background: $asphalt-panel; color: $ink; font-family: "Highway Gothic", sans-serif;
   letter-spacing: .06em; text-transform: uppercase; font-size: .8rem; }
 
 .message {
-  background: $asphalt-panel; border: 1px solid $asphalt-line; border-left: 4px solid $lane-yellow;
+  background: $asphalt-panel; border: 1px solid $asphalt-line; border-left: 4px solid $ink;
   border-radius: 8px; padding: 14px 18px; color: $ink-dim;
 }
 
@@ -452,8 +473,8 @@ img { max-width: 100%; display: block; }
   border-left: 2px solid transparent; line-height: 1.35;
   font-family: "Highway Gothic", sans-serif; transition: color .15s, border-color .15s;
 }
-.toc a:hover { color: $sign-white; }
-.toc a.is-active { color: $lane-yellow; border-left-color: $lane-yellow; }
+.toc a:hover { color: $ink; }
+.toc a.is-active { color: var(--accent); border-left-color: var(--accent); }
 .toc:empty, .toc.is-empty { display: none; }
 
 // inline TOC fallback shown on narrow screens
@@ -464,22 +485,19 @@ img { max-width: 100%; display: block; }
 // ===========================================================================
 .note-preview {
   position: absolute; z-index: 80; width: 300px; pointer-events: none;
-  background: $asphalt-panel; border: 1px solid rgba(255,255,255,.28);
-  border-radius: 10px; box-shadow: 0 16px 40px rgba(0,0,0,.6);
+  background: $asphalt-panel; border: 1px solid var(--preview-border);
+  border-radius: 10px; box-shadow: 0 16px 40px rgba(0,0,0,.35);
   padding: 0; overflow: hidden; opacity: 0; transform: translateY(6px);
   transition: opacity .14s ease, transform .14s ease;
 }
 .note-preview.is-visible { opacity: 1; transform: translateY(0); }
-.note-preview__strip { height: 8px; background: $sign-green; }
-.note-preview__strip--yellow { background: $warn-yellow; }
-.note-preview__strip--blue { background: $shield-blue; }
+.note-preview__strip { height: 6px; background: var(--accent); }
 .note-preview__body { padding: 12px 14px; }
 .note-preview__cat { font-family: "Highway Gothic", sans-serif; font-size: .62rem;
   letter-spacing: .12em; text-transform: uppercase; color: $ink-faint; }
-.note-preview__title { color: $sign-white; font-family: "Highway Gothic", sans-serif;
+.note-preview__title { color: $ink; font-family: "Highway Gothic", sans-serif;
   font-size: 1rem; margin: 2px 0 6px; }
 .note-preview__desc { color: $ink-dim; font-size: .82rem; line-height: 1.45; margin: 0; }
-a.note-link { border-bottom: 1px dashed rgba(244,180,0,.5); }
 
 // ===========================================================================
 //  "YOU ARE HERE" — trail-map of sibling routes (Where to next?)
@@ -509,22 +527,22 @@ a.note-link { border-bottom: 1px dashed rgba(244,180,0,.5); }
   border: 3px solid $shield-blue;
 }
 .trailmap__item a { color: $sign-white; font-family: "Highway Gothic", sans-serif; font-size: 1rem; }
-.trailmap__item a:hover { color: $lane-yellow; }
+.trailmap__item a:hover { color: var(--accent); }
 .trailmap__item p { margin: 1px 0 0; color: rgba(255,255,255,.72); font-size: .82rem; }
-.trailmap__item.is-here::after { background: $lane-yellow; width: 17px; height: 17px; left: -1px; }
+.trailmap__item.is-here::after { background: var(--accent); border-color: var(--accent); width: 17px; height: 17px; left: -1px; }
 .trailmap__here {
   font-family: "Highway Gothic", sans-serif; font-size: .64rem; letter-spacing: .14em;
-  text-transform: uppercase; color: #1c1600; background: $lane-yellow;
+  text-transform: uppercase; color: #fff; background: var(--accent);
   border-radius: 4px; padding: 2px 8px; margin-left: 8px;
 }
-.trailmap__you { color: $lane-yellow !important; font-weight: bold; }
+.trailmap__you { color: var(--accent) !important; font-weight: bold; }
 
 // ===========================================================================
 //  Footer — a mileage post
 // ===========================================================================
 .milepost {
-  border-top: 3px solid #000; margin-top: 60px;
-  background: linear-gradient(#141519, #101115);
+  border-top: 3px solid var(--line); margin-top: 60px;
+  background: var(--footer-bg);
   padding: 26px clamp(16px, 4vw, 40px);
 }
 .milepost__inner { max-width: $content-max; margin: 0 auto; display: flex;
@@ -532,12 +550,12 @@ a.note-link { border-bottom: 1px dashed rgba(244,180,0,.5); }
 .milepost small { color: $ink-faint; font-family: "Highway Gothic", sans-serif;
   letter-spacing: .08em; }
 .milepost__marker {
-  font-family: "Highway Gothic", sans-serif; color: $sign-white;
-  background: $sign-green; border: 2px solid $sign-white; border-radius: 6px;
+  font-family: "Highway Gothic", sans-serif; color: var(--bg);
+  background: $ink; border: 2px solid $ink; border-radius: 6px;
   padding: 6px 12px; text-align: center; line-height: 1;
 }
-.milepost__marker b { display: block; font-size: 1.2rem; color: $sign-white; }
-.milepost__marker span { font-size: .55rem; letter-spacing: .2em; color: $sign-white-dim; }
+.milepost__marker b { display: block; font-size: 1.2rem; color: var(--bg); }
+.milepost__marker span { font-size: .55rem; letter-spacing: .2em; color: var(--bg); opacity: .7; }
 
 // ===========================================================================
 //  Responsive — the rail becomes a slide-in drawer

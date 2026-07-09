@@ -6,6 +6,9 @@
     <link rel="shortcut icon" type="image/png" href="/assets/images/OK.png">
     <link rel="stylesheet" href="/assets/css/main.css">
     {% seo %}
+    <script>/* apply saved theme before paint to avoid a flash; light is default */
+      try { if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme','dark'); } catch (e) {}
+    </script>
   </head>
   <body>
     <div class="hwy-app">

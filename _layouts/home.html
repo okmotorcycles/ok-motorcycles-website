@@ -5,7 +5,7 @@ layout: default
 <div class="sign-grid">
   {% for note in site.posts %}
   {% assign cat = site.data.categories | where: "id", note.category | first %}
-  {% assign face = note.sign_color | default: cat.color | default: "green" %}
+  {% assign face = note.sign_color | default: cat.color | default: "white" %}
   <a class="sign-card note-link" href="{{ note.url }}">
     <div class="sign-card__face sign-card__face--{{ face }}">
       <div class="sign-card__topline">

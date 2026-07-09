@@ -19,15 +19,16 @@ $reg-red:           #101216;
 $shield-blue:       #101216;       // "black sign" faces / dark boards
 $lane-yellow:       $accent-green;  // every former yellow highlight -> green
 
-// --- Asphalt / night environment -------------------------------------------
-$asphalt:           #16171b;   // page background
-$asphalt-panel:     #1f2027;   // raised panels / sidebar
-$asphalt-line:      #2c2e37;   // hairline borders
+// --- Environment (theme-aware via CSS custom properties; see garden.scss) ---
+//  Light is the default theme; [data-theme="dark"] swaps the custom props.
+$asphalt:           var(--bg);      // page background
+$asphalt-panel:     var(--panel);   // raised panels / cards
+$asphalt-line:      var(--line);    // hairline borders
 
 // --- Text -------------------------------------------------------------------
-$ink:               #ecece4;
-$ink-dim:           #a6a79f;
-$ink-faint:         #6f7168;
+$ink:               var(--text);
+$ink-dim:           var(--text-dim);
+$ink-faint:         var(--text-faint);
 
 // --- Reflective helpers -----------------------------------------------------
 $sign-border:       rgba(255, 255, 255, 0.92);

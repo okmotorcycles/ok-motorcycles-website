@@ -5,7 +5,6 @@ description: How to ride with friends without riding over your head — spacing,
 category: craft
 status: maintained
 exit: W2
-sign_color: yellow
 tags: [craft, group, safety, etiquette]
 permalink: /notes/craft/group-riding/
 ---

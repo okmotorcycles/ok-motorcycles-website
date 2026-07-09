@@ -5,7 +5,6 @@ description: The cornering skill that unlocks every canyon road — broken down 
 category: craft
 status: open
 exit: W1
-sign_color: yellow
 tended: "Jun 2026"
 audience: riders ready to move past "slow in, fast out"
 tags: [craft, cornering, braking, skills]
