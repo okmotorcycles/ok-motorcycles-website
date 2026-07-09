@@ -1,0 +1,81 @@
+---
+layout: default
+---
+
+{%- assign cat = site.data.categories | where: "id", page.category | first -%}
+
+<div class="note-layout">
+  <article class="note">
+    <nav class="trail">
+      <a href="/">Garden</a>
+      <span class="trail__sep">→</span>
+      {% if cat %}<a href="/#{{ cat.id }}">{{ cat.label }}</a><span class="trail__sep">→</span>{% endif %}
+      <span>{{ page.title }}</span>
+    </nav>
+
+    <header class="note__sign">
+      <h1 class="note__title">{{ page.title }}</h1>
+      {% if page.description %}<p class="note__standfirst">{{ page.description }}</p>{% endif %}
+    </header>
+
+    <div class="note__meta">
+      {% include status.html s=page.status %}
+      {% if page.date %}<span>Opened {{ page.date | date: "%b %Y" }}</span>{% endif %}
+      {% if page.tended %}<span>&middot; Last patrolled {{ page.tended }}</span>{% endif %}
+      {% if page.audience %}<span>&middot; For {{ page.audience }}</span>{% endif %}
+      {% if cat %}<span>&middot;</span>{% include shield.html type=cat.shield.type num=cat.shield.num h=22 %}<span>{{ cat.label }}</span>{% endif %}
+    </div>
+
+    <!-- inline TOC (shown on narrow screens; filled by garden.js) -->
+    <div class="toc-inline" id="toc-inline" hidden>
+      <p class="toc__head">On This Route</p>
+      <ul></ul>
+    </div>
+
+    <div class="prose" id="note-prose">
+      {{ content }}
+    </div>
+
+    {% if page.tags %}
+    <div class="note__tags">
+      {% for t in page.tags %}<span class="tag tag--ghost">#{{ t }}</span>{% endfor %}
+    </div>
+    {% endif %}
+
+    {%- assign siblings = site.posts | where: "category", page.category -%}
+    {% if siblings.size > 1 %}
+    <section class="trailmap">
+      <div class="trailmap__board">
+        <div class="trailmap__head">
+          {% include shield.html type="interstate" num=cat.shield.num h=30 %}
+          <h3>Where to next? &mdash; {{ cat.label }}</h3>
+        </div>
+        <ul class="trailmap__list">
+          {% for s in siblings %}
+          <li class="trailmap__item {% if s.url == page.url %}is-here{% endif %}">
+            {% if s.url == page.url %}
+              <div>
+                <span class="trailmap__you">{{ s.title }}</span>
+                <span class="trailmap__here">You are here</span>
+                <p>{{ s.description }}</p>
+              </div>
+            {% else %}
+              <div>
+                <a href="{{ s.url }}" class="note-link">{{ s.title }}</a>
+                <p>{{ s.description }}</p>
+              </div>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+    {% endif %}
+  </article>
+
+  <!-- right-hand table of contents (filled by garden.js) -->
+  <nav class="toc is-empty" id="toc" aria-label="On this page">
+    <p class="toc__head">On This Route</p>
+    <ul></ul>
+  </nav>
+</div>

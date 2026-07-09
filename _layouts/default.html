@@ -1,21 +1,27 @@
 <!DOCTYPE html>
-<html lang="en-AU">
+<html lang="{{ site.lang | default: 'en-US' }}">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/png" href="/assets/images/OK.png">
     <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="stylesheet" href="/assets/flexmasonry/flexmasonry.css">
-    <script src="/assets/flexmasonry/flexmasonry.js"></script>
+    {% seo %}
   </head>
   <body>
-    {% include sidebar.html %}
-    {{ content }}
-    {% include lazyload.html %}
-    <link rel="stylesheet" href="/assets/lightbox/lightbox.css">
-    <script type="text/javascript" src="/assets/lightbox/lightbox.js"></script>
-    <script src="/assets/js/sidebar.js"></script>
-    <script src="/assets/js/fade-transitions.js"></script>
-    <script>fadeInPage();</script>
+    <div class="hwy-app">
+      {% include header.html %}
+      <div class="hwy-body">
+        {% include nav-tree.html %}
+        <main class="roadway">
+          <div class="roadway__inner">
+            {{ content }}
+          </div>
+        </main>
+      </div>
+      {% include footer.html %}
+    </div>
+    {% include notes-index.html %}
+    <div class="note-preview" id="note-preview" hidden></div>
+    <script src="/assets/js/garden.js"></script>
   </body>
 </html>

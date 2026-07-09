@@ -1,0 +1,32 @@
+<aside class="rail" id="rail">
+  <p class="rail__heading">Route Index</p>
+  <ul class="nav-tree">
+    {%- for cat in site.data.categories -%}
+      {%- assign notes = site.posts | where: "category", cat.id -%}
+      {%- assign open_class = "" -%}
+      {%- if page.category == cat.id -%}{%- assign open_class = "is-open" -%}{%- endif -%}
+      <li class="nav-tree__group {{ open_class }}">
+        <button class="nav-tree__cat" type="button">
+          <span class="nav-tree__caret">▶</span>
+          {% include shield.html type=cat.shield.type num=cat.shield.num h=20 %}
+          <span>{{ cat.label }}</span>
+          <span class="nav-tree__count">{{ notes | size }}</span>
+        </button>
+        <ul class="nav-tree__children">
+          {%- for note in notes -%}
+            <li><a href="{{ note.url }}" class="{% if note.url == page.url %}is-current{% endif %}">{{ note.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </li>
+    {%- endfor -%}
+  </ul>
+
+  <div class="rail__legend">
+    <p class="rail__heading">Sign Legend</p>
+    <div class="legend-row"><span class="legend-dot" style="background:#116b3c"></span> Open Route — evergreen</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f6c700"></span> Maintained — kept current</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#e2571e"></span> Under Grading — in progress</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#123c86"></span> Planned — on the map</div>
+  </div>
+</aside>
+<div class="rail-scrim" id="rail-scrim"></div>

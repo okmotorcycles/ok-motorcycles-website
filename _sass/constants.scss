@@ -1,19 +1,47 @@
-// Colors
+// ===========================================================================
+//  OK MOTORCYCLES — California Highway Sign design tokens
+// ===========================================================================
 
-$primary-highlight: #000;
-$secondary-highlight: #222;
-$tertiary-highlight: #555;
+// --- Signface colours (MUTCD / Caltrans inspired) ---------------------------
+$sign-green:        #116b3c;   // freeway guide-sign green
+$sign-green-deep:   #0c4d2b;
+$warn-yellow:       #f6c700;   // warning / advisory yellow
+$construct-orange:  #e2571e;   // construction orange
+$reg-red:           #b71234;   // regulatory red
+$shield-blue:       #123c86;   // interstate shield blue
+$sign-white:        #f3f3ec;   // reflective off-white
+$sign-white-dim:    #cfcfc6;
 
-$sidebar-colour: #FFF;
-$hover-colour: #000;
-$description-colour: #222;
-$text-colour: #000;
-$text-colour-light: #000;
-$text-colour-dark: #000;
-$table-background-colour: #EEE;
+// --- Asphalt / night environment -------------------------------------------
+$asphalt:           #16171b;   // page background
+$asphalt-panel:     #1f2027;   // raised panels / sidebar
+$asphalt-line:      #2c2e37;   // hairline borders
+$lane-yellow:       #f4b400;   // painted lane lines
 
-// Sizes
+// --- Text -------------------------------------------------------------------
+$ink:               #ecece4;
+$ink-dim:           #a6a79f;
+$ink-faint:         #6f7168;
 
-$sidebar-width: 330px;
+// --- Reflective helpers -----------------------------------------------------
+$sign-border:       rgba(255, 255, 255, 0.92);
+$sign-radius:       10px;
+
+// --- Legacy aliases kept so old partials still compile ----------------------
+$primary-highlight:   $ink;
+$secondary-highlight: $ink-dim;
+$tertiary-highlight:  $ink-faint;
+$sidebar-colour:      $asphalt-panel;
+$hover-colour:        $ink;
+$description-colour:  $ink-dim;
+$text-colour:         $ink;
+$text-colour-light:   $ink;
+$text-colour-dark:    $sign-white;
+$table-background-colour: $asphalt-panel;
+
+// --- Sizes ------------------------------------------------------------------
+$sidebar-width:     320px;
 $sidebar-height-min: 150px;
-$sidebar-height: 200px;
+$sidebar-height:    200px;
+$header-height:     74px;
+$content-max:       1180px;

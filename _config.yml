@@ -5,6 +5,13 @@ url: https://okmotorcycles.com
 author: Grey Sköld
 lang: en-US
 
+# Notes (the "garden") are authored as posts.
+permalink: /notes/:categories/:title/
+
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
+  - jekyll-feed
+
+# Cleaner excerpts for cards / previews
+excerpt_separator: "<!--more-->"

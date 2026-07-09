@@ -1,0 +1,32 @@
+# Category tree for the ROUTE INDEX. Order here controls sidebar order.
+# shield: type + num used for the route insignia; color: sign face colour.
+- id: routes
+  label: Routes & Rides
+  blurb: Roads worth the tank of fuel.
+  shield: { type: ca, num: "1" }
+  color: green
+- id: maintenance
+  label: Maintenance & Wrenching
+  blurb: Keep it running, keep it safe.
+  shield: { type: us, num: "40" }
+  color: green
+- id: gear
+  label: Gear & ATGATT
+  blurb: All the gear, all the time.
+  shield: { type: interstate, num: "15" }
+  color: blue
+- id: craft
+  label: Riding Craft
+  blurb: Skills that keep the rubber down.
+  shield: { type: warning, num: "!" }
+  color: yellow
+- id: builds
+  label: Builds & Projects
+  blurb: Garage projects, in progress.
+  shield: { type: us, num: "66" }
+  color: green
+- id: culture
+  label: Culture & Stories
+  blurb: The people and the miles.
+  shield: { type: interstate, num: "80" }
+  color: blue

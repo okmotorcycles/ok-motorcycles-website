@@ -1,0 +1,13 @@
+{%- comment -%} Inlined index of every note, consumed by garden.js for link hover previews. {%- endcomment -%}
+<script type="application/json" id="notes-index">
+[
+{%- for note in site.posts -%}
+  {%- assign cat = site.data.categories | where: "id", note.category | first -%}
+  {"url": {{ note.url | jsonify }},
+   "title": {{ note.title | jsonify }},
+   "desc": {{ note.description | default: note.excerpt | strip_html | truncate: 140 | jsonify }},
+   "cat": {{ cat.label | default: "Note" | jsonify }},
+   "color": {{ note.sign_color | default: cat.color | default: "green" | jsonify }}}{%- unless forloop.last -%},{%- endunless -%}
+{%- endfor -%}
+]
+</script>

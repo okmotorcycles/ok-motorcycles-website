@@ -1,27 +1,46 @@
-@font-face {
-  font-family: 'Highway Gothic';
-  font-weight: 400;
-  font-style: normal;
-  src: url('../fonts/highway-gothic/HWYGWDE.TTF') format('truetype');
-}
-  
-@font-face {
-  font-family: 'Highway Gothic';
-  font-weight: 700;
-  font-style: normal;
-  src: url('../fonts/highway-gothic/HWYGWDE.TTF') format('truetype');
-}
+// Highway Gothic — the FHWA Series typeface used on US/California road signs.
+// The repo ships four widths; we register them as separate families so the
+// design system can reach for a condensed label or a wide sign legend.
 
 @font-face {
+  font-family: 'Highway Gothic';        // default: wide legend
+  font-weight: 400;
+  font-style: normal;
+  src: url('../fonts/highway-gothic/HWYGWDE.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Highway Gothic';
+  font-weight: 700;
+  font-style: normal;
+  src: url('../fonts/highway-gothic/HWYGWDE.TTF') format('truetype');
+}
+@font-face {
   font-family: 'Highway Gothic';
   font-weight: 400;
   font-style: italic;
   src: url('../fonts/highway-gothic/HWYGNRRW.TTF') format('truetype');
 }
-  
+
+// Condensed — for dense labels, breadcrumbs, exit tabs
 @font-face {
-  font-family: 'Highway Gothic';
-  font-weight: 700;
-  font-style: italic;
+  font-family: 'Highway Gothic Cond';
+  font-weight: 400;
+  font-style: normal;
+  src: url('../fonts/highway-gothic/HWYGCOND.TTF') format('truetype');
+}
+
+// Narrow — body copy weight
+@font-face {
+  font-family: 'Highway Gothic Narrow';
+  font-weight: 400;
+  font-style: normal;
   src: url('../fonts/highway-gothic/HWYGNRRW.TTF') format('truetype');
+}
+
+// Expanded — big hero legends
+@font-face {
+  font-family: 'Highway Gothic Exp';
+  font-weight: 400;
+  font-style: normal;
+  src: url('../fonts/highway-gothic/HWYGEXPD.TTF') format('truetype');
 }
