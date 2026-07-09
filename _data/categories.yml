@@ -3,12 +3,12 @@
 - id: routes
   label: Routes & Rides
   blurb: Roads worth the tank of fuel.
-  shield: { type: ca }
+  shield: { type: interstate }
   color: black
 - id: maintenance
   label: Maintenance & Wrenching
   blurb: Keep it running, keep it safe.
-  shield: { type: us }
+  shield: { type: ca }
   color: white
 - id: gear
   label: Gear & ATGATT
@@ -23,7 +23,7 @@
 - id: builds
   label: Builds & Projects
   blurb: Garage projects, in progress.
-  shield: { type: interstate }
+  shield: { type: us }
   color: black
 - id: culture
   label: Culture & Stories
