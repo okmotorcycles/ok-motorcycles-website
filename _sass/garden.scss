@@ -113,7 +113,7 @@ img { max-width: 100%; display: block; }
   padding: 8px 16px;
   transition: background .2s ease, border-color .2s ease;
 }
-.brand-sign:hover { background: #111; border-color: $sign-white; }
+.brand-sign:hover { background: $sign-green; border-color: $sign-white; }
 .brand-sign__legend {
   font-family: "Highway Gothic", sans-serif; font-weight: bold;
   color: #111; letter-spacing: .03em; line-height: 1;
@@ -372,11 +372,17 @@ img { max-width: 100%; display: block; }
   font-family: "Highway Gothic", sans-serif; font-size: 1.28rem; line-height: 1.06;
   letter-spacing: .01em; margin-top: auto;
 }
-.sign-card__arrow { position: relative; color: inherit; display: flex; align-items: center; }
+.sign-card__arrow { position: relative; color: inherit; display: flex; align-items: center; margin-left: auto; }
 .sign-card__arrow svg { display: block; width: 22px; height: 22px; }
 
 .sign-card__body { padding: 14px 16px 16px; display: flex; flex: 1 1 auto; flex-direction: column; gap: 10px; }
-.sign-card__desc { color: $ink-dim; font-size: .87rem; line-height: 1.5; margin: 0; }
+// descriptions always occupy exactly three lines (ellipsised if longer), so
+// every card is the same height
+.sign-card__desc {
+  color: $ink-dim; font-size: .87rem; line-height: 1.5; margin: 0;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+  overflow: hidden; min-height: 4.5em;
+}
 .sign-card__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; }
 .sign-card__cat { color: $ink-faint; font-family: "Highway Gothic", sans-serif;
   font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
@@ -600,4 +606,5 @@ img { max-width: 100%; display: block; }
   .gantry__nav a { padding: 6px 8px; font-size: .74rem; }
   .note-preview { display: none !important; }
 }
+
 
