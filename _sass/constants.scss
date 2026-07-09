@@ -11,6 +11,9 @@ $sign-green-deep:   #0c4d2b;
 $accent-green:      #34a95b;   // brighter green for links / active states on black
 $sign-white:        #f3f3ec;   // reflective off-white
 $sign-white-dim:    #cfcfc6;
+// "fake true white" — softer than #fff, easier on the eyes. Tweak here to
+// experiment. Used anywhere a pure white would otherwise appear.
+$true-white:        #fafafa;
 
 // Repointed legacy accent tokens (kept so existing rules stay monochrome):
 $warn-yellow:       $sign-white;   // "white sign" faces + maintained tag

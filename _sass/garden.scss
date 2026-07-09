@@ -12,13 +12,13 @@
 //  and the white/black sign faces stay constant across both themes.
 :root {
   --bg:        #f2f1ea;   // page background (off-white)
-  --panel:     #ffffff;   // cards / raised panels
+  --panel:     #{$true-white};   // cards / raised panels
   --line:      #dcdbd0;   // hairline borders
   --text:      #17181b;   // primary text
   --text-dim:  #53544c;   // secondary text
   --text-faint:#83847a;   // muted labels
-  --header-bg: #ffffff;
-  --footer-bg: #ffffff;
+  --header-bg: #{$true-white};
+  --footer-bg: #{$true-white};
   --code-bg:   #f3f2ea;
   --code-text: #2b2c27;
   --code-inline: #0c4d2b;
@@ -69,7 +69,7 @@ a:hover { color: var(--accent-hover); }
 
 img { max-width: 100%; display: block; }
 
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent); color: $true-white; }
 
 // --- App shell --------------------------------------------------------------
 .hwy-app { min-height: 100vh; display: flex; flex-direction: column; }
@@ -113,13 +113,13 @@ img { max-width: 100%; display: block; }
   padding: 8px 16px;
   transition: background .2s ease, border-color .2s ease;
 }
-.brand-sign:hover { background: $sign-green; border-color: #fff; }
+.brand-sign:hover { background: $sign-green; border-color: $true-white; }
 .brand-sign__legend {
   font-family: "Highway Gothic", sans-serif; font-weight: bold;
   color: #111; letter-spacing: .03em; line-height: 1;
   font-size: 1.12rem;
 }
-.brand-sign:hover .brand-sign__legend { color: #fff; }
+.brand-sign:hover .brand-sign__legend { color: $true-white; }
 
 // smaller plaque used in the footer
 .brand-sign--sm { border-width: 3px; padding: 6px 12px; border-radius: 6px; }
@@ -545,7 +545,7 @@ img { max-width: 100%; display: block; }
 .trailmap__item.is-here::after { background: var(--accent); border-color: var(--accent); width: 17px; height: 17px; left: -1px; }
 .trailmap__here {
   font-family: "Highway Gothic", sans-serif; font-size: .64rem; letter-spacing: .14em;
-  text-transform: uppercase; color: #fff; background: var(--accent);
+  text-transform: uppercase; color: $true-white; background: var(--accent);
   border-radius: 4px; padding: 2px 8px; margin-left: 8px;
 }
 .trailmap__you { color: var(--accent) !important; font-weight: bold; }
