@@ -101,7 +101,7 @@ img { max-width: 100%; display: block; }
 
 .gantry__nav { display: flex; align-items: center; gap: 10px; }
 .gantry__nav a {
-  font-family: "Highway Gothic Cond", sans-serif;
+  font-family: "Highway Gothic", sans-serif;
   text-transform: uppercase; letter-spacing: .12em; font-size: .82rem;
   color: $ink; padding: 7px 12px; border-radius: 5px;
   border: 1px solid transparent;
@@ -132,7 +132,7 @@ img { max-width: 100%; display: block; }
 }
 
 .rail__heading {
-  font-family: "Highway Gothic Cond", sans-serif;
+  font-family: "Highway Gothic", sans-serif;
   text-transform: uppercase; letter-spacing: .22em;
   font-size: .68rem; color: $ink-faint;
   margin: 0 0 14px; padding-left: 4px;
@@ -155,7 +155,7 @@ img { max-width: 100%; display: block; }
 }
 .nav-tree__group.is-open > .nav-tree__cat .nav-tree__caret { transform: rotate(90deg); }
 .nav-tree__count {
-  margin-left: auto; font-family: "Highway Gothic Cond", sans-serif;
+  margin-left: auto; font-family: "Highway Gothic", sans-serif;
   font-size: .68rem; color: $ink-faint; background: $asphalt-panel;
   border-radius: 20px; padding: 1px 8px;
 }
@@ -187,7 +187,7 @@ img { max-width: 100%; display: block; }
 .rail__legend { border-top: 1px dashed $asphalt-line; padding-top: 16px; }
 .rail__legend .rail__heading { margin-bottom: 10px; }
 .legend-row { display: flex; align-items: center; gap: 9px; margin-bottom: 8px;
-  font-family: "Highway Gothic Cond", sans-serif; font-size: .74rem; color: $ink-dim; }
+  font-family: "Highway Gothic", sans-serif; font-size: .74rem; color: $ink-dim; }
 .legend-dot { width: 13px; height: 13px; border-radius: 3px; flex: 0 0 auto;
   border: 1px solid rgba(255,255,255,.6); }
 
@@ -202,7 +202,7 @@ img { max-width: 100%; display: block; }
 // ===========================================================================
 .tag {
   display: inline-flex; align-items: center; gap: 6px;
-  font-family: "Highway Gothic Cond", sans-serif;
+  font-family: "Highway Gothic", sans-serif;
   text-transform: uppercase; letter-spacing: .1em; font-size: .66rem;
   padding: 3px 9px; border-radius: 4px; line-height: 1.4;
   border: 1px solid rgba(255,255,255,.55); white-space: nowrap;
@@ -243,7 +243,7 @@ img { max-width: 100%; display: block; }
 }
 .hero__mile {
   margin-top: 22px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  font-family: "Highway Gothic Cond", sans-serif; color: rgba(255,255,255,.9);
+  font-family: "Highway Gothic", sans-serif; color: rgba(255,255,255,.9);
   letter-spacing: .08em; font-size: .82rem; text-transform: uppercase;
 }
 .hero__mile .pill {
@@ -260,7 +260,7 @@ img { max-width: 100%; display: block; }
   font-size: 1.4rem; letter-spacing: .04em; margin: 0;
   border-left: 5px solid $lane-yellow; padding-left: 12px;
 }
-.section__note { color: $ink-faint; font-family: "Highway Gothic Cond", sans-serif;
+.section__note { color: $ink-faint; font-family: "Highway Gothic", sans-serif;
   font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; }
 
 // ===========================================================================
@@ -275,7 +275,7 @@ img { max-width: 100%; display: block; }
 .latest__row:last-child { border-bottom: 0; }
 .latest__row:hover { background: rgba(255,255,255,.04); }
 .latest__exit {
-  flex: 0 0 auto; font-family: "Highway Gothic Cond", sans-serif;
+  flex: 0 0 auto; font-family: "Highway Gothic", sans-serif;
   font-size: .64rem; letter-spacing: .1em; color: $ink-faint; text-align: center;
   width: 52px;
 }
@@ -287,7 +287,7 @@ img { max-width: 100%; display: block; }
 .latest__desc { color: $ink-dim; font-size: .85rem; overflow: hidden;
   text-overflow: ellipsis; white-space: nowrap; }
 .latest__meta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
-.latest__date { color: $ink-faint; font-family: "Highway Gothic Cond", sans-serif;
+.latest__date { color: $ink-faint; font-family: "Highway Gothic", sans-serif;
   font-size: .72rem; letter-spacing: .06em; }
 
 // ===========================================================================
@@ -336,10 +336,11 @@ img { max-width: 100%; display: block; }
 .sign-card__face--blue   { background: #101216; }
 
 .sign-card__topline {
-  position: relative; display: flex; align-items: center; justify-content: space-between;
-  color: rgba(255,255,255,.9); font-family: "Highway Gothic Cond", sans-serif;
-  font-size: .66rem; letter-spacing: .12em; text-transform: uppercase;
+  position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  color: rgba(255,255,255,.9); font-family: "Highway Gothic", sans-serif;
+  font-size: .58rem; letter-spacing: .05em; text-transform: uppercase;
 }
+.sign-card__topline > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sign-card__legend {
   position: relative; color: $sign-white;
   font-family: "Highway Gothic", sans-serif; font-size: 1.28rem; line-height: 1.06;
@@ -350,7 +351,7 @@ img { max-width: 100%; display: block; }
 .sign-card__body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
 .sign-card__desc { color: $ink-dim; font-size: .87rem; line-height: 1.5; margin: 0; }
 .sign-card__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.sign-card__cat { color: $ink-faint; font-family: "Highway Gothic Cond", sans-serif;
+.sign-card__cat { color: $ink-faint; font-family: "Highway Gothic", sans-serif;
   font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
 
 // ===========================================================================
@@ -361,7 +362,7 @@ img { max-width: 100%; display: block; }
 // breadcrumb rendered as a chain of exit-sign tabs
 .trail { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
 .trail a, .trail span {
-  font-family: "Highway Gothic Cond", sans-serif; font-size: .72rem;
+  font-family: "Highway Gothic", sans-serif; font-size: .72rem;
   letter-spacing: .08em; text-transform: uppercase;
 }
 .trail a { color: $ink-dim; }
@@ -382,7 +383,7 @@ img { max-width: 100%; display: block; }
 .note__meta {
   display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 30px;
   padding-bottom: 18px; border-bottom: 1px dashed $asphalt-line;
-  font-family: "Highway Gothic Cond", sans-serif; color: $ink-faint;
+  font-family: "Highway Gothic", sans-serif; color: $ink-faint;
   font-size: .78rem; letter-spacing: .06em; text-transform: uppercase;
 }
 .note__meta .shield { transform: translateY(-1px); }
@@ -414,7 +415,7 @@ img { max-width: 100%; display: block; }
 .prose img { border-radius: 10px; border: 1px solid $asphalt-line; margin: 1.4em 0; }
 .prose table { width: 100%; border-collapse: collapse; margin: 1.4em 0; }
 .prose th, .prose td { border: 1px solid $asphalt-line; padding: 8px 12px; text-align: left; }
-.prose th { background: $asphalt-panel; color: $sign-white; font-family: "Highway Gothic Cond", sans-serif;
+.prose th { background: $asphalt-panel; color: $sign-white; font-family: "Highway Gothic", sans-serif;
   letter-spacing: .06em; text-transform: uppercase; font-size: .8rem; }
 
 .message {
@@ -440,7 +441,7 @@ img { max-width: 100%; display: block; }
   max-height: calc(100vh - #{$header-height} - 60px); overflow-y: auto;
 }
 .toc__head {
-  font-family: "Highway Gothic Cond", sans-serif; text-transform: uppercase;
+  font-family: "Highway Gothic", sans-serif; text-transform: uppercase;
   letter-spacing: .18em; font-size: .66rem; color: $ink-faint; margin: 0 0 12px;
 }
 .toc ul { list-style: none; margin: 0; padding: 0; }
@@ -473,7 +474,7 @@ img { max-width: 100%; display: block; }
 .note-preview__strip--yellow { background: $warn-yellow; }
 .note-preview__strip--blue { background: $shield-blue; }
 .note-preview__body { padding: 12px 14px; }
-.note-preview__cat { font-family: "Highway Gothic Cond", sans-serif; font-size: .62rem;
+.note-preview__cat { font-family: "Highway Gothic", sans-serif; font-size: .62rem;
   letter-spacing: .12em; text-transform: uppercase; color: $ink-faint; }
 .note-preview__title { color: $sign-white; font-family: "Highway Gothic", sans-serif;
   font-size: 1rem; margin: 2px 0 6px; }
@@ -512,7 +513,7 @@ a.note-link { border-bottom: 1px dashed rgba(244,180,0,.5); }
 .trailmap__item p { margin: 1px 0 0; color: rgba(255,255,255,.72); font-size: .82rem; }
 .trailmap__item.is-here::after { background: $lane-yellow; width: 17px; height: 17px; left: -1px; }
 .trailmap__here {
-  font-family: "Highway Gothic Cond", sans-serif; font-size: .64rem; letter-spacing: .14em;
+  font-family: "Highway Gothic", sans-serif; font-size: .64rem; letter-spacing: .14em;
   text-transform: uppercase; color: #1c1600; background: $lane-yellow;
   border-radius: 4px; padding: 2px 8px; margin-left: 8px;
 }
@@ -528,7 +529,7 @@ a.note-link { border-bottom: 1px dashed rgba(244,180,0,.5); }
 }
 .milepost__inner { max-width: $content-max; margin: 0 auto; display: flex;
   align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
-.milepost small { color: $ink-faint; font-family: "Highway Gothic Cond", sans-serif;
+.milepost small { color: $ink-faint; font-family: "Highway Gothic", sans-serif;
   letter-spacing: .08em; }
 .milepost__marker {
   font-family: "Highway Gothic", sans-serif; color: $sign-white;
