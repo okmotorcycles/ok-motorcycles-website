@@ -113,13 +113,13 @@ img { max-width: 100%; display: block; }
   padding: 8px 16px;
   transition: background .2s ease, border-color .2s ease;
 }
-.brand-sign:hover { background: $sign-green; border-color: $sign-white; }
+.brand-sign:hover { background: $sign-green; border-color: #fff; }
 .brand-sign__legend {
   font-family: "Highway Gothic", sans-serif; font-weight: bold;
   color: #111; letter-spacing: .03em; line-height: 1;
   font-size: 1.12rem;
 }
-.brand-sign:hover .brand-sign__legend { color: $sign-white; }
+.brand-sign:hover .brand-sign__legend { color: #fff; }
 
 // smaller plaque used in the footer
 .brand-sign--sm { border-width: 3px; padding: 6px 12px; border-radius: 6px; }
