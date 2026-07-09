@@ -341,15 +341,18 @@ img { max-width: 100%; display: block; }
 }
 .sign-card:hover {
   transform: translateY(-4px);
-  border-color: var(--accent);
+  border-color: $sign-green;
   box-shadow: 0 12px 30px rgba(0,0,0,.28);
 }
+// on hover the whole sign face lights up highway green; text + icons invert to white
+.sign-card:hover .sign-card__face { background: $sign-green; color: $sign-white; }
 
 // the sign "face" — black-and-white regulatory sign; default is black-on-white
 .sign-card__face {
   position: relative; aspect-ratio: 16 / 10;
   background: $sign-white; color: #16171b; padding: 14px;
   display: flex; flex-direction: column; justify-content: space-between;
+  transition: background .18s ease, color .18s ease;
 }
 .sign-card__face::before {   // inner keyline, follows the face colour
   content: ""; position: absolute; inset: 9px; border: 2px solid currentColor;
@@ -369,9 +372,8 @@ img { max-width: 100%; display: block; }
   font-family: "Highway Gothic", sans-serif; font-size: 1.28rem; line-height: 1.06;
   letter-spacing: .01em; margin-top: auto;
 }
-.sign-card__arrow { position: relative; color: inherit; display: flex; align-items: center; transition: color .15s ease; }
+.sign-card__arrow { position: relative; color: inherit; display: flex; align-items: center; }
 .sign-card__arrow svg { display: block; width: 22px; height: 22px; }
-.sign-card:hover .sign-card__arrow { color: var(--accent); }
 
 .sign-card__body { padding: 14px 16px 16px; display: flex; flex: 1 1 auto; flex-direction: column; gap: 10px; }
 .sign-card__desc { color: $ink-dim; font-size: .87rem; line-height: 1.5; margin: 0; }
@@ -598,3 +600,4 @@ img { max-width: 100%; display: block; }
   .gantry__nav a { padding: 6px 8px; font-size: .74rem; }
   .note-preview { display: none !important; }
 }
+
