@@ -121,6 +121,10 @@ img { max-width: 100%; display: block; }
 }
 .brand-sign:hover .brand-sign__legend { color: $sign-white; }
 
+// smaller plaque used in the footer
+.brand-sign--sm { border-width: 3px; padding: 6px 12px; border-radius: 6px; }
+.brand-sign--sm .brand-sign__legend { font-size: .88rem; }
+
 .gantry__spacer { flex: 1 1 auto; }
 
 .gantry__nav { display: flex; align-items: center; gap: 8px; }
@@ -330,7 +334,7 @@ img { max-width: 100%; display: block; }
 }
 
 .sign-card {
-  display: flex; flex-direction: column;
+  display: flex; flex-direction: column; height: 100%;
   border-radius: 12px; overflow: hidden;
   background: $asphalt-panel; border: 1px solid $asphalt-line;
   transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
@@ -365,12 +369,13 @@ img { max-width: 100%; display: block; }
   font-family: "Highway Gothic", sans-serif; font-size: 1.28rem; line-height: 1.06;
   letter-spacing: .01em; margin-top: auto;
 }
-.sign-card__arrow { position: relative; color: inherit; font-size: 1.3rem; transition: color .15s ease; }
+.sign-card__arrow { position: relative; color: inherit; display: flex; align-items: center; transition: color .15s ease; }
+.sign-card__arrow svg { display: block; width: 22px; height: 22px; }
 .sign-card:hover .sign-card__arrow { color: var(--accent); }
 
-.sign-card__body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.sign-card__body { padding: 14px 16px 16px; display: flex; flex: 1 1 auto; flex-direction: column; gap: 10px; }
 .sign-card__desc { color: $ink-dim; font-size: .87rem; line-height: 1.5; margin: 0; }
-.sign-card__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sign-card__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; }
 .sign-card__cat { color: $ink-faint; font-family: "Highway Gothic", sans-serif;
   font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
 

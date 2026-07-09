@@ -19,10 +19,10 @@ Everything here is dressed in California freeway signage because that is the lan
 the open road. Each note is a guide sign; each category is a route; the status tags borrow
 their colors from the real Manual on Uniform Traffic Control Devices:
 
-- <span class="tag tag--open">◆ Open Route</span> — evergreen, maintained, ready to ride.
-- <span class="tag tag--maintained">▲ Maintained</span> — solid, kept current.
-- <span class="tag tag--grading">⚑ Under Grading</span> — a work in progress; watch for cones.
-- <span class="tag tag--planned">◷ Planned</span> — on the map, not yet paved.
+- <span class="tag tag--open">Open Route</span> — evergreen, maintained, ready to ride.
+- <span class="tag tag--maintained">Maintained</span> — solid, kept current.
+- <span class="tag tag--grading">Under Grading</span> — a work in progress; watch for cones.
+- <span class="tag tag--planned">Planned</span> — on the map, not yet paved.
 
 ## How to wander
 

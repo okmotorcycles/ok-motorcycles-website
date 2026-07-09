@@ -1,8 +1,8 @@
 {%- comment -%} Status tag. Usage: {% include status.html s="open" %} {%- endcomment -%}
 {%- case include.s -%}
-{%- when "open" -%}<span class="tag tag--open">◆ Open Route</span>
-{%- when "maintained" -%}<span class="tag tag--maintained">▲ Maintained</span>
-{%- when "grading" -%}<span class="tag tag--grading">⚑ Under Grading</span>
-{%- when "planned" -%}<span class="tag tag--planned">◷ Planned</span>
-{%- else -%}<span class="tag tag--ghost">○ Draft</span>
+{%- when "open" -%}<span class="tag tag--open">Open Route</span>
+{%- when "maintained" -%}<span class="tag tag--maintained">Maintained</span>
+{%- when "grading" -%}<span class="tag tag--grading">Under Grading</span>
+{%- when "planned" -%}<span class="tag tag--planned">Planned</span>
+{%- else -%}<span class="tag tag--ghost">Draft</span>
 {%- endcase -%}

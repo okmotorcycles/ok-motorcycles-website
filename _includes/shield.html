@@ -1,34 +1,27 @@
 {%- comment -%}
-  Route shield component — monochrome line-art that inherits the surrounding
-  text colour (currentColor), so it reads black on white signs and white on
-  black signs.
-  Usage: {% include shield.html type="ca" num="1" h=30 %}
+  Route shield — monochrome outline SHAPE ONLY (no numbers), inheriting the
+  surrounding text colour via currentColor.
+  Usage: {% include shield.html type="ca" h=30 %}
   types: interstate | us | ca | warning | hov
 {%- endcomment -%}
 {%- assign h = include.h | default: 30 -%}
-{%- assign num = include.num | default: "" -%}
-<span class="shield" title="{{ include.label | default: num }}" aria-hidden="true">
+<span class="shield" aria-hidden="true">
 {%- case include.type -%}
 {%- when "interstate" -%}
-<svg width="{{ h | times: 0.86 }}" height="{{ h }}" viewBox="0 0 86 100" fill="none" stroke="currentColor" stroke-width="6">
-  <path d="M43 4C31 4 13 6 6 8c-2 14-2 60 17 76 8 6 15 11 20 13 5-2 12-7 20-13 19-16 19-62 17-76-7-2-25-4-37-4z"/>
-  <text x="43" y="72" text-anchor="middle" font-family="Highway Gothic, sans-serif" font-size="42" fill="currentColor" stroke="none">{{ num }}</text>
+<svg width="{{ h | times: 0.9 }}" height="{{ h }}" viewBox="0 0 90 100" fill="none" stroke="currentColor" stroke-width="6">
+  <path d="M45 5C33 5 14 7 6 9c-2 15-2 61 18 77 8 6 16 11 21 13 5-2 13-7 21-13 20-16 20-62 18-77-8-2-27-4-39-4z"/>
 </svg>
 {%- when "us" -%}
 <svg width="{{ h | times: 0.9 }}" height="{{ h }}" viewBox="0 0 90 100" fill="none" stroke="currentColor" stroke-width="6">
   <path d="M45 5C34 5 16 7 7 10 4 30 7 60 24 78c8 8 15 13 21 16 6-3 13-8 21-16 17-18 20-48 17-68-9-3-27-5-38-5z"/>
-  <text x="45" y="44" text-anchor="middle" font-family="Highway Gothic Cond, sans-serif" font-size="17" fill="currentColor" stroke="none">US</text>
-  <text x="45" y="80" text-anchor="middle" font-family="Highway Gothic, sans-serif" font-size="38" fill="currentColor" stroke="none">{{ num }}</text>
 </svg>
 {%- when "ca" -%}
-<svg width="{{ h | times: 0.84 }}" height="{{ h }}" viewBox="0 0 84 100" fill="none" stroke="currentColor" stroke-width="6">
-  <path d="M42 6c-4 8-14 14-25 16 0 33 8 54 25 74 17-20 25-41 25-74-11-2-21-8-25-16z"/>
-  <text x="42" y="80" text-anchor="middle" font-family="Highway Gothic, sans-serif" font-size="36" fill="currentColor" stroke="none">{{ num }}</text>
+<svg width="{{ h | times: 0.9 }}" height="{{ h }}" viewBox="0 0 92 100" fill="none" stroke="currentColor" stroke-width="6">
+  <path d="M46 6C39 20 25 27 6 29c0 33 13 54 40 71 27-17 40-38 40-71-19-2-33-9-40-23z"/>
 </svg>
 {%- when "warning" -%}
 <svg width="{{ h }}" height="{{ h }}" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6">
   <rect x="20" y="20" width="60" height="60" rx="8" transform="rotate(45 50 50)"/>
-  <text x="50" y="62" text-anchor="middle" font-family="Highway Gothic, sans-serif" font-size="32" fill="currentColor" stroke="none">{{ num }}</text>
 </svg>
 {%- when "hov" -%}
 <svg width="{{ h | times: 0.72 }}" height="{{ h }}" viewBox="0 0 72 100" fill="none" stroke="currentColor" stroke-width="8">

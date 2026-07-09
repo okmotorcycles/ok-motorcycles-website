@@ -10,12 +10,14 @@ layout: default
     <div class="sign-card__face sign-card__face--{{ face }}">
       <div class="sign-card__topline">
         <span>{{ cat.label | default: "Note" }}</span>
-        {% if cat %}{% include shield.html type=cat.shield.type num=cat.shield.num h=26 %}{% endif %}
+        {% if cat %}{% include shield.html type=cat.shield.type h=26 %}{% endif %}
       </div>
       <div class="sign-card__legend">{{ note.title }}</div>
       <div class="sign-card__topline">
         <span>EXIT {{ note.exit | default: forloop.index }}</span>
-        <span class="sign-card__arrow">&#9654;</span>
+        <span class="sign-card__arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 17.5 16 8"/><path d="M9 8h7v7"/></svg>
+        </span>
       </div>
     </div>
     <div class="sign-card__body">
