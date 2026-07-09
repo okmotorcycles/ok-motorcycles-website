@@ -1,5 +1,5 @@
 {%- comment -%}
-  Route shield — monochrome outline SHAPE ONLY (no numbers), inheriting the
+  Route shield — monochrome FILLED shape (no numbers), inheriting the
   surrounding text colour via currentColor.
   Usage: {% include shield.html type="ca" h=30 %}
   types: interstate | us | ca | warning | hov
@@ -8,23 +8,23 @@
 <span class="shield" aria-hidden="true">
 {%- case include.type -%}
 {%- when "interstate" -%}
-<svg width="{{ h | times: 0.9 }}" height="{{ h }}" viewBox="0 0 90 100" fill="none" stroke="currentColor" stroke-width="6">
+<svg width="{{ h | times: 0.9 }}" height="{{ h }}" viewBox="0 0 90 100" fill="currentColor">
   <path d="M45 5C33 5 14 7 6 9c-2 15-2 61 18 77 8 6 16 11 21 13 5-2 13-7 21-13 20-16 20-62 18-77-8-2-27-4-39-4z"/>
 </svg>
 {%- when "us" -%}
-<svg width="{{ h | times: 0.9 }}" height="{{ h }}" viewBox="0 0 90 100" fill="none" stroke="currentColor" stroke-width="6">
+<svg width="{{ h | times: 0.9 }}" height="{{ h }}" viewBox="0 0 90 100" fill="currentColor">
   <path d="M45 5C34 5 16 7 7 10 4 30 7 60 24 78c8 8 15 13 21 16 6-3 13-8 21-16 17-18 20-48 17-68-9-3-27-5-38-5z"/>
 </svg>
 {%- when "ca" -%}
-<svg width="{{ h | times: 0.9 }}" height="{{ h }}" viewBox="0 0 92 100" fill="none" stroke="currentColor" stroke-width="6">
+<svg width="{{ h | times: 0.9 }}" height="{{ h }}" viewBox="0 0 92 100" fill="currentColor">
   <path d="M46 6C39 20 25 27 6 29c0 33 13 54 40 71 27-17 40-38 40-71-19-2-33-9-40-23z"/>
 </svg>
 {%- when "warning" -%}
-<svg width="{{ h }}" height="{{ h }}" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6">
+<svg width="{{ h }}" height="{{ h }}" viewBox="0 0 100 100" fill="currentColor">
   <rect x="20" y="20" width="60" height="60" rx="8" transform="rotate(45 50 50)"/>
 </svg>
 {%- when "hov" -%}
-<svg width="{{ h | times: 0.72 }}" height="{{ h }}" viewBox="0 0 72 100" fill="none" stroke="currentColor" stroke-width="8">
+<svg width="{{ h | times: 0.72 }}" height="{{ h }}" viewBox="0 0 72 100" fill="currentColor">
   <path d="M36 6 66 50 36 94 6 50z"/>
 </svg>
 {%- endcase -%}
