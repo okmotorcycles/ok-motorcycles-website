@@ -1,32 +1,32 @@
-# Category metadata. shield: type + num used for the route insignia.
-# color: sign face — "black" (white-on-black) or "white" (black-on-white).
+# Category metadata. shield.type picks the sign shape (interstate | us | ca |
+# warning | yield | octagon). color: sign face — "black" or "white".
 - id: routes
   label: Routes & Rides
   blurb: Roads worth the tank of fuel.
-  shield: { type: ca, num: "1" }
+  shield: { type: ca }
   color: black
 - id: maintenance
   label: Maintenance & Wrenching
   blurb: Keep it running, keep it safe.
-  shield: { type: us, num: "40" }
+  shield: { type: us }
   color: white
 - id: gear
   label: Gear & ATGATT
   blurb: All the gear, all the time.
-  shield: { type: interstate, num: "15" }
+  shield: { type: octagon }
   color: black
 - id: craft
   label: Riding Craft
   blurb: Skills that keep the rubber down.
-  shield: { type: warning, num: "!" }
+  shield: { type: yield }
   color: white
 - id: builds
   label: Builds & Projects
   blurb: Garage projects, in progress.
-  shield: { type: us, num: "66" }
+  shield: { type: interstate }
   color: black
 - id: culture
   label: Culture & Stories
   blurb: The people and the miles.
-  shield: { type: interstate, num: "80" }
+  shield: { type: warning }
   color: white

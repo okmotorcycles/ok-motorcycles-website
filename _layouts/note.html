@@ -7,9 +7,7 @@ layout: default
 <div class="note-layout">
   <article class="note">
     <nav class="trail">
-      <a href="/">Garden</a>
-      <span class="trail__sep">→</span>
-      {% if cat %}<a href="/#{{ cat.id }}">{{ cat.label }}</a><span class="trail__sep">→</span>{% endif %}
+      {% if cat %}<a href="/">{{ cat.label }}</a><span class="trail__sep">→</span>{% endif %}
       <span>{{ page.title }}</span>
     </nav>
 
@@ -20,10 +18,8 @@ layout: default
 
     <div class="note__meta">
       {% include status.html s=page.status %}
-      {% if page.date %}<span>Opened {{ page.date | date: "%b %Y" }}</span>{% endif %}
-      {% if page.tended %}<span>&middot; Last patrolled {{ page.tended }}</span>{% endif %}
-      {% if page.audience %}<span>&middot; For {{ page.audience }}</span>{% endif %}
-      {% if cat %}<span>&middot;</span>{% include shield.html type=cat.shield.type num=cat.shield.num h=22 %}<span>{{ cat.label }}</span>{% endif %}
+      {% if page.date %}<span>{{ page.date | date: "%b %Y" }}</span>{% endif %}
+      {% if cat %}<span class="note__meta-cat">{% include shield.html type=cat.shield.type h=22 %}{{ cat.label }}</span>{% endif %}
     </div>
 
     <!-- inline TOC (shown on narrow screens; filled by garden.js) -->

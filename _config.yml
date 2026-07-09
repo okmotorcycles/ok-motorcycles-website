@@ -5,7 +5,7 @@ url: https://okmotorcycles.com
 author: Grey Sköld
 lang: en-US
 
-# Notes (the "garden") are authored as posts.
+# Notes are authored as posts.
 permalink: /notes/:categories/:title/
 
 plugins:

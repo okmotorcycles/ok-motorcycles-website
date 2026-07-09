@@ -1,7 +1,7 @@
 ---
 layout: note
 title: Why Motorcycles Are OK
-description: A short manifesto for the sign on the wall — and the whole point of this garden.
+description: A short manifesto for the sign on the wall — and the whole point of this site.
 category: culture
 status: open
 exit: 80
