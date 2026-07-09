@@ -9,8 +9,9 @@
 {%- case include.type -%}
 {%- comment -%} shield shapes are shrunk ~15% vs the diamond so they read at a matching size {%- endcomment -%}
 {%- when "interstate" -%}
-<svg width="{{ h | times: 0.765 }}" height="{{ h | times: 0.85 }}" viewBox="0 0 90 100" fill="currentColor">
-  <path d="M45 5C33 5 14 7 6 9c-2 15-2 61 18 77 8 6 16 11 21 13 5-2 13-7 21-13 20-16 20-62 18-77-8-2-27-4-39-4z"/>
+{%- comment -%} interstate-style shield: flat wide crown top tapering to a point {%- endcomment -%}
+<svg width="{{ h | times: 0.85 }}" height="{{ h | times: 0.85 }}" viewBox="0 0 100 100" fill="currentColor">
+  <path d="M16 15C16 15 30 10 50 10 70 10 84 15 84 15 84 15 84 33 82 43 80 53 66 68 50 92 34 68 20 53 18 43 16 33 16 15 16 15Z"/>
 </svg>
 {%- when "us" -%}
 <svg width="{{ h | times: 0.765 }}" height="{{ h | times: 0.85 }}" viewBox="0 0 90 100" fill="currentColor">
@@ -26,7 +27,7 @@
 </svg>
 {%- when "yield" -%}
 <svg width="{{ h }}" height="{{ h }}" viewBox="0 0 100 100" fill="currentColor" stroke="currentColor" stroke-width="9" stroke-linejoin="round">
-  <path d="M22 30 78 30 50 80z"/>
+  <path d="M18 21 82 21 50 79z"/>
 </svg>
 {%- when "octagon" -%}
 <svg width="{{ h }}" height="{{ h }}" viewBox="0 0 100 100" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round">
