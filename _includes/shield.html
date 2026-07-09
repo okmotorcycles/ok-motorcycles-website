@@ -9,8 +9,8 @@
 {%- case include.type -%}
 {%- when "interstate" -%}
 <svg width="{{ h | times: 0.86 }}" height="{{ h }}" viewBox="0 0 86 100">
-  <path d="M43 2C31 2 12 4 4 6c-2 15-2 62 18 78 8 6 16 12 21 14 5-2 13-8 21-14 20-16 20-63 18-78-8-2-27-4-39-4z" fill="#123c86" stroke="#fff" stroke-width="4"/>
-  <path d="M8 6c8-2 25-4 35-4s27 2 35 4c1 6 1 14 0 20H8c-1-6-1-14 0-20z" fill="#b71234"/>
+  <path d="M43 2C31 2 12 4 4 6c-2 15-2 62 18 78 8 6 16 12 21 14 5-2 13-8 21-14 20-16 20-63 18-78-8-2-27-4-39-4z" fill="#116b3c" stroke="#fff" stroke-width="4"/>
+  <path d="M8 6c8-2 25-4 35-4s27 2 35 4c1 6 1 14 0 20H8c-1-6-1-14 0-20z" fill="#0c4d2b"/>
   <text x="43" y="74" text-anchor="middle" font-family="Highway Gothic, sans-serif" font-size="42" fill="#fff">{{ num }}</text>
 </svg>
 {%- when "us" -%}
@@ -27,7 +27,7 @@
 </svg>
 {%- when "warning" -%}
 <svg width="{{ h }}" height="{{ h }}" viewBox="0 0 100 100">
-  <rect x="18" y="18" width="64" height="64" rx="8" transform="rotate(45 50 50)" fill="#f6c700" stroke="#111" stroke-width="5"/>
+  <rect x="18" y="18" width="64" height="64" rx="8" transform="rotate(45 50 50)" fill="#f3f3ec" stroke="#111" stroke-width="5"/>
   <text x="50" y="63" text-anchor="middle" font-family="Highway Gothic, sans-serif" font-size="34" fill="#111">{{ num }}</text>
 </svg>
 {%- when "hov" -%}

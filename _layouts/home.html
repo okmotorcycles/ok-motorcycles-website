@@ -2,73 +2,29 @@
 layout: default
 ---
 
-<section class="hero">
-  <div class="hero__row">
-    {% include shield.html type="ca" num="1" h=88 %}
-    <div>
-      <h1 class="hero__legend">OK MOTORCYCLES</h1>
-      <p class="hero__sub">A roadside garden of notes on riding, wrenching &amp; the roads between.</p>
+<div class="sign-grid">
+  {% for note in site.posts %}
+  {% assign cat = site.data.categories | where: "id", note.category | first %}
+  {% assign face = note.sign_color | default: cat.color | default: "green" %}
+  <a class="sign-card note-link" href="{{ note.url }}">
+    <div class="sign-card__face sign-card__face--{{ face }}">
+      <div class="sign-card__topline">
+        <span>{{ cat.label | default: "Note" }}</span>
+        {% if cat %}{% include shield.html type=cat.shield.type num=cat.shield.num h=26 %}{% endif %}
+      </div>
+      <div class="sign-card__legend">{{ note.title }}</div>
+      <div class="sign-card__topline">
+        <span>EXIT {{ note.exit | default: forloop.index }}</span>
+        <span class="sign-card__arrow">&#9654;</span>
+      </div>
     </div>
-  </div>
-  <div class="hero__mile">
-    <span class="pill">◆ {{ site.posts | size }} Notes Posted</span>
-    <span class="pill">Now Entering: The Garden</span>
-    <span class="pill">Speed Limit — None</span>
-  </div>
-</section>
-
-<section class="section">
-  <div class="section__head">
-    <h2 class="section__title">Latest</h2>
-    <span class="section__note">Freshly graded &middot; newest first</span>
-  </div>
-  <div class="latest">
-    {% for note in site.posts limit: 5 %}
-    {% assign cat = site.data.categories | where: "id", note.category | first %}
-    <a class="latest__row note-link" href="{{ note.url }}">
-      <div class="latest__exit">EXIT<b>{{ note.exit | default: forloop.index }}</b></div>
-      <div class="latest__main">
-        <div class="latest__title">{{ note.title }}</div>
-        <div class="latest__desc">{{ note.description }}</div>
-      </div>
-      <div class="latest__meta">
+    <div class="sign-card__body">
+      <p class="sign-card__desc">{{ note.description }}</p>
+      <div class="sign-card__foot">
         {% include status.html s=note.status %}
-        <span class="latest__date">{{ note.date | date: "%b %Y" }}</span>
+        <span class="sign-card__cat">{{ note.date | date: "%b %Y" }}</span>
       </div>
-    </a>
-    {% endfor %}
-  </div>
-</section>
-
-<section class="section">
-  <div class="section__head">
-    <h2 class="section__title">The Garden</h2>
-    <span class="section__note">Every route on the map</span>
-  </div>
-  <div class="sign-grid">
-    {% for note in site.posts %}
-    {% assign cat = site.data.categories | where: "id", note.category | first %}
-    {% assign face = note.sign_color | default: cat.color | default: "green" %}
-    <a class="sign-card note-link" href="{{ note.url }}">
-      <div class="sign-card__face sign-card__face--{{ face }}">
-        <div class="sign-card__topline">
-          <span>{{ cat.label | default: "Note" }}</span>
-          {% if cat %}{% include shield.html type=cat.shield.type num=cat.shield.num h=26 %}{% endif %}
-        </div>
-        <div class="sign-card__legend">{{ note.title }}</div>
-        <div class="sign-card__topline">
-          <span>EXIT {{ note.exit | default: forloop.index }}</span>
-          <span class="sign-card__arrow">&#9654;</span>
-        </div>
-      </div>
-      <div class="sign-card__body">
-        <p class="sign-card__desc">{{ note.description }}</p>
-        <div class="sign-card__foot">
-          {% include status.html s=note.status %}
-          <span class="sign-card__cat">{{ note.date | date: "%b %Y" }}</span>
-        </div>
-      </div>
-    </a>
-    {% endfor %}
-  </div>
-</section>
+    </div>
+  </a>
+  {% endfor %}
+</div>

@@ -20,9 +20,9 @@ html, body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  // faint dashed centre-lane texture running down the page
+  // faint green wash at the top edge
   background-image:
-    radial-gradient(circle at 50% 0, rgba(244, 180, 0, 0.05), transparent 60%);
+    radial-gradient(circle at 50% 0, rgba(17, 107, 60, 0.10), transparent 60%);
 }
 
 a { color: $lane-yellow; text-decoration: none; transition: color .15s ease; }
@@ -30,7 +30,7 @@ a:hover { color: lighten($lane-yellow, 12%); }
 
 img { max-width: 100%; display: block; }
 
-::selection { background: $warn-yellow; color: #111; }
+::selection { background: $sign-green; color: $sign-white; }
 
 // Custom scrollbar reads like a painted shoulder line
 ::-webkit-scrollbar { width: 11px; height: 11px; }
@@ -208,10 +208,10 @@ img { max-width: 100%; display: block; }
   padding: 3px 9px; border-radius: 4px; line-height: 1.4;
   border: 1px solid rgba(255,255,255,.55); white-space: nowrap;
 }
-.tag--open      { background: $sign-green;      color: $sign-white; }   // evergreen
-.tag--maintained{ background: $warn-yellow;     color: #241f00; }        // tended
-.tag--grading   { background: $construct-orange;color: #1c0d00; }        // seedling / WIP
-.tag--planned   { background: $shield-blue;     color: $sign-white; }    // idea
+.tag--open      { background: $sign-green; color: $sign-white; }               // evergreen
+.tag--maintained{ background: $sign-white; color: #16171b; }                   // tended
+.tag--grading   { background: transparent; color: $sign-white; border-style: dashed; border-color: rgba(255,255,255,.75); } // WIP
+.tag--planned   { background: transparent; color: $ink-dim; border-color: $asphalt-line; } // idea
 .tag--ghost     { background: transparent; color: $ink-dim; border-color: $asphalt-line; }
 
 // ===========================================================================
@@ -327,11 +327,14 @@ img { max-width: 100%; display: block; }
   transition: opacity .2s ease; pointer-events: none;
 }
 .sign-card:hover .sign-card__face::after { opacity: 1; }
-.sign-card__face--yellow { background: $warn-yellow; }
-.sign-card__face--yellow.sign-card__face::before { border-color: #111; }
+// "white sign" — regulatory black-on-white
+.sign-card__face--yellow { background: $sign-white; }
+.sign-card__face--yellow.sign-card__face::before { border-color: #16171b; }
 .sign-card__face--yellow .sign-card__legend,
-.sign-card__face--yellow .sign-card__topline { color: #1c1600; }
-.sign-card__face--blue   { background: $shield-blue; }
+.sign-card__face--yellow .sign-card__topline,
+.sign-card__face--yellow .sign-card__arrow { color: #16171b; }
+// "black sign" — white-on-black
+.sign-card__face--blue   { background: #101216; }
 
 .sign-card__topline {
   position: relative; display: flex; align-items: center; justify-content: space-between;
@@ -530,10 +533,10 @@ a.note-link { border-bottom: 1px dashed rgba(244,180,0,.5); }
   letter-spacing: .08em; }
 .milepost__marker {
   font-family: "Highway Gothic", sans-serif; color: $sign-white;
-  background: #0c1a3a; border: 2px solid $sign-white; border-radius: 6px;
+  background: $sign-green; border: 2px solid $sign-white; border-radius: 6px;
   padding: 6px 12px; text-align: center; line-height: 1;
 }
-.milepost__marker b { display: block; font-size: 1.2rem; color: $lane-yellow; }
+.milepost__marker b { display: block; font-size: 1.2rem; color: $sign-white; }
 .milepost__marker span { font-size: .55rem; letter-spacing: .2em; color: $sign-white-dim; }
 
 // ===========================================================================

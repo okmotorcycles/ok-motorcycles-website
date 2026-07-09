@@ -2,21 +2,27 @@
 //  OK MOTORCYCLES — California Highway Sign design tokens
 // ===========================================================================
 
-// --- Signface colours (MUTCD / Caltrans inspired) ---------------------------
-$sign-green:        #116b3c;   // freeway guide-sign green
+// --- Signface colours -------------------------------------------------------
+//  Palette held to black + white + one highway green, mirroring the original
+//  site. The old accent tokens are repointed to mono/green so components that
+//  referenced them fall in line automatically.
+$sign-green:        #116b3c;   // the one accent: freeway guide-sign green
 $sign-green-deep:   #0c4d2b;
-$warn-yellow:       #f6c700;   // warning / advisory yellow
-$construct-orange:  #e2571e;   // construction orange
-$reg-red:           #b71234;   // regulatory red
-$shield-blue:       #123c86;   // interstate shield blue
+$accent-green:      #34a95b;   // brighter green for links / active states on black
 $sign-white:        #f3f3ec;   // reflective off-white
 $sign-white-dim:    #cfcfc6;
+
+// Repointed legacy accent tokens (kept so existing rules stay monochrome):
+$warn-yellow:       $sign-white;   // "white sign" faces + maintained tag
+$construct-orange:  #101216;       // near-black
+$reg-red:           #101216;
+$shield-blue:       #101216;       // "black sign" faces / dark boards
+$lane-yellow:       $accent-green;  // every former yellow highlight -> green
 
 // --- Asphalt / night environment -------------------------------------------
 $asphalt:           #16171b;   // page background
 $asphalt-panel:     #1f2027;   // raised panels / sidebar
 $asphalt-line:      #2c2e37;   // hairline borders
-$lane-yellow:       #f4b400;   // painted lane lines
 
 // --- Text -------------------------------------------------------------------
 $ink:               #ecece4;
