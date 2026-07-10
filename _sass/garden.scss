@@ -123,10 +123,10 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 // original corner header — the black-bordered white "OK MOTORCYCLES" plaque,
 // the carpool-lane signage the site is named for
-.brand-sign {
+.brand-sign {   // theme-aware plaque: inverts to dark-with-white in night mode
   display: inline-flex; align-items: center;
-  background: $true-white;
-  border: 4px solid #111;
+  background: $asphalt-panel;
+  border: 4px solid $ink;
   border-radius: 8px;
   padding: 8px 16px;
   transition: background .2s ease, border-color .2s ease;
@@ -134,7 +134,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .brand-sign:hover { background: $sign-green; border-color: $true-white; }
 .brand-sign__legend {
   font-family: "Highway Gothic", sans-serif; font-weight: bold;
-  color: #111; letter-spacing: .03em; line-height: 1;
+  color: $ink; letter-spacing: .03em; line-height: 1;
   font-size: 1.12rem;
 }
 .brand-sign:hover .brand-sign__legend { color: $true-white; }
