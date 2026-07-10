@@ -101,30 +101,34 @@ html::-webkit-scrollbar-thumb {
 html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 // ===========================================================================
-//  Moving wallpaper — a field of 45°-tilted motorcycles drifting slowly toward
-//  ~10-11 o'clock (up and to the left), like riders heading off up the road.
-//  Fixed layer behind ALL content; the tile is a pre-rotated silhouette, so we
-//  just repeat it and slide background-position by exactly one tile for a
-//  seamless infinite loop. Faint by design so it never fights the text.
+//  Moving motorcycle wallpaper — HOME PAGE ONLY (body.is-home), living in the
+//  CONTENT area's background (behind the posts). The sticky header and the
+//  footer are opaque, so they simply overlap it. Never on note pages.
+//  The tile is a pre-rotated silhouette; we repeat it and slide background-
+//  position one full tile up-and-left per cycle => seamless drift toward
+//  ~10-11 o'clock. Kept faint so it never fights the content.
+//  It lives at z-index:-1 inside the roadway's own stacking context, so it
+//  paints above the page background but below every post/card.
 // ===========================================================================
-body::before {
-  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+.is-home .roadway { position: relative; isolation: isolate; overflow: hidden; }
+.is-home .roadway::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background-image: url("/assets/images/moto-tile.png");
   background-repeat: repeat;
-  background-size: 180px 180px;
-  opacity: .05;                       // light mode: black bikes on the cream asphalt
+  background-size: 70px 70px;
+  opacity: .08;                       // black bikes over the cream content bg
   will-change: background-position;
-  animation: moto-wallpaper 48s linear infinite;
+  animation: moto-wallpaper 36s linear infinite;
 }
 // night mode: invert the black silhouettes to a soft light grey on the dark bg
-:root[data-theme="dark"] body::before { filter: invert(1); opacity: .06; }
+:root[data-theme="dark"] .is-home .roadway::before { filter: invert(1); opacity: .10; }
 // travel one full tile up-and-left per cycle => seamless, heading ~10:30
 @keyframes moto-wallpaper {
   from { background-position: 0 0; }
-  to   { background-position: -180px -180px; }
+  to   { background-position: -70px -70px; }
 }
 // respect riders who'd rather the road hold still
-@media (prefers-reduced-motion: reduce) { body::before { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .is-home .roadway::before { animation: none; } }
 
 // --- App shell --------------------------------------------------------------
 .hwy-app { min-height: 100vh; display: flex; flex-direction: column; }

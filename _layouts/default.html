@@ -10,7 +10,7 @@
       try { if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme','dark'); } catch (e) {}
     </script>
   </head>
-  <body>
+  <body class="{% if page.url == '/' %}is-home{% endif %}">
     <div class="hwy-app">
       {% include header.html %}
       <div class="hwy-body">
