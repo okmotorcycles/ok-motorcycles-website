@@ -376,9 +376,18 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .sign-card__face::before {   // inner keyline, follows the face colour
   content: ""; position: absolute; inset: 9px; border: 2px solid currentColor;
   border-radius: 6px; pointer-events: none; opacity: .9;
+  transition: border-color .18s ease;
 }
+// icon (shield) + arrow follow the face colour, and animate with it
+.sign-card__face svg path,
+.sign-card__face svg rect { transition: fill .18s ease, stroke .18s ease; }
 // "black sign" — white-on-black
 .sign-card__face--black { background: #101216; color: #f3f3ec; }
+// first-paint guard: the JS checkerboard applies its classes without animating
+.sign-grid.no-face-anim .sign-card__face,
+.sign-grid.no-face-anim .sign-card__face::before,
+.sign-grid.no-face-anim .sign-card__face svg path,
+.sign-grid.no-face-anim .sign-card__face svg rect { transition: none !important; }
 
 .sign-card__topline {
   position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px;

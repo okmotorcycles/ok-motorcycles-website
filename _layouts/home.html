@@ -5,9 +5,12 @@ layout: default
 <div class="sign-grid">
   {% for note in site.posts %}
   {% assign cat = site.data.categories | where: "id", note.category | first %}
-  {% assign face = note.sign_color | default: cat.color | default: "white" %}
+  {%- comment -%} provisional 3-column checkerboard; garden.js recomputes for the real column count {%- endcomment -%}
+  {% assign coln = forloop.index0 | modulo: 3 %}
+  {% assign rown = forloop.index0 | divided_by: 3 %}
+  {% assign parity = rown | plus: coln | modulo: 2 %}
   <a class="sign-card note-link" href="{{ note.url }}">
-    <div class="sign-card__face sign-card__face--{{ face }}">
+    <div class="sign-card__face{% if parity == 1 %} sign-card__face--black{% endif %}">
       <div class="sign-card__topline">
         <span>{{ cat.label | default: "Note" }}</span>
         {% if cat %}{% include shield.html type=cat.shield.type h=26 %}{% endif %}
