@@ -8,8 +8,9 @@
 
 // --- Theme -----------------------------------------------------------------
 //  Light is default (the black-on-white sign look); dark is opt-in via the
-//  sun/moon toggle, which sets data-theme="dark" on <html>. The freeway green
-//  and the white/black sign faces stay constant across both themes.
+//  sun/moon toggle, which sets data-theme="dark" on <html>. The one accent
+//  colour flips with the theme: freeway green by day, highway-construction
+//  orange by night (never both) — routed through --accent/--sign-accent/--highlight.
 :root {
   --bg:        #f2f1ea;   // page background (off-white)
   --panel:     #{$true-white};   // cards / raised panels
@@ -22,8 +23,13 @@
   --code-bg:   #f3f2ea;
   --code-text: #2b2c27;
   --code-inline: #0c4d2b;
-  --accent:       #157a43;   // highway green — links / hover / active only
+  // day highlight = highway green (links / hover / active); night flips to
+  // highway-construction orange — see the dark block below. No orange by day.
+  --accent:       #157a43;   // highway green — links / hover / active
   --accent-hover: #0e5e33;
+  --sign-accent:      #116b3c;   // filled guide-sign faces (hero, card hover, brand hover)
+  --sign-accent-deep: #0c4d2b;   // inset keyline under sign faces
+  --highlight:        #34a95b;   // bright accent (nav carets, section bars, latest board)
   --overlay:      rgba(0,0,0,.05);
   --hover-border: rgba(0,0,0,.32);
   --preview-border: rgba(0,0,0,.18);
@@ -43,8 +49,13 @@
   --code-bg:   #0f1013;
   --code-text: #d8d8cf;
   --code-inline: #ffd98a;
-  --accent:       #49c07d;
-  --accent-hover: #68d295;
+  // night highlight = highway-construction orange (MUTCD Type-II work-zone orange).
+  // No green anywhere in night mode — the accent, sign faces, and highlights all flip.
+  --accent:       #f5852b;   // construction orange — links / hover / active
+  --accent-hover: #ff9d4e;
+  --sign-accent:      #c65d15;   // filled construction-orange sign faces
+  --sign-accent-deep: #8f3f0c;   // inset keyline under sign faces
+  --highlight:        #ff9838;   // bright construction orange (carets, section bars, board)
   --overlay:      rgba(255,255,255,.05);
   --hover-border: rgba(255,255,255,.35);
   --preview-border: rgba(255,255,255,.28);
@@ -131,7 +142,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   padding: 8px 16px;
   transition: background .2s ease, border-color .2s ease;
 }
-.brand-sign:hover { background: $sign-green; border-color: $true-white; }
+.brand-sign:hover { background: var(--sign-accent); border-color: $true-white; }
 .brand-sign__legend {
   font-family: "Highway Gothic", sans-serif; font-weight: bold;
   color: $ink; letter-spacing: .03em; line-height: 1;
@@ -203,7 +214,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 }
 .nav-tree__cat:hover { background: rgba(255,255,255,.05); color: $sign-white; }
 .nav-tree__caret {
-  color: $lane-yellow; font-size: .7rem; width: 12px;
+  color: var(--highlight); font-size: .7rem; width: 12px;
   transition: transform .18s ease; transform: rotate(0deg);
 }
 .nav-tree__group.is-open > .nav-tree__cat .nav-tree__caret { transform: rotate(90deg); }
@@ -234,7 +245,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   color: $ink-faint; font-size: .72rem;
 }
 .nav-tree__children a:hover { color: $sign-white; background: rgba(255,255,255,.05); }
-.nav-tree__children a.is-current { color: $lane-yellow; }
+.nav-tree__children a.is-current { color: var(--highlight); }
 
 // legend key for status colours, sits at the bottom of the rail
 .rail__legend { border-top: 1px dashed $asphalt-line; padding-top: 16px; }
@@ -272,11 +283,11 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 // ===========================================================================
 .hero {
   position: relative;
-  background: $sign-green;
+  background: var(--sign-accent);
   border: 3px solid $sign-white;
   border-radius: 16px;
   padding: 34px clamp(22px, 4vw, 46px);
-  box-shadow: inset 0 0 0 3px $sign-green-deep, 0 10px 30px rgba(0,0,0,.45);
+  box-shadow: inset 0 0 0 3px var(--sign-accent-deep), 0 10px 30px rgba(0,0,0,.45);
   margin-bottom: 40px;
   overflow: hidden;
 }
@@ -312,7 +323,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .section__title {
   font-family: "Highway Gothic", sans-serif; color: $sign-white;
   font-size: 1.4rem; letter-spacing: .04em; margin: 0;
-  border-left: 5px solid $lane-yellow; padding-left: 12px;
+  border-left: 5px solid var(--highlight); padding-left: 12px;
 }
 .section__note { color: $ink-faint; font-family: "Highway Gothic", sans-serif;
   font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; }
@@ -333,11 +344,11 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   font-size: .64rem; letter-spacing: .1em; color: $ink-faint; text-align: center;
   width: 52px;
 }
-.latest__exit b { display: block; color: $lane-yellow; font-size: 1.1rem; letter-spacing: 0; }
+.latest__exit b { display: block; color: var(--highlight); font-size: 1.1rem; letter-spacing: 0; }
 .latest__main { flex: 1 1 auto; min-width: 0; }
 .latest__title { color: $sign-white; font-family: "Highway Gothic", sans-serif;
   font-size: 1.02rem; }
-.latest__row:hover .latest__title { color: $lane-yellow; }
+.latest__row:hover .latest__title { color: var(--highlight); }
 .latest__desc { color: $ink-dim; font-size: .85rem; overflow: hidden;
   text-overflow: ellipsis; white-space: nowrap; }
 .latest__meta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
@@ -360,11 +371,11 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 }
 .sign-card:hover {
   transform: translateY(-4px);
-  border-color: $sign-green;
+  border-color: var(--sign-accent);
   box-shadow: 0 12px 30px rgba(0,0,0,.28);
 }
 // on hover the whole sign face lights up highway green; text + icons invert to white
-.sign-card:hover .sign-card__face { background: $sign-green; color: $sign-white; }
+.sign-card:hover .sign-card__face { background: var(--sign-accent); color: $sign-white; }
 
 // the sign "face" — black-and-white regulatory sign; default is black-on-white
 .sign-card__face {
@@ -627,7 +638,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   .toc-inline {
     display: block; margin: 0 0 30px; padding: 14px 18px;
     background: $asphalt-panel; border: 1px solid $asphalt-line;
-    border-left: 4px solid $lane-yellow; border-radius: 8px;
+    border-left: 4px solid var(--highlight); border-radius: 8px;
   }
   .toc-inline .toc__head { margin-bottom: 8px; }
 }
