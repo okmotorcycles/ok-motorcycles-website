@@ -1,32 +1,39 @@
 # Category metadata. shield.type picks the sign shape (interstate | us | ca |
 # warning | yield | octagon). color: sign face — "black" or "white".
+# sign_note: one-line explanation of the sign, shown in the About legend.
 - id: routes
   label: Routes & Rides
   blurb: Roads worth the tank of fuel.
   shield: { type: interstate }
   color: black
+  sign_note: The interstate shield — the blue-and-red freeway marker. The open road, and rides worth the fuel.
 - id: maintenance
   label: Maintenance & Wrenching
   blurb: Keep it running, keep it safe.
   shield: { type: ca }
   color: white
+  sign_note: The California state-route spade (the "miner's spade"). Wrenching that keeps the bike alive.
 - id: gear
   label: Gear & ATGATT
   blurb: All the gear, all the time.
   shield: { type: octagon }
   color: black
+  sign_note: The stop-sign octagon. Gear is where safety starts, so ATGATT gets the stop.
 - id: craft
   label: Riding Craft
   blurb: Skills that keep the rubber down.
   shield: { type: yield }
   color: white
+  sign_note: The yield triangle. Skills and caution — giving the road its due.
 - id: builds
   label: Builds & Projects
   blurb: Garage projects, in progress.
   shield: { type: us }
   color: black
+  sign_note: The US-route badge shield. Garage builds and long-running projects.
 - id: culture
   label: Culture & Stories
   blurb: The people and the miles.
   shield: { type: warning }
   color: white
+  sign_note: The warning diamond. Stories, people, and the odd cautionary tale.

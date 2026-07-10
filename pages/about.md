@@ -24,6 +24,17 @@ meaning from the real Manual on Uniform Traffic Control Devices:
 - <span class="tag tag--grading">Under Grading</span> — a work in progress; watch for cones.
 - <span class="tag tag--planned">Planned</span> — on the map, not yet paved.
 
+## The route markers
+
+Every card carries a route sign in its corner. Each category flies a different piece of real
+California / US highway signage — here's the key:
+
+<div class="signkey">
+{% for cat in site.data.categories %}
+<div class="signkey__row"><span class="signkey__icon">{% include shield.html type=cat.shield.type h=54 %}</span><span class="signkey__text"><strong>{{ cat.label }}</strong> — {{ cat.sign_note }}</span></div>
+{% endfor %}
+</div>
+
 ## How to get around
 
 Browse the grid on the home page, or start from
