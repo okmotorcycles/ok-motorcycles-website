@@ -424,15 +424,15 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .trail span { color: $ink; }
 
 // title as a black-bordered white sign — same plaque language as the wordmark
-.note__sign {
-  background: $sign-white; border: 3px solid #16171b; border-radius: 14px;
-  box-shadow: inset 0 0 0 3px $sign-white; padding: 26px 28px; margin-bottom: 22px;
+.note__sign {   // theme-aware sign: white-on-black flips with light/dark mode
+  background: $asphalt-panel; border: 3px solid $ink; border-radius: 14px;
+  box-shadow: inset 0 0 0 3px $asphalt-panel; padding: 26px 28px; margin-bottom: 22px;
 }
 .note__title {
-  font-family: "Highway Gothic", sans-serif; color: #16171b; margin: 0;
+  font-family: "Highway Gothic", sans-serif; color: $ink; margin: 0;
   font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.08;
 }
-.note__standfirst { color: #45463f; margin: 12px 0 0; font-size: 1.05rem; }
+.note__standfirst { color: $ink-dim; margin: 12px 0 0; font-size: 1.05rem; }
 
 .note__meta {
   display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 30px;
