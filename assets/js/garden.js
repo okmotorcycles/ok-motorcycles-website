@@ -123,7 +123,8 @@
     }
     function esc(s) { var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
 
-    document.querySelectorAll('a[href^="/"]').forEach(function (link) {
+    // only inline links inside note text — cards / trail-map already show the summary
+    document.querySelectorAll('.prose a[href^="/"]').forEach(function (link) {
       var key = link.getAttribute("href").split("#")[0].replace(/\/$/, "");
       var note = notes[key];
       if (!note) return;
