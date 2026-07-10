@@ -597,13 +597,11 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
 .milepost small { color: $ink-faint; font-family: "Highway Gothic", sans-serif;
   letter-spacing: .08em; }
-.milepost__marker {
-  font-family: "Highway Gothic", sans-serif; color: var(--bg);
-  background: $ink; border: 2px solid $ink; border-radius: 6px;
-  padding: 6px 12px; text-align: center; line-height: 1;
-}
-.milepost__marker b { display: block; font-size: 1.2rem; color: var(--bg); }
-.milepost__marker span { font-size: .55rem; letter-spacing: .2em; color: var(--bg); opacity: .7; }
+// footer OK logo (the favicon mark) — black by default, inverts to white in dark mode
+.footer-logo { display: inline-flex; line-height: 0; }
+.footer-logo img { height: 46px; width: auto; display: block; transition: opacity .15s ease; }
+.footer-logo:hover img { opacity: .6; }
+:root[data-theme="dark"] .footer-logo img { filter: invert(1); }
 
 // ===========================================================================
 //  Responsive — the rail becomes a slide-in drawer
