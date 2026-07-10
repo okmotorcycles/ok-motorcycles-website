@@ -2,14 +2,17 @@
 layout: default
 ---
 
-{%- assign cat = site.data.categories | where: "id", page.category | first -%}
+{%- assign cat = nil -%}
+{%- if page.category -%}{%- assign cat = site.data.categories | where: "id", page.category | first -%}{%- endif -%}
 
 <div class="note-layout">
   <article class="note">
+    {% if cat %}
     <nav class="trail">
-      {% if cat %}<a href="/">{{ cat.label }}</a><span class="trail__sep">→</span>{% endif %}
+      <a href="/">{{ cat.label }}</a><span class="trail__sep">→</span>
       <span>{{ page.title }}</span>
     </nav>
+    {% endif %}
 
     <header class="note__sign">
       <h1 class="note__title">{{ page.title }}</h1>
@@ -38,8 +41,9 @@ layout: default
     </div>
     {% endif %}
 
-    {%- assign siblings = site.posts | where: "category", page.category -%}
-    {% if siblings.size > 1 %}
+    {%- assign siblings = "" | split: "" -%}
+    {%- if page.category -%}{%- assign siblings = site.posts | where: "category", page.category -%}{%- endif -%}
+    {% if cat and siblings.size > 1 %}
     <section class="trailmap">
       <div class="trailmap__board">
         <div class="trailmap__head">
