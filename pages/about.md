@@ -49,4 +49,6 @@ the road you're on.
 
 Built with Jekyll and the [Highway Gothic](https://en.wikipedia.org/wiki/Highway_Gothic)
 typeface (FHWA Series), hosted on GitHub Pages at **okmotorcycles.com**. Black and white,
-with one coat of Caltrans green.
+with one coat of paint on top — and that one accent colour follows the light: **Caltrans
+guide-sign green by day, highway-construction orange by night.** Flip the headlight toggle
+up in the corner and the whole road crew changes shifts.
