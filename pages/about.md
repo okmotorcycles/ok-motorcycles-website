@@ -31,7 +31,7 @@ California / US highway signage — here's the key:
 
 <div class="signkey">
 {% for cat in site.data.categories %}
-<div class="signkey__row"><span class="signkey__icon">{% include shield.html type=cat.shield.type h=54 %}</span><span class="signkey__text"><strong>{{ cat.label }}</strong> — {{ cat.sign_note }}</span></div>
+<div class="signkey__row"><span class="signkey__icon">{% include dash-icon.html name=cat.icon h=54 %}</span><span class="signkey__text"><strong>{{ cat.label }}</strong> — {{ cat.sign_note }}</span></div>
 {% endfor %}
 </div>
 

@@ -9,7 +9,7 @@ layout: default
     <div class="sign-card__face">
       <div class="sign-card__topline">
         <span>{{ cat.label | default: "Note" }}</span>
-        {% if cat %}{% include shield.html type=cat.shield.type h=26 %}{% endif %}
+        {% if cat %}{% include dash-icon.html name=cat.icon h=26 %}{% endif %}
       </div>
       <div class="sign-card__legend">{{ note.title }}</div>
       <div class="sign-card__topline">

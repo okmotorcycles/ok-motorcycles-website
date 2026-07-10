@@ -8,7 +8,7 @@
       <li class="nav-tree__group {{ open_class }}">
         <button class="nav-tree__cat" type="button">
           <span class="nav-tree__caret">▶</span>
-          {% include shield.html type=cat.shield.type num=cat.shield.num h=20 %}
+          {% include dash-icon.html name=cat.icon h=20 %}
           <span>{{ cat.label }}</span>
           <span class="nav-tree__count">{{ notes | size }}</span>
         </button>

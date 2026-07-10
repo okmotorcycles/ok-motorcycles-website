@@ -1,0 +1,51 @@
+{%- comment -%}
+  Dashboard telltale icon — monochrome, inherits the surrounding text colour via
+  currentColor (same pattern as shield.html, which is kept for later use).
+  Usage: {% include dash-icon.html name="battery" h=26 %}
+  names: battery | temperature | oil-pressure | engine | turn-signals | low-fuel
+{%- endcomment -%}
+{%- assign h = include.h | default: 26 -%}
+<span class="shield" aria-hidden="true">
+{%- case include.name -%}
+{%- when "battery" -%}
+<svg width="{{ h }}" height="{{ h }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="6" y="4.4" width="3" height="2.6" rx="0.5" fill="currentColor" stroke="none"/>
+  <rect x="15" y="4.4" width="3" height="2.6" rx="0.5" fill="currentColor" stroke="none"/>
+  <rect x="3" y="7" width="18" height="12" rx="1.8"/>
+  <path d="M7.6 12.6 h3.2 M9.2 11 v3.2"/>
+  <path d="M13.4 12.6 h3.2"/>
+</svg>
+{%- when "temperature" -%}
+<svg width="{{ h }}" height="{{ h }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 3.4 v8.3"/>
+  <path d="M12 5.6 h2.6 M12 8.1 h2.6"/>
+  <circle cx="12" cy="14.4" r="2.7" fill="currentColor" stroke="none"/>
+  <path d="M3.5 19.6 q1.6 -1.7 3.2 0 t3.2 0 t3.2 0 t3.2 0"/>
+  <path d="M3.5 22.1 q1.6 -1.7 3.2 0 t3.2 0 t3.2 0 t3.2 0"/>
+</svg>
+{%- when "oil-pressure" -%}
+<svg width="{{ h }}" height="{{ h }}" viewBox="0 0 24 24" fill="currentColor">
+  <path d="M4 14.2 C4 12.5 5.3 11.6 7.2 11.6 H14.5 C17 11.6 18.6 13 18.6 14.7 C18.6 17.1 16.5 18.6 13.3 18.6 H8.2 C5.6 18.6 4 16.9 4 14.2 Z"/>
+  <path d="M7.6 11.6 L3.4 7.9 L4.9 6.5 L11 10.4 Z"/>
+  <path d="M5 12.9 C6 14.3 6 15.6 5 15.6 C4 15.6 4 14.3 5 12.9 Z"/>
+</svg>
+{%- when "engine" -%}
+<svg width="{{ h }}" height="{{ h }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M2.4 14 V11.6 H4.6 V9.3 A1.2 1.2 0 0 1 5.8 8.1 H10.3 L12.3 10.1 H15 V8.6 H18 V11 H20.4 V15 H18 V13.3 H15 L12.9 15.3 V16.7 A1.2 1.2 0 0 1 11.7 17.9 H5.8 A1.2 1.2 0 0 1 4.6 16.7 V14 Z"/>
+  <path d="M6.3 8.1 V5.5 M8.1 8.1 V5.5 M9.9 8.1 V6"/>
+  <circle cx="18" cy="13" r="1.05" fill="currentColor" stroke="none"/>
+</svg>
+{%- when "turn-signals" -%}
+<svg width="{{ h }}" height="{{ h }}" viewBox="0 0 24 24" fill="currentColor">
+  <path d="M9.6 5.4 L2.4 12 L9.6 18.6 Z"/>
+  <path d="M14.4 5.4 L21.6 12 L14.4 18.6 Z"/>
+</svg>
+{%- when "low-fuel" -%}
+<svg width="{{ h }}" height="{{ h }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4.6 20.5 V6 A2.2 2.2 0 0 1 6.8 3.8 H9.7 A2.2 2.2 0 0 1 11.9 6 V20.5"/>
+  <path d="M3.1 20.5 H13.4"/>
+  <rect x="6.2" y="6.2" width="3.9" height="3.6" rx="0.6" fill="currentColor" stroke="none"/>
+  <path d="M11.9 12.2 H14.3 A1.7 1.7 0 0 1 16 13.9 V17 A1.55 1.55 0 0 0 19.1 17 V9 L16.6 6.5"/>
+</svg>
+{%- endcase -%}
+</span>
