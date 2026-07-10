@@ -598,9 +598,8 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .milepost small { color: $ink-faint; font-family: "Highway Gothic", sans-serif;
   letter-spacing: .08em; }
 // footer OK logo (the favicon mark) — black by default, inverts to white in dark mode
-.footer-logo { display: inline-flex; line-height: 0; }
-.footer-logo img { height: 46px; width: auto; display: block; transition: opacity .15s ease; }
-.footer-logo:hover img { opacity: .6; }
+.footer-logo { display: inline-flex; line-height: 0; }   // non-interactive mark
+.footer-logo img { height: 46px; width: auto; display: block; }
 :root[data-theme="dark"] .footer-logo img { filter: invert(1); }
 
 // ===========================================================================
