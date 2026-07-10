@@ -27,6 +27,9 @@
   --overlay:      rgba(0,0,0,.05);
   --hover-border: rgba(0,0,0,.32);
   --preview-border: rgba(0,0,0,.18);
+  // scrollbar intentionally uses the *opposite* theme's tones (light channel in light mode)
+  --scroll-track: #ecece4;
+  --scroll-thumb: #6f7168;
 }
 :root[data-theme="dark"] {
   --bg:        #16171b;
@@ -45,6 +48,8 @@
   --overlay:      rgba(255,255,255,.05);
   --hover-border: rgba(255,255,255,.35);
   --preview-border: rgba(255,255,255,.28);
+  --scroll-track: #17181b;
+  --scroll-thumb: #83847a;
 }
 
 // --- Base -------------------------------------------------------------------
@@ -76,11 +81,11 @@ img { max-width: 100%; display: block; }
 // Scoped to the document scroller (html) so it ONLY affects the page's vertical
 // scrollbar, never the horizontal scrollbars on code blocks / wide content.
 html::-webkit-scrollbar { width: 13px; }
-html::-webkit-scrollbar-track { background: var(--text); }
+html::-webkit-scrollbar-track { background: var(--scroll-track); }
 html::-webkit-scrollbar-thumb {
-  background: var(--text-faint);
-  border-left: 2px solid var(--text);
-  border-right: 2px solid var(--text);
+  background: var(--scroll-thumb);
+  border-left: 2px solid var(--scroll-track);
+  border-right: 2px solid var(--scroll-track);
 }
 html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
