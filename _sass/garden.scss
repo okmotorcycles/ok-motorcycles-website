@@ -110,7 +110,11 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 //  It lives at z-index:-1 inside the roadway's own stacking context, so it
 //  paints above the page background but below every post/card.
 // ===========================================================================
-.is-home .roadway { position: relative; isolation: isolate; overflow: hidden; }
+// home: grow the content column to fill the viewport and run its wallpaper all
+// the way down to the footer — no blank band above/below, no early crop.
+.is-home .hwy-body { flex: 1 0 auto; }
+.is-home .roadway  { position: relative; isolation: isolate; overflow: hidden; align-self: stretch; }
+.is-home .milepost { margin-top: 0; }
 .is-home .roadway::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background-image: url("/assets/images/moto-tile.png");
@@ -118,7 +122,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   background-size: 70px 70px;
   opacity: .08;                       // black bikes over the cream content bg
   will-change: background-position;
-  animation: moto-wallpaper 36s linear infinite;
+  animation: moto-wallpaper 18s linear infinite;   // doubled speed (was 36s)
 }
 // night mode: invert the black silhouettes to a soft light grey on the dark bg
 :root[data-theme="dark"] .is-home .roadway::before { filter: invert(1); opacity: .10; }
