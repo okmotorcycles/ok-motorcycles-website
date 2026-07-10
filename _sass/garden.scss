@@ -71,6 +71,19 @@ img { max-width: 100%; display: block; }
 
 ::selection { background: var(--accent); color: $true-white; }
 
+// Chunky main scrollbar, inspired by garden.bradwoods.io — a bold text-colour
+// channel with an inset thumb, flipping with the light/dark theme, green on hover.
+// Scoped to the document scroller (html) so it ONLY affects the page's vertical
+// scrollbar, never the horizontal scrollbars on code blocks / wide content.
+html::-webkit-scrollbar { width: 13px; }
+html::-webkit-scrollbar-track { background: var(--text); }
+html::-webkit-scrollbar-thumb {
+  background: var(--text-faint);
+  border-left: 2px solid var(--text);
+  border-right: 2px solid var(--text);
+}
+html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
 // --- App shell --------------------------------------------------------------
 .hwy-app { min-height: 100vh; display: flex; flex-direction: column; }
 
