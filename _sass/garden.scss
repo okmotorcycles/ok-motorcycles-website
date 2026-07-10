@@ -116,13 +116,15 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .is-home .roadway  { position: relative; isolation: isolate; overflow: hidden; align-self: stretch; }
 .is-home .milepost { margin-top: 0; }
 .is-home .roadway::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background-image: url("/assets/images/moto-tile.png");
-  background-repeat: repeat;
-  background-size: 70px 70px;
+  content: ""; position: absolute; left: 0; right: 0; top: -80px; bottom: -80px;
+  z-index: -1; pointer-events: none;    // top/bottom overscan: the parallax shift
+  background-image: url("/assets/images/moto-tile.png");  // is wrapped to one tile
+  background-repeat: repeat;                               // (<70px), so an edge is
+  background-size: 70px 70px;                              // never exposed
   opacity: .08;                       // black bikes over the cream content bg
-  will-change: background-position;
-  animation: moto-wallpaper 18s linear infinite;   // doubled speed (was 36s)
+  transform: translate3d(0, var(--moto-parallax, 0px), 0);  // JS scroll parallax
+  will-change: transform, background-position;
+  animation: moto-wallpaper 18s linear infinite;   // continuous diagonal drift
 }
 // night mode: invert the black silhouettes to a soft light grey on the dark bg
 :root[data-theme="dark"] .is-home .roadway::before { filter: invert(1); opacity: .10; }
