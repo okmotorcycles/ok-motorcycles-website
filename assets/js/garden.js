@@ -22,39 +22,6 @@
     });
   }
 
-  /* ---------- home grid checkerboard (black/white faces by grid position) ---------- */
-  var grid = document.querySelector(".sign-grid");
-  if (grid) {
-    var faces = [];
-    grid.querySelectorAll(".sign-card").forEach(function (card) {
-      faces.push(card.querySelector(".sign-card__face"));
-    });
-    var firstPass = true;
-    var applyBoard = function () {
-      // resolved column count (updates as the grid reflows on resize)
-      var tracks = getComputedStyle(grid).gridTemplateColumns;
-      var cols = tracks ? tracks.split(" ").filter(Boolean).length : 1;
-      if (cols < 1) cols = 1;
-      if (firstPass) grid.classList.add("no-face-anim"); // no color animation on first paint
-      faces.forEach(function (face, i) {
-        if (!face) return;
-        var dark = ((Math.floor(i / cols) + (i % cols)) % 2) === 1;
-        face.classList.toggle("sign-card__face--black", dark);
-      });
-      if (firstPass) {
-        void grid.offsetHeight;            // flush styles before re-enabling transitions
-        grid.classList.remove("no-face-anim");
-        firstPass = false;
-      }
-    };
-    applyBoard();
-    var boardTimer;
-    window.addEventListener("resize", function () {
-      clearTimeout(boardTimer);
-      boardTimer = setTimeout(applyBoard, 100);
-    }, { passive: true });
-  }
-
   /* ---------- mobile rail drawer ---------- */
   var rail = document.getElementById("rail");
   var scrim = document.getElementById("rail-scrim");
