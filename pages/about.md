@@ -24,10 +24,10 @@ meaning from the real Manual on Uniform Traffic Control Devices:
 - <span class="tag tag--grading">Under Grading</span> — a work in progress; watch for cones.
 - <span class="tag tag--planned">Planned</span> — on the map, not yet paved.
 
-## The route markers
+## The dashboard lights
 
-Every card carries a route sign in its corner. Each category flies a different piece of real
-California / US highway signage — here's the key:
+Every card carries a category telltale in its corner — the same warning lights that stare back
+at you from a motorcycle dashboard. Here's what each one flags:
 
 <div class="signkey">
 {% for cat in site.data.categories %}

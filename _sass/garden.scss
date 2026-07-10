@@ -537,7 +537,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 }
 .signkey__row:last-child { border-bottom: 0; }
 .signkey__icon {
-  flex: 0 0 56px; display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 84px; display: inline-flex; align-items: center; justify-content: center;
   color: $ink;
 }
 .signkey__text { color: $ink-dim; font-size: .98rem; line-height: 1.45; }

@@ -7,39 +7,39 @@
   shield: { type: interstate }
   icon: battery   # dashboard telltale (replaces the shield in category displays)
   color: black
-  sign_note: The interstate shield — the blue-and-red freeway marker. The open road, and rides worth the fuel.
+  sign_note: The battery light — the spark that gets you rolling. Roads worth the whole tank of fuel.
 - id: maintenance
   label: Maintenance & Wrenching
   blurb: Keep it running, keep it safe.
   shield: { type: ca }
   icon: temperature   # dashboard telltale (replaces the shield in category displays)
   color: white
-  sign_note: The California state-route spade (the "miner's spade"). Wrenching that keeps the bike alive.
+  sign_note: The coolant-temperature warning — catch it before it boils over. Wrenching that keeps the bike alive.
 - id: gear
   label: Gear & ATGATT
   blurb: All the gear, all the time.
   shield: { type: octagon }
   icon: oil-pressure   # dashboard telltale (replaces the shield in category displays)
   color: black
-  sign_note: The stop-sign octagon. Gear is where safety starts, so ATGATT gets the stop.
+  sign_note: "The oil-pressure light — no oil, no engine. Your gear is that layer of protection — all the gear, all the time."
 - id: craft
   label: Riding Craft
   blurb: Skills that keep the rubber down.
   shield: { type: yield }
   icon: engine   # dashboard telltale (replaces the shield in category displays)
   color: white
-  sign_note: The yield triangle. Skills and caution — giving the road its due.
+  sign_note: The check-engine light — something wants your attention. Skills and habits that keep the ride running clean.
 - id: builds
   label: Builds & Projects
   blurb: Garage projects, in progress.
   shield: { type: us }
   icon: turn-signals   # dashboard telltale (replaces the shield in category displays)
   color: black
-  sign_note: The US-route badge shield. Garage builds and long-running projects.
+  sign_note: The turn-signal indicators — always telegraphing the next move. Garage builds and long-running projects.
 - id: culture
   label: Culture & Stories
   blurb: The people and the miles.
   shield: { type: warning }
   icon: low-fuel   # dashboard telltale (replaces the shield in category displays)
   color: white
-  sign_note: The warning diamond. Stories, people, and the odd cautionary tale.
+  sign_note: The low-fuel light — time to pull over and refill. The people, the stories, and the miles between stops.
