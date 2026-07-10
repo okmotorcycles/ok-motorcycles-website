@@ -154,7 +154,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 }
 .gantry__nav a:hover { color: var(--accent); }
 
-// sun/moon light-dark toggle
+// headlight (high-beam / low-beam) light-dark toggle
 .theme-toggle {
   display: inline-flex; align-items: center; justify-content: center;
   width: 36px; height: 36px; padding: 0; cursor: pointer;
@@ -162,10 +162,11 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   color: $ink; transition: color .15s ease, border-color .15s ease;
 }
 .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
-.theme-toggle svg { display: block; width: 18px; height: 18px; }
-.theme-toggle .icon-sun { display: none; }
-:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
-:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+.theme-toggle svg { display: block; width: 21px; height: 21px; }
+// light mode shows high-beam (switch to night); dark mode shows low-beam (switch to day)
+.theme-toggle .icon-lowbeam { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-lowbeam { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-highbeam { display: none; }
 
 // ===========================================================================
 //  Left rail — the ROUTE INDEX navigation tree
