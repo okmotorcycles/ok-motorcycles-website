@@ -6,8 +6,9 @@ status: open
 permalink: /about/
 ---
 
-**OK Motorcycles** is a roadside notebook — a slow-growing pile of notes about riding
-motorcycles, keeping them alive, and the roads that make it all worth it. It is not a
+**OK Motorcycles** is a roadside notebook — a personal blog about motorcycles, the video
+games I'm building and playing, and whatever else is running through my head about life and
+the world. The name comes straight off the carpool-lane sign: **MOTORCYCLES OK**. It is not a
 blog with a beginning and an end. It is a road network: notes get **surveyed**, then
 **graded**, **paved**, and occasionally **re-patrolled** when the surface wears.
 
@@ -37,11 +38,10 @@ at you from a motorcycle dashboard. Here's what each one flags:
 
 ## How to get around
 
-Browse the grid on the home page, or start from
-[The 600-Mile Chain Ritual](/notes/maintenance/chain-ritual/) if you like to get your
-hands dirty, or [Pacific Coast Highway, End to End](/notes/routes/pch/) if you'd rather
-just ride. Hover any link to another note and a preview sign pops up — no need to leave
-the road you're on.
+Browse the grid on the home page — every card is one note, tagged with the dashboard light
+that says what it is. If you want to know how the whole thing is put together, start with
+[Rebuilding This Site in the Open](/notes/projects/site-rebuild/). Hover any link to another
+note and a preview sign pops up — no need to leave the road you're on.
 
 > Ride your own ride. The road will still be here when you get back.
 

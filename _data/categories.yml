@@ -1,45 +1,46 @@
-# Category metadata. shield.type picks the sign shape (interstate | us | ca |
-# warning | yield | octagon). color: sign face — "black" or "white".
-# sign_note: one-line explanation of the sign, shown in the About legend.
-- id: routes
-  label: Routes & Rides
-  blurb: Roads worth the tank of fuel.
+# Category metadata. Each category is tied to a dashboard-telltale icon (see
+# _includes/dash-icon.html) via the `icon` field. color: sign face — "black" or
+# "white". sign_note: one-line explanation shown in the About legend. The `shield`
+# field is parked (kept for later use), not currently rendered in category displays.
+- id: pros-cons
+  label: Pros & Cons
+  blurb: The plus terminal and the minus terminal.
   shield: { type: interstate }
-  icon: battery   # dashboard telltale (replaces the shield in category displays)
+  icon: battery   # a battery has a + and a − — weighing the good against the bad
   color: black
-  sign_note: The battery light — the spark that gets you rolling. Roads worth the whole tank of fuel.
-- id: maintenance
-  label: Maintenance & Wrenching
-  blurb: Keep it running, keep it safe.
+  sign_note: The battery — a plus terminal and a minus terminal. Weighing the good against the bad on whatever's on the bench.
+- id: hot-takes
+  label: Hot Takes
+  blurb: Running a little hot on purpose.
   shield: { type: ca }
-  icon: temperature   # dashboard telltale (replaces the shield in category displays)
+  icon: temperature   # the temp light runs hot — so do the opinions
   color: white
-  sign_note: The coolant-temperature warning — catch it before it boils over. Wrenching that keeps the bike alive.
-- id: gear
-  label: Gear & ATGATT
-  blurb: All the gear, all the time.
+  sign_note: The coolant-temperature light, running hot on purpose. Opinions on taboos and the daily minutiae, uncensored.
+- id: cocktails
+  label: Cocktails
+  blurb: Pours worth talking about.
   shield: { type: octagon }
-  icon: oil-pressure   # dashboard telltale (replaces the shield in category displays)
+  icon: oil-pressure   # the good stuff that keeps things running smooth
   color: black
-  sign_note: "The oil-pressure light — no oil, no engine. Your gear is that layer of protection — all the gear, all the time."
-- id: craft
-  label: Riding Craft
-  blurb: Skills that keep the rubber down.
+  sign_note: The oil light — the good stuff that keeps things running smooth. Drinks worth talking about, and the odd recipe.
+- id: projects
+  label: Projects
+  blurb: Built, broken, rebuilt.
   shield: { type: yield }
-  icon: engine   # dashboard telltale (replaces the shield in category displays)
+  icon: engine   # things being built, broken, and rebuilt
   color: white
-  sign_note: The check-engine light — something wants your attention. Skills and habits that keep the ride running clean.
-- id: builds
-  label: Builds & Projects
-  blurb: Garage projects, in progress.
+  sign_note: The check-engine light. Things being built, broken, and rebuilt — games, the motorcycle, the car.
+- id: bologna
+  label: Bologna
+  blurb: Local politics, my two cents.
   shield: { type: us }
-  icon: turn-signals   # dashboard telltale (replaces the shield in category displays)
+  icon: turn-signals   # which way to turn — left or right
   color: black
-  sign_note: The turn-signal indicators — always telegraphing the next move. Garage builds and long-running projects.
-- id: culture
-  label: Culture & Stories
-  blurb: The people and the miles.
+  sign_note: The turn signals — which way to turn. Local politics and how I'm voting, for anyone short on time to dig in.
+- id: food-for-thought
+  label: Food for Thought
+  blurb: Reviews and recommendations.
   shield: { type: warning }
-  icon: low-fuel   # dashboard telltale (replaces the shield in category displays)
+  icon: low-fuel   # fuel for the mind (and the literal kind, too)
   color: white
-  sign_note: The low-fuel light — time to pull over and refill. The people, the stories, and the miles between stops.
+  sign_note: The low-fuel light — time to refuel. Reviews and recommendations — restaurants, bars, games, vehicles, places.
