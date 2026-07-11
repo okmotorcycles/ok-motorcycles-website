@@ -319,14 +319,19 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   padding: 0; gap: 7px;
 }
 .tag--sign .sign-fig-slot {
-  position: relative; flex: 0 0 2.3em; width: 2.3em; height: 2.3em; margin: -.6em 0;
+  position: relative; flex: 0 0 4.6em; width: 4.6em; height: 4.6em; margin: -1.15em 0;
 }
 .tag--sign .sign-frame { position: absolute; inset: 0; width: 100%; height: 100%; }
 .tag--sign .sign-fig {   // seated on the triangle's base, where it is widest
   position: absolute; left: 50%; bottom: 23%; transform: translateX(-50%);
-  height: .78em; width: auto;
+  height: 1.56em; width: auto;
 }
 .tag--ghost     { background: transparent; color: $ink-faint; border-color: $asphalt-line; }
+// About "The signs" legend — status tag + description on one centered row
+.signlist { margin: 1.4em 0; display: flex; flex-direction: column; gap: .35em; }
+.signlist__row { display: flex; align-items: center; gap: 14px; }
+.signlist__note { color: $ink-dim; }
+.signlist__note::before { content: "— "; }
 
 // ===========================================================================
 //  Hero — the big overhead guide sign

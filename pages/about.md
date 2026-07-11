@@ -19,9 +19,11 @@ blog with a beginning and an end. It is a road network: notes get **surveyed**, 
 Every note wears one of three roadwork signs — the same worker figures you pass in a work
 zone. There is no colour code; the figure alone tells you how finished the note is:
 
-- {% include status.html s="in-progress" %} — the crew is still digging. Expect rough edges, holes, and changes.
-- {% include status.html s="maintained" %} — finished, but kept current as things move. The flagman waves you through.
-- {% include status.html s="complete" %} — done and standing on its own two feet. Go ahead and walk it off.
+<div class="signlist">
+<div class="signlist__row">{% include status.html s="in-progress" %}<span class="signlist__note">the crew is still digging. Expect rough edges, holes, and changes.</span></div>
+<div class="signlist__row">{% include status.html s="maintained" %}<span class="signlist__note">finished, but kept current as things move. The flagman waves you through.</span></div>
+<div class="signlist__row">{% include status.html s="complete" %}<span class="signlist__note">done and standing on its own two feet. Go ahead and walk it off.</span></div>
+</div>
 
 ## The dashboard lights
 
