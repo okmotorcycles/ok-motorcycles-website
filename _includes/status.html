@@ -1,8 +1,9 @@
-{%- comment -%} Status tag with roadwork figure. Usage: {% include status.html s="construction" %}
-  states: construction | maintained | complete. All tags share one monochrome look — the
-  figure alone conveys how finished a note is. {%- endcomment -%}
+{%- comment -%} Status tag with a roadwork figure inside a triangle sign. Usage:
+  {% include status.html s="in-progress" %}. states: in-progress | maintained | complete.
+  All tags share one monochrome look — the framed figure alone conveys how finished a note
+  is; there is no bordered pill and no colour code. {%- endcomment -%}
 {%- case include.s -%}
-{%- when "construction" -%}<span class="tag tag--sign">{% include sign-icon.html name="construction" %}Under Construction</span>
+{%- when "in-progress" -%}<span class="tag tag--sign">{% include sign-icon.html name="in-progress" %}In Progress</span>
 {%- when "maintained" -%}<span class="tag tag--sign">{% include sign-icon.html name="maintained" %}Maintained</span>
 {%- when "complete" -%}<span class="tag tag--sign">{% include sign-icon.html name="complete" %}Complete</span>
 {%- else -%}<span class="tag tag--ghost">Draft</span>

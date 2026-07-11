@@ -310,10 +310,22 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   padding: 3px 9px; border-radius: 4px; line-height: 1.4;
   border: 1px solid $ink; color: $ink; background: transparent; white-space: nowrap;
 }
-// status tags share ONE monochrome look — the roadwork figure alone tells you how
-// finished a note is (construction → maintained → complete). Solid ink, flips with theme.
-.tag--sign      { background: transparent; color: $ink; border-color: $ink; }
-.tag--sign .sign-fig { height: 1.55em; width: auto; flex: 0 0 auto; margin: -.35em 0; }
+// status tags: no bordered pill, no colour code. A roadwork figure sits inside a rounded
+// triangle sign; the frame is identical for every state, so it doubles as a fixed-width
+// slot (every label starts at the same offset) and the framed figure alone conveys how
+// finished a note is. Solid ink, flips with theme.
+.tag--sign {
+  background: transparent; color: $ink; border: 0; border-radius: 0;
+  padding: 0; gap: 7px;
+}
+.tag--sign .sign-fig-slot {
+  position: relative; flex: 0 0 2.3em; width: 2.3em; height: 2.3em; margin: -.6em 0;
+}
+.tag--sign .sign-frame { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tag--sign .sign-fig {   // seated on the triangle's base, where it is widest
+  position: absolute; left: 50%; bottom: 23%; transform: translateX(-50%);
+  height: .78em; width: auto;
+}
 .tag--ghost     { background: transparent; color: $ink-faint; border-color: $asphalt-line; }
 
 // ===========================================================================
