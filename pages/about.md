@@ -2,7 +2,7 @@
 layout: note
 title: About OK Motorcycles
 description: What OK Motorcycles is, and how to get around.
-status: open
+status: complete
 permalink: /about/
 ---
 
@@ -16,14 +16,12 @@ blog with a beginning and an end. It is a road network: notes get **surveyed**, 
 
 ## The signs
 
-Everything here is dressed in California freeway signage because that is the language of
-the open road. Each note is a sign; each category is a route; the status tags borrow their
-meaning from the real Manual on Uniform Traffic Control Devices:
+Every note wears one of three roadwork signs — the same worker figures you pass in a work
+zone. There is no colour code; the figure alone tells you how finished the note is:
 
-- <span class="tag tag--open">Open Route</span> — done, maintained, ready to ride.
-- <span class="tag tag--maintained">Maintained</span> — solid, kept current.
-- <span class="tag tag--grading">Under Grading</span> — a work in progress; watch for cones.
-- <span class="tag tag--planned">Planned</span> — on the map, not yet paved.
+- {% include status.html s="construction" %} — the crew is still digging. Expect rough edges, holes, and changes.
+- {% include status.html s="maintained" %} — finished, but kept current as things move. The flagman waves you through.
+- {% include status.html s="complete" %} — done and standing on its own two feet. Go ahead and walk it off.
 
 ## The dashboard lights
 

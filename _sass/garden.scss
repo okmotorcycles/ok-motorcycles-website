@@ -310,11 +310,10 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   padding: 3px 9px; border-radius: 4px; line-height: 1.4;
   border: 1px solid $ink; color: $ink; background: transparent; white-space: nowrap;
 }
-// monochrome: differentiate by fill vs outline vs dash vs dot
-.tag--open      { background: $ink; color: var(--bg); border-color: $ink; }       // evergreen — filled
-.tag--maintained{ background: transparent; color: $ink; border-color: $ink; }      // tended — outline
-.tag--grading   { background: transparent; color: $ink-dim; border-style: dashed; border-color: $ink-dim; } // WIP — dashed
-.tag--planned   { background: transparent; color: $ink-faint; border-style: dotted; border-color: $ink-faint; } // idea — dotted
+// status tags share ONE monochrome look — the roadwork figure alone tells you how
+// finished a note is (construction → maintained → complete). Solid ink, flips with theme.
+.tag--sign      { background: transparent; color: $ink; border-color: $ink; }
+.tag--sign .sign-fig { height: 1.55em; width: auto; flex: 0 0 auto; margin: -.35em 0; }
 .tag--ghost     { background: transparent; color: $ink-faint; border-color: $asphalt-line; }
 
 // ===========================================================================

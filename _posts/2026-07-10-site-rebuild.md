@@ -3,7 +3,7 @@ layout: note
 title: Rebuilding This Site in the Open
 description: Why okmotorcycles.com is a California highway sign now — and how the dashboard lights ended up running the place.
 category: projects
-status: grading
+status: construction
 exit: 101
 tended: "Jul 2026"
 audience: anyone curious how the sausage gets made
@@ -53,7 +53,7 @@ of it runs on that one rule.
 
 ## What's still on the bench
 
-It's under grading, not paved — the status tag on this note says as much. There's real writing
+It's under construction, not finished — the status tag on this note says as much. There's real writing
 to fill in behind every one of those dashboard lights. But the road's open. Pull off wherever a
 sign looks interesting.
 
