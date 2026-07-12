@@ -8,10 +8,11 @@ permalink: /about/
 OK Motorcycles is a collection of thoughts, games, opinions, feelings, and a broad range of
 ideas that I think are neat. Love riding motorcycles? Me too. Enjoy playing video games? Same.
 Food and cocktails? Match made in heaven. Making video games? You know it! Reading some
-strangers ramblings online? Only if they conform with my view of the world. The name comes
-from the carpool lane sign: OK MOTORCYCLES. Many people see the more common MOTORCYCLES OK,
-but there are still a few places on the road where they felt like switching it up. I like
-mixing things up a bit.
+strangers ramblings online? Only if they conform with my view of the world.
+
+The name comes from the carpool lane sign: OK MOTORCYCLES. Many people see the more common
+MOTORCYCLES OK, but there are still a few places on the road where they felt like switching it
+up. I like mixing things up a bit.
 
 <!--more-->
 
@@ -21,9 +22,9 @@ Every post has a road sign, the usual stick person that you see in work zones or
 The figure will tell you the state of the post:
 
 <div class="signlist">
-<div class="signlist__row">{% include status.html s="in-progress" %}<span class="signlist__note">cones and potholes everywhere, looks like a mess, but it’ll get better</span></div>
-<div class="signlist__row">{% include status.html s="maintained" %}<span class="signlist__note">a live on-going construction of thoughts, expect updates, check it out.</span></div>
-<div class="signlist__row">{% include status.html s="complete" %}<span class="signlist__note">all done and ready for everyone, no more changes planned.</span></div>
+<div class="signlist__row">{% include status.html s="in-progress" %}<span class="signlist__note">Cones and potholes everywhere, looks like a mess, but it’ll get better</span></div>
+<div class="signlist__row">{% include status.html s="maintained" %}<span class="signlist__note">A live on-going construction of thoughts, expect updates, check it out.</span></div>
+<div class="signlist__row">{% include status.html s="complete" %}<span class="signlist__note">All done and ready for everyone, no more changes planned.</span></div>
 </div>
 
 ## The signals
