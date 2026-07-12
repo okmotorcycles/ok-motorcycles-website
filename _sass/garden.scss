@@ -173,7 +173,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .brand-sign {   // black-bordered plaque with no fill of its own — shows the header behind it
   display: inline-flex; align-items: center;
   background: transparent;
-  border: 4px solid $ink;
+  border: 3px solid $ink;
   border-radius: 8px;
   padding: 8px 16px;
   transition: border-color .2s ease;

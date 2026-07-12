@@ -2,7 +2,6 @@
 layout: note
 title: About OK Motorcycles
 description: What OK Motorcycles is, and how to get around.
-status: complete
 permalink: /about/
 ---
 

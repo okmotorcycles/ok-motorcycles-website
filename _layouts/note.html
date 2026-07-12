@@ -19,11 +19,14 @@ layout: default
       {% if page.description %}<p class="note__standfirst">{{ page.description }}</p>{% endif %}
     </header>
 
+    {%- comment -%} Meta (status sign + date + category) is for posts only; pages like About have no date {%- endcomment -%}
+    {% if page.date %}
     <div class="note__meta">
       {% include status.html s=page.status %}
-      {% if page.date %}<span>{{ page.date | date: "%b %Y" }}</span>{% endif %}
+      <span>{{ page.date | date: "%b %Y" }}</span>
       {% if cat %}<span class="note__meta-cat">{% include dash-icon.html name=cat.icon h=22 %}{{ cat.label }}</span>{% endif %}
     </div>
+    {% endif %}
 
     <!-- inline TOC (shown on narrow screens; filled by garden.js) -->
     <div class="toc-inline" id="toc-inline" hidden>
