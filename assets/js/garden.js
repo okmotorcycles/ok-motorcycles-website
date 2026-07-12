@@ -75,21 +75,19 @@
       var anchors = toc.querySelectorAll("a");
       anchors.forEach(function (a) { links.push(a); });
 
-      var spy = function () {
-        var scrollY = window.scrollY;
+      // The scroll position at which each heading becomes the active one — its
+      // top reaches a reading line near the top of the viewport. Headings crammed
+      // into the un-scrollable tail of the page can never reach that line, so
+      // short trailing sections (e.g. the About page's "How to get around" /
+      // "Colophon") are redistributed evenly across whatever scroll remains: the
+      // last one activates exactly at the bottom, the ones before it in turn.
+      var threshold = 120;
+      var activationPositions = function () {
         var maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-        var threshold = 120;
-
-        // The scroll position at which each heading's top reaches the reading
-        // line near the top of the viewport.
         var acts = [];
-        headings.forEach(function (h) { acts.push(h.offsetTop - threshold); });
-
-        // Headings crammed into the un-scrollable tail of the page can never
-        // reach that line, so short trailing sections (e.g. the About page's
-        // "How to get around" / "Colophon") would never highlight. Redistribute
-        // those evenly across whatever scroll remains, so the last section
-        // activates exactly at the bottom and the ones before it activate in turn.
+        headings.forEach(function (h) {
+          acts.push(h.getBoundingClientRect().top + window.scrollY - threshold);
+        });
         if (maxScroll > 0) {
           var firstTail = -1;
           for (var i = 0; i < acts.length; i++) {
@@ -103,8 +101,12 @@
             }
           }
         }
+        return acts;
+      };
 
-        // Active = highest-index heading whose activation point has been reached.
+      var spy = function () {
+        var scrollY = window.scrollY;
+        var acts = activationPositions();
         var current = 0;
         for (var k = 0; k < acts.length; k++) {
           if (scrollY >= acts[k] - 1) current = k;
@@ -116,6 +118,25 @@
       window.addEventListener("scroll", spy, { passive: true });
       window.addEventListener("resize", spy, { passive: true });
       spy();
+
+      // Clicking a TOC entry jumps to the exact position that activates that
+      // section, so its heading sits at the reading line and it (not a later
+      // trailing section) is what highlights. Native anchor jumps would clamp
+      // tail sections to the page bottom and mis-highlight.
+      [toc, inline].forEach(function (container) {
+        if (!container) return;
+        container.querySelectorAll("a").forEach(function (a, i) {
+          a.addEventListener("click", function (e) {
+            e.preventDefault();
+            var acts = activationPositions();
+            window.scrollTo(0, Math.max(0, Math.round(acts[i])));
+            if (window.history && history.replaceState) {
+              history.replaceState(null, "", a.getAttribute("href"));
+            }
+            spy();
+          });
+        });
+      });
     }
   }
 
