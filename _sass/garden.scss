@@ -482,6 +482,8 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .sign-card__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; }
 .sign-card__cat { color: $ink-faint; font-family: "Highway Gothic", sans-serif;
   font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+// on cards, match the status text to the date; the em-sized figure scales with it
+.sign-card__foot .tag--sign { font-size: .72rem; }
 
 // ===========================================================================
 //  Note (content) page
