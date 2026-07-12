@@ -329,8 +329,12 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .tag--sign .sign-fig--complete { height: 2em; margin-left: -2px; }
 .tag--ghost     { background: transparent; color: $ink-faint; border-color: $asphalt-line; }
 // About "The signs" legend — status tag + description on one centered row
-.signlist { margin: 1.4em 0; display: flex; flex-direction: column; gap: .45em; }
-.signlist__row { display: flex; align-items: center; gap: 12px; }
+.signlist { margin: 1.4em 0; }
+.signlist__row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 2px; border-bottom: 1px dashed $asphalt-line;
+}
+.signlist__row:last-child { border-bottom: 0; }
 .signlist__note { color: $ink-dim; }
 .signlist__note::before { content: "— "; }
 
