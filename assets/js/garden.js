@@ -76,14 +76,45 @@
       anchors.forEach(function (a) { links.push(a); });
 
       var spy = function () {
-        var pos = window.scrollY + 120;
-        var current = headings[0];
-        headings.forEach(function (h) { if (h.offsetTop <= pos) current = h; });
+        var scrollY = window.scrollY;
+        var maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+        var threshold = 120;
+
+        // The scroll position at which each heading's top reaches the reading
+        // line near the top of the viewport.
+        var acts = [];
+        headings.forEach(function (h) { acts.push(h.offsetTop - threshold); });
+
+        // Headings crammed into the un-scrollable tail of the page can never
+        // reach that line, so short trailing sections (e.g. the About page's
+        // "How to get around" / "Colophon") would never highlight. Redistribute
+        // those evenly across whatever scroll remains, so the last section
+        // activates exactly at the bottom and the ones before it activate in turn.
+        if (maxScroll > 0) {
+          var firstTail = -1;
+          for (var i = 0; i < acts.length; i++) {
+            if (acts[i] > maxScroll) { firstTail = i; break; }
+          }
+          if (firstTail !== -1) {
+            var startScroll = firstTail > 0 ? Math.min(acts[firstTail - 1], maxScroll) : 0;
+            var count = headings.length - firstTail;
+            for (var j = firstTail; j < headings.length; j++) {
+              acts[j] = startScroll + (maxScroll - startScroll) * (j - firstTail + 1) / count;
+            }
+          }
+        }
+
+        // Active = highest-index heading whose activation point has been reached.
+        var current = 0;
+        for (var k = 0; k < acts.length; k++) {
+          if (scrollY >= acts[k] - 1) current = k;
+        }
         links.forEach(function (a) {
-          a.classList.toggle("is-active", a.getAttribute("href") === "#" + current.id);
+          a.classList.toggle("is-active", a.getAttribute("href") === "#" + headings[current].id);
         });
       };
       window.addEventListener("scroll", spy, { passive: true });
+      window.addEventListener("resize", spy, { passive: true });
       spy();
     }
   }
