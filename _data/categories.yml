@@ -8,39 +8,39 @@
   shield: { type: interstate }
   icon: battery   # a battery has a + and a − — weighing the good against the bad
   color: black
-  sign_note: The battery — a plus terminal and a minus terminal. Weighing the good against the bad on whatever's on the bench.
+  sign_note: Positives and negatives, a lot of the stuff of life is full of it. I dunno about you, but I love a good list to help me decide if something is even worth my time.
 - id: hot-takes
   label: Hot Takes
   blurb: Running a little hot on purpose.
   shield: { type: ca }
   icon: temperature   # the temp light runs hot — so do the opinions
   color: white
-  sign_note: The coolant-temperature light, running hot on purpose. Opinions on taboos and the daily minutiae, uncensored.
+  sign_note: Nothing better than posting controversial opinions online, might even make some people’s blood boil. Keep your cool.
 - id: cocktails
   label: Cocktails
   blurb: Pours worth talking about.
   shield: { type: octagon }
   icon: oil-pressure   # the good stuff that keeps things running smooth
   color: black
-  sign_note: The oil light — the good stuff that keeps things running smooth. Drinks worth talking about, and the odd recipe.
+  sign_note: Lubricant of life, elixir of the gods, and just plain tasty drinks! From recipes to reviews from bars, I love a good boozy drink.
 - id: projects
   label: Projects
   blurb: Built, broken, rebuilt.
   shield: { type: yield }
   icon: engine   # things being built, broken, and rebuilt
   color: white
-  sign_note: The check-engine light. Things being built, broken, and rebuilt — games, the motorcycle, the car.
-- id: bologna
-  label: Bologna
-  blurb: Local politics, my two cents.
+  sign_note: Gotta have hobbies. From making video games, apps, motorcycle customizing, and keeping a classic car alive.
+- id: ideology
+  label: Ideology
+  blurb: Steal my voting opinions.
   shield: { type: us }
   icon: turn-signals   # which way to turn — left or right
   color: black
-  sign_note: The turn signals — which way to turn. Local politics and how I'm voting, for anyone short on time to dig in.
+  sign_note: No clue who to vote for? Hate reading those boring lawyer-written propositions? I’ve got time to read ’em, feel free to steal my opinion.
 - id: food-for-thought
   label: Food for Thought
   blurb: Reviews and recommendations.
   shield: { type: warning }
   icon: low-fuel   # fuel for the mind (and the literal kind, too)
   color: white
-  sign_note: The low-fuel light — time to refuel. Reviews and recommendations — restaurants, bars, games, vehicles, places.
+  sign_note: Probably the most blog-like content where my word-vomit around places, people, and things spills onto the screen for your eyes to consume.

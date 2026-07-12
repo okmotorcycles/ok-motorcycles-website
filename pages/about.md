@@ -1,33 +1,35 @@
 ---
 layout: note
 title: About OK Motorcycles
-description: What OK Motorcycles is, and how to get around.
+description: The motorcycles are OK, and so are you
 permalink: /about/
 ---
 
-**OK Motorcycles** is a roadside notebook — a personal blog about motorcycles, the video
-games I'm building and playing, and whatever else is running through my head about life and
-the world. The name comes straight off the carpool-lane sign: **MOTORCYCLES OK**. It is not a
-blog with a beginning and an end. It is a road network: notes get **surveyed**, then
-**graded**, **paved**, and occasionally **re-patrolled** when the surface wears.
+OK Motorcycles is a collection of thoughts, games, opinions, feelings, and a broad range of
+ideas that I think are neat. Love riding motorcycles? Me too. Enjoy playing video games? Same.
+Food and cocktails? Match made in heaven. Making video games? You know it! Reading some
+strangers ramblings online? Only if they conform with my view of the world. The name comes
+from the carpool lane sign: OK MOTORCYCLES. Many people see the more common MOTORCYCLES OK,
+but there are still a few places on the road where they felt like switching it up. I like
+mixing things up a bit.
 
 <!--more-->
 
 ## The signs
 
-Every note wears one of three roadwork signs — the same worker figures you pass in a work
-zone. There is no colour code; the figure alone tells you how finished the note is:
+Every post has a road sign, the usual stick person that you see in work zones or around town.
+The figure will tell you the state of the post:
 
 <div class="signlist">
-<div class="signlist__row">{% include status.html s="in-progress" %}<span class="signlist__note">the crew is still digging. Expect rough edges, holes, and changes.</span></div>
-<div class="signlist__row">{% include status.html s="maintained" %}<span class="signlist__note">finished, but kept current as things move. The flagman waves you through.</span></div>
-<div class="signlist__row">{% include status.html s="complete" %}<span class="signlist__note">done and standing on its own two feet. Go ahead and walk it off.</span></div>
+<div class="signlist__row">{% include status.html s="in-progress" %}<span class="signlist__note">cones and potholes everywhere, looks like a mess, but it’ll get better</span></div>
+<div class="signlist__row">{% include status.html s="maintained" %}<span class="signlist__note">a live on-going construction of thoughts, expect updates, check it out.</span></div>
+<div class="signlist__row">{% include status.html s="complete" %}<span class="signlist__note">all done and ready for everyone, no more changes planned.</span></div>
 </div>
 
-## The dashboard lights
+## The signals
 
-Every card carries a category telltale in its corner — the same warning lights that stare back
-at you from a motorcycle dashboard. Here's what each one flags:
+The classic dashboard icons, they can mean all sorts of things from the mundane to the
+annoying. Posts will be categorized by ’em:
 
 <div class="signkey">
 {% for cat in site.data.categories %}
@@ -37,17 +39,13 @@ at you from a motorcycle dashboard. Here's what each one flags:
 
 ## How to get around
 
-Browse the grid on the home page — every card is one note, tagged with the dashboard light
-that says what it is. If you want to know how the whole thing is put together, start with
-[Rebuilding This Site in the Open](/notes/projects/site-rebuild/). Hover any link to another
-note and a preview sign pops up — no need to leave the road you're on.
-
-> Ride your own ride. The road will still be here when you get back.
+Browse the grid on the home page, every card is a post, tagged with the dashboard signal that
+says what it is. If you want to know how the whole thing is put together, start with
+[Rebuilding This Site in the Open](/notes/projects/site-rebuild/).
 
 ## Colophon
 
 Built with Jekyll and the [Highway Gothic](https://en.wikipedia.org/wiki/Highway_Gothic)
-typeface (FHWA Series), hosted on GitHub Pages at **okmotorcycles.com**. Black and white,
-with one coat of paint on top — and that one accent colour follows the light: **Caltrans
-guide-sign green by day, highway-construction orange by night.** Flip the headlight toggle
-up in the corner and the whole road crew changes shifts.
+typeface (FHWA Series), hosted on GitHub Pages. Black and white, and Caltrans guide-sign green
+(or highway-construction orange) all over. Flip the headlight toggle up in the corner and the
+highway crew changes shifts.
