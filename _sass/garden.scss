@@ -326,6 +326,8 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
   height: 2.5em; width: auto;
 }
+// the walking man reads slightly right-of-centre and a touch small — nudge it
+.tag--sign .sign-fig--complete { height: 2.6em; margin-left: -2px; }
 .tag--ghost     { background: transparent; color: $ink-faint; border-color: $asphalt-line; }
 // About "The signs" legend — status tag + description on one centered row
 .signlist { margin: 1.4em 0; display: flex; flex-direction: column; gap: .5em; }
