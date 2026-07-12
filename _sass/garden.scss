@@ -112,7 +112,10 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 // ===========================================================================
 // home: grow the content column to fill the viewport and run its wallpaper all
 // the way down to the footer — no blank band above/below, no early crop.
-.is-home .hwy-body { flex: 1 0 auto; }
+// let the roadway (and its wallpaper) fill the full viewport width on home; the
+// content itself stays capped/centred by .roadway__inner. Without this the
+// wallpaper stops at the .hwy-body max-width on very wide screens.
+.is-home .hwy-body { flex: 1 0 auto; max-width: none; }
 .is-home .roadway  { position: relative; isolation: isolate; overflow: hidden; align-self: stretch; }
 .is-home .milepost { margin-top: 0; }
 .is-home .roadway::before {
