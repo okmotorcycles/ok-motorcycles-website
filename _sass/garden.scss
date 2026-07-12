@@ -316,24 +316,21 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 // finished a note is. Solid ink, flips with theme.
 .tag--sign {
   background: transparent; color: $ink; border: 0; border-radius: 0;
-  padding: 0; gap: 7px;
+  padding: 0; gap: 8px; font-size: .88rem;   // label +33% vs the base .66rem; figure (em) scales too
 }
 .tag--sign .sign-fig-slot {
-  position: relative; flex: 0 0 4.8em; width: 4.8em; height: 4.8em; margin: -1.25em 0;
+  position: relative; flex: 0 0 2.1em; width: 2.1em; height: 2.1em;
 }
-.tag--sign .sign-frame { position: absolute; inset: 0; width: 100%; height: 100%; }
-.tag--sign .sign-fig {   // centered inside the circle
+.tag--sign .sign-fig {   // centered where the circle used to be — no frame now
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  height: 2.5em; width: auto;
+  height: 1.9em; width: auto;
 }
 // the walking man reads slightly right-of-centre and a touch small — nudge it
-.tag--sign .sign-fig--complete { height: 2.6em; margin-left: -2px; }
+.tag--sign .sign-fig--complete { height: 2em; margin-left: -2px; }
 .tag--ghost     { background: transparent; color: $ink-faint; border-color: $asphalt-line; }
 // About "The signs" legend — status tag + description on one centered row
-.signlist { margin: 1.4em 0; display: flex; flex-direction: column; gap: .5em; }
-.signlist__row { display: flex; align-items: center; gap: 14px; }
-// drop the compacting negative margin here so the big circles don't overlap when stacked
-.signlist .tag--sign .sign-fig-slot { margin-top: 0; margin-bottom: 0; }
+.signlist { margin: 1.4em 0; display: flex; flex-direction: column; gap: .45em; }
+.signlist__row { display: flex; align-items: center; gap: 12px; }
 .signlist__note { color: $ink-dim; }
 .signlist__note::before { content: "— "; }
 
