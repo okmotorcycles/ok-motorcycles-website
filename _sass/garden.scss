@@ -319,17 +319,19 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   padding: 0; gap: 7px;
 }
 .tag--sign .sign-fig-slot {
-  position: relative; flex: 0 0 5.2em; width: 5.2em; height: 5.2em; margin: -1.3em 0;
+  position: relative; flex: 0 0 4.8em; width: 4.8em; height: 4.8em; margin: -1.25em 0;
 }
 .tag--sign .sign-frame { position: absolute; inset: 0; width: 100%; height: 100%; }
-.tag--sign .sign-fig {   // seated on the triangle's base, where it is widest
-  position: absolute; left: 50%; bottom: 14%; transform: translateX(-50%);
-  height: 1.85em; width: auto;
+.tag--sign .sign-fig {   // centered inside the circle
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  height: 2.5em; width: auto;
 }
 .tag--ghost     { background: transparent; color: $ink-faint; border-color: $asphalt-line; }
 // About "The signs" legend — status tag + description on one centered row
-.signlist { margin: 1.4em 0; display: flex; flex-direction: column; gap: .6em; }
+.signlist { margin: 1.4em 0; display: flex; flex-direction: column; gap: .5em; }
 .signlist__row { display: flex; align-items: center; gap: 14px; }
+// drop the compacting negative margin here so the big circles don't overlap when stacked
+.signlist .tag--sign .sign-fig-slot { margin-top: 0; margin-bottom: 0; }
 .signlist__note { color: $ink-dim; }
 .signlist__note::before { content: "— "; }
 
