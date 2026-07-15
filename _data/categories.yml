@@ -37,8 +37,8 @@
   icon: temperature   # was turn-signals; now the former Hot Takes telltale
   color: black
   sign_note: No clue who to vote for? Hate reading those boring lawyer-written propositions? I’ve got time to read ’em, feel free to steal my opinion.
-- id: fuel-ish
-  label: Fuel-ish
+- id: hella-gas
+  label: Hella Gas
   blurb: Reviews and recommendations.
   shield: { type: warning }
   icon: low-fuel   # fuel for the mind (and the literal kind, too)
