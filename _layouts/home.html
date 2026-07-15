@@ -3,7 +3,19 @@ layout: default
 ---
 
 <div class="sign-grid">
-  {% for note in site.posts %}
+  {%- comment -%} Newest-tended first: order by last-modified date (matches the date shown on each
+    card). Build "epoch|url" string keys and sort those — Jekyll's `sort` filter errors when two
+    posts share a last-modified time (it then tries to compare the documents themselves). The url
+    suffix makes every key unique, so the string sort never falls back to comparing posts. {%- endcomment -%}
+  {%- assign post_keys = "" | split: "" -%}
+  {%- for note in site.posts -%}
+    {%- capture k -%}{{ note.last_modified_at | default: note.date | date: "%s" }}|{{ note.url }}{%- endcapture -%}
+    {%- assign post_keys = post_keys | push: k -%}
+  {%- endfor -%}
+  {%- assign post_keys = post_keys | sort | reverse -%}
+  {% for k in post_keys %}
+  {%- assign note_url = k | split: "|" | last -%}
+  {%- assign note = site.posts | where: "url", note_url | first -%}
   {% assign cat = site.data.categories | where: "id", note.category | first %}
   <a class="sign-card note-link" href="{{ note.url }}">
     <div class="sign-card__face">
