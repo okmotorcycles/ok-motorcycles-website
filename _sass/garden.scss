@@ -185,7 +185,9 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 // night); the background is left alone, so the header shows straight through
 .brand-sign:hover { border-color: var(--accent); }
 .brand-sign__legend {
-  font-family: "Highway Gothic", sans-serif; font-weight: bold;
+  // Expanded FHWA series — its "O" is the roundest (nearly a full circle), to
+  // match the OK logo. Used ONLY on the top-left wordmark, nowhere else.
+  font-family: "Highway Gothic Exp", "Highway Gothic", sans-serif; font-weight: bold;
   color: $ink; letter-spacing: .03em; line-height: 1;
   font-size: 1.12rem;
   transition: color .2s ease;
@@ -462,11 +464,18 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   color: inherit; font-family: "Highway Gothic", sans-serif;
   font-size: .58rem; letter-spacing: .05em; text-transform: uppercase;
 }
-.sign-card__topline > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+// text sits flush to the keyline while the icons/arrows carry extra internal
+// padding — nudge the category label + title inward (both ends, since the title
+// wraps) so they read at the same inset as the icons. Main-page cards only.
+.sign-card__topline > span:first-child {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding-left: 6px;
+}
 .sign-card__legend {
   position: relative; color: inherit;
   font-family: "Highway Gothic", sans-serif; font-size: 1.28rem; line-height: 1.06;
   letter-spacing: .01em; margin-top: auto;
+  padding-left: 6px; padding-right: 6px;
 }
 .sign-card__arrow { position: relative; color: inherit; display: flex; align-items: center; margin-left: auto; }
 .sign-card__arrow svg { display: block; width: 22px; height: 22px; }

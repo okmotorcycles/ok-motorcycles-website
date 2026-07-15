@@ -9,8 +9,8 @@
   icon: battery   # a battery has a + and a − — weighing the good against the bad
   color: black
   sign_note: Positives and negatives, a lot of the stuff of life is full of it. I dunno about you, but I love a good list to help me decide if something is even worth my time.
-- id: unstoppable
-  label: Unstoppable
+- id: autopilot
+  label: Autopilot
   blurb: Running a little hot on purpose.
   shield: { type: ca }
   icon: cruise-control   # cruise control — pin the throttle
