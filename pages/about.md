@@ -42,7 +42,7 @@ annoying. Posts will be categorized by ’em:
 
 Browse the grid on the home page, every card is a post, tagged with the dashboard signal that
 says what it is. If you want to know how the whole thing is put together, start with
-[Rebuilding This Site in the Open](/notes/projects/site-rebuild/).
+[Ok Motorcycles](/notes/projects/ok-motorcycles/).
 
 ## Colophon
 
