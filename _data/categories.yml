@@ -9,8 +9,8 @@
   icon: battery   # a battery has a + and a − — weighing the good against the bad
   color: black
   sign_note: Positives and negatives, a lot of the stuff of life is full of it. I dunno about you, but I love a good list to help me decide if something is even worth my time.
-- id: full-throttle
-  label: Full Throttle
+- id: unstoppable
+  label: Unstoppable
   blurb: Running a little hot on purpose.
   shield: { type: ca }
   icon: cruise-control   # cruise control — pin the throttle
@@ -30,15 +30,15 @@
   icon: engine   # things being built, broken, and rebuilt
   color: white
   sign_note: Gotta have hobbies. From making video games, apps, motorcycle customizing, and keeping a classic car alive.
-- id: ideology
-  label: Ideology
+- id: hot-stuff
+  label: Hot Stuff
   blurb: Steal my voting opinions.
   shield: { type: us }
   icon: temperature   # was turn-signals; now the former Hot Takes telltale
   color: black
   sign_note: No clue who to vote for? Hate reading those boring lawyer-written propositions? I’ve got time to read ’em, feel free to steal my opinion.
-- id: food-for-thought
-  label: Food for Thought
+- id: fuel-ish
+  label: Fuel-ish
   blurb: Reviews and recommendations.
   shield: { type: warning }
   icon: low-fuel   # fuel for the mind (and the literal kind, too)
