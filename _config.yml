@@ -4,6 +4,9 @@ description: MOTORCYCLES ARE OK
 url: https://okmotorcycles.com
 author: Grey Sköld
 lang: en-US
+# Needed so jekyll-github-metadata (bundled with github-pages) resolves outside
+# the classic Pages build — otherwise the Actions build errors "No repo name found".
+repository: okmotorcycles/ok-motorcycles-website
 
 # Notes are authored as posts.
 permalink: /notes/:categories/:title/
