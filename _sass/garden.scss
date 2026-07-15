@@ -426,8 +426,10 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 //  Guide-sign card grid — the "Popular" garden
 // ===========================================================================
 .sign-grid {
-  display: grid; gap: 22px;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  display: grid; gap: 24px;
+  // bigger posts (~3 per row on desktop, like garden.bradwoods.io) so the
+  // eventual per-post image reads well; caps at 3 columns since content maxes 1180px
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .sign-card {
