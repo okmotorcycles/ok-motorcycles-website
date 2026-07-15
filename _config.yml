@@ -8,10 +8,15 @@ lang: en-US
 # Notes are authored as posts.
 permalink: /notes/:categories/:title/
 
+# Ensure the custom-domain file lands in the build output (needed for the
+# GitHub Actions Pages deploy to keep okmotorcycles.com).
+include: ["CNAME"]
+
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-feed
+  - jekyll-last-modified-at   # per-file git last-commit date -> displayed post date
 
 # Cleaner excerpts for cards / previews
 excerpt_separator: "<!--more-->"

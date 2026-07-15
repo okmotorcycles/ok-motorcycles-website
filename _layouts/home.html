@@ -22,7 +22,7 @@ layout: default
       <p class="sign-card__desc">{{ note.description }}</p>
       <div class="sign-card__foot">
         {% include status.html s=note.status %}
-        <span class="sign-card__cat">{{ note.date | date: "%b %Y" }}</span>
+        <span class="sign-card__cat">{% if note.last_modified_at %}{{ note.last_modified_at | date: "%b %Y" }}{% else %}{{ note.date | date: "%b %Y" }}{% endif %}</span>
       </div>
     </div>
   </a>

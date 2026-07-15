@@ -23,7 +23,7 @@ layout: default
     {% if page.date %}
     <div class="note__meta">
       {% include status.html s=page.status %}
-      <span>{{ page.date | date: "%b %Y" }}</span>
+      <span>{% if page.last_modified_at %}{{ page.last_modified_at | date: "%b %Y" }}{% else %}{{ page.date | date: "%b %Y" }}{% endif %}</span>
       {% if cat %}<span class="note__meta-cat">{% include dash-icon.html name=cat.icon h=22 %}{{ cat.label }}</span>{% endif %}
     </div>
     {% endif %}
