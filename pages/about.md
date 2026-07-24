@@ -16,7 +16,7 @@ up. I like mixing things up a bit.
 
 <!--more-->
 
-## The signs
+## The Signs
 
 Every post has a road sign, the usual stick person that you see in work zones or around town.
 The figure will tell you the state of the post:
@@ -27,7 +27,7 @@ The figure will tell you the state of the post:
 <div class="signlist__row">{% include status.html s="complete" %}<span class="signlist__note">All done and ready for everyone, no more changes planned.</span></div>
 </div>
 
-## The signals
+## The Signals
 
 The classic dashboard icons, they can mean all sorts of things from the mundane to the
 annoying. Posts will be categorized by ’em:
@@ -38,7 +38,7 @@ annoying. Posts will be categorized by ’em:
 {% endfor %}
 </div>
 
-## How to get around
+## How to Get Around
 
 Browse the grid on the home page, every card is a post, tagged with the dashboard signal that
 says what it is. If you want to know how the whole thing is put together, start with
