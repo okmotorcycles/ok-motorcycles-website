@@ -427,9 +427,12 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 // ===========================================================================
 .sign-grid {
   display: grid; gap: 24px;
-  // bigger posts (~3 per row on desktop, like garden.bradwoods.io) so the
-  // eventual per-post image reads well; caps at 3 columns since content maxes 1180px
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  justify-content: center;   // center the cards; leftover row space stays empty (background) on both sides
+  // Fixed-width cards: no `1fr`, so tracks never stretch mid-resize — a card keeps the
+  // same size and the column count just steps up/down as the window changes. min(340px,
+  // 100%) collapses to a single full-width column on screens narrower than a card.
+  // Content maxes at 1180px, so at most 3 cards (3*340 + 2*24 = 1068) fit per row.
+  grid-template-columns: repeat(auto-fill, min(340px, 100%));
 }
 
 .sign-card {

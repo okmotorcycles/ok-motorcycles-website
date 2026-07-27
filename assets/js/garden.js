@@ -187,4 +187,59 @@
       link.addEventListener("blur", hide);
     });
   }
+
+  /* ---------- sign-grid reflow animation (FLIP) ----------
+     Cards are a fixed width, so a resize only ever changes how MANY fit per row.
+     CSS can't transition that column-count change — the reflow is instant. So when
+     the count changes we FLIP: snapshot each card's old spot, let it land in the new
+     layout, then slide it there from the old spot. Same-column-count resizing isn't
+     animated (the browser already re-centers smoothly as you drag). */
+  var grid = document.querySelector(".sign-grid");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (grid && !reduce) {
+    var cards = Array.prototype.slice.call(grid.querySelectorAll(".sign-card"));
+    var colsOf = function () {
+      var t = getComputedStyle(grid).gridTemplateColumns;
+      return !t || t === "none" ? 1 : t.split(" ").length;
+    };
+    var snapshot = function () { return cards.map(function (c) { return c.getBoundingClientRect(); }); };
+    var lastCols = colsOf();
+    var lastRects = snapshot();
+    var ticking = false;
+
+    var measure = function () {
+      ticking = false;
+      var cols = colsOf();
+      if (cols !== lastCols) {
+        var first = lastRects, last = snapshot();
+        cards.forEach(function (c, i) {
+          var dx = first[i].left - last[i].left, dy = first[i].top - last[i].top;
+          if (dx || dy) {
+            c.style.transition = "none";
+            c.style.transform = "translate(" + dx + "px," + dy + "px)";
+          }
+        });
+        grid.offsetWidth; // force the freeze to apply before we release it
+        requestAnimationFrame(function () {
+          cards.forEach(function (c) {
+            if (!c.style.transform) return;
+            c.style.transition = "transform .38s cubic-bezier(.22,.61,.36,1)";
+            c.style.transform = "";
+            var done = function (e) {
+              if (e.propertyName !== "transform") return;
+              c.style.transition = ""; // hand transform control back to the CSS (hover lift)
+              c.removeEventListener("transitionend", done);
+            };
+            c.addEventListener("transitionend", done);
+          });
+        });
+      }
+      lastCols = cols;
+      lastRects = snapshot();
+    };
+
+    window.addEventListener("resize", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(measure); }
+    }, { passive: true });
+  }
 })();
