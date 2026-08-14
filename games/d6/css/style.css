@@ -1,0 +1,406 @@
+/* D6 web prototype — top-down board with a real 3D CSS die that tumbles.
+   Visual layer only; all game logic lives in js/core (DOM-free). */
+
+/* --- Theme ------------------------------------------------------------------
+   Palette mirrors okmotorcycles.com: black + white + one accent that flips with
+   the theme — freeway green by day, work-zone orange by night, never both.
+   Light is the default; dark is opt-in via data-theme="dark" on <html>, set by
+   the boot script in index.html from the site's shared `theme` key.
+
+   Because hue is down to a single accent, tile types are told apart by sign
+   face (white vs inverted), keyline style (hairline / solid / dotted / dashed /
+   hatched) and their glyph — the highway-sign grammar — rather than by colour. */
+:root {
+  --cell: 86px;   /* tile footprint AND die size (1:1, like the original) */
+  --gap: 0px;     /* tiles touch; separation is drawn with an inset ring */
+  --cube: 86px;
+  --half: 43px;   /* half of --cube */
+  --tilt: 52deg;  /* board tilt for a 2.5D top-down look */
+  --roll-ms: 260ms;
+
+  --bg: #f2f1ea;          /* page ground (site --bg) */
+  --bg-2: #fafafa;        /* raised panels: picker, win card */
+  --ink: #17181b;
+  --muted: #83847a;
+  --line: #dcdbd0;        /* hairline borders */
+
+  --face: #fafafa;        /* the default white sign face a tile is cut from */
+  --sign-invert: #17181b;      /* the "black sign" face (portals) */
+  --sign-invert-ink: #f3f3ec;
+
+  --accent: #157a43;           /* highway green */
+  --accent-hover: #0e5e33;
+  --accent-bright: #34a95b;
+  --accent-soft: rgba(21, 122, 67, 0.14);
+  --accent-glow: rgba(52, 169, 91, 0.5);
+  --on-accent: #fafafa;        /* text/pips sitting on a filled accent face */
+
+  /* The die is always the inverse of the tile faces, so it reads on any board. */
+  --die: #17181b;
+  --die-2: #26282e;
+  --die-edge: #000;
+  --pip: #f3f3ec;
+  --pip-shade: #c9c9c0;
+
+  --tile-shade: rgba(0, 0, 0, 0.10);
+  --drop: rgba(0, 0, 0, 0.18);
+  --scrim: rgba(30, 30, 26, 0.45);
+}
+
+:root[data-theme="dark"] {
+  --bg: #16171b;
+  --bg-2: #1f2027;
+  --ink: #ecece4;
+  --muted: #6f7168;
+  --line: #2c2e37;
+
+  --face: #1f2027;
+  --sign-invert: #ecece4;
+  --sign-invert-ink: #16171b;
+
+  --accent: #f5852b;           /* work-zone orange */
+  --accent-hover: #ff9d4e;
+  --accent-bright: #ff9838;
+  --accent-soft: rgba(245, 133, 43, 0.18);
+  --accent-glow: rgba(255, 152, 56, 0.45);
+  --on-accent: #16171b;
+
+  --die: #fafafa;
+  --die-2: #e4e4dc;
+  --die-edge: #ffffff;
+  --pip: #17181b;
+  --pip-shade: #4a4b52;
+
+  --tile-shade: rgba(0, 0, 0, 0.30);
+  --drop: rgba(0, 0, 0, 0.5);
+  --scrim: rgba(10, 12, 18, 0.6);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 28px 16px 48px;
+}
+
+/* ---- HUD ---- */
+.hud {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.hud .title {
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  font-size: 20px;
+}
+.hud .title span { color: var(--accent); }
+.hud .level { color: var(--muted); }
+.hud .tasks { color: var(--ink); }
+.hud .tasks.done { color: var(--accent); font-weight: 600; }
+.hud .moves { color: var(--muted); font-variant-numeric: tabular-nums; }
+.hud .hint { color: var(--muted); font-size: 13px; }
+
+/* ---- Level picker ---- */
+.picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.picker button {
+  font: inherit;
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.picker button:hover { color: var(--accent); border-color: var(--accent); }
+.picker button.current {
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---- Stage / board ---- */
+.stage {
+  perspective: 1000px;
+  perspective-origin: 50% 42%;
+  padding: 30px;
+}
+.board {
+  position: relative;
+  transform: rotateX(var(--tilt));
+  transform-style: preserve-3d;
+  transition: width 0.2s, height 0.2s;
+}
+
+/* Each grid cell. Floor tiles get a raised 3D lip via a pseudo-element. */
+.tile {
+  position: absolute;
+  width: var(--cell);
+  height: var(--cell);
+  border: 3px solid transparent;
+  background-clip: padding-box; /* transparent border reads as a seam between tiles */
+  border-radius: 14px;
+  background-color: var(--face);
+  box-shadow: inset 0 0 0 1px var(--line), inset 0 0 16px var(--tile-shade);
+  transform-style: preserve-3d;
+}
+.tile.empty { background: none; box-shadow: none; }
+
+.tile.start::after {
+  content: "";
+  position: absolute;
+  inset: 26%;
+  border-radius: 50%;
+  border: 3px dashed var(--muted);
+  opacity: 0.7;
+}
+
+/* Goal: chequered flag while locked, then the accent lights it up. */
+.tile.goal {
+  background: repeating-conic-gradient(var(--face) 0deg 90deg, var(--muted) 90deg 180deg) 50% / 24px 24px;
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 3px var(--ink), inset 0 0 16px var(--tile-shade);
+}
+.tile.goal.live {
+  box-shadow: inset 0 0 0 3px var(--accent), 0 0 26px 2px var(--accent-glow);
+  animation: goalPulse 1.4s ease-in-out infinite;
+}
+@keyframes goalPulse {
+  50% { box-shadow: inset 0 0 0 3px var(--accent-bright), 0 0 40px 6px var(--accent-glow); }
+}
+
+/* Task tiles show a required face value: a regulatory sign (heavy ink keyline)
+   that flips to a filled accent face once satisfied. */
+.tile.task {
+  background-color: var(--face);
+  box-shadow: inset 0 0 0 3px var(--ink), inset 0 0 16px var(--tile-shade);
+}
+.tile.task.cleared {
+  background-color: var(--accent-soft);
+  box-shadow: inset 0 0 0 3px var(--accent), inset 0 0 16px var(--tile-shade);
+}
+.tile .req {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+}
+.tile .req .badge {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  opacity: 0.85;
+  position: absolute;
+  top: 6px;
+  left: 8px;
+}
+.tile.task.cleared .req .mini-die { opacity: 0.3; }
+.tile.task.cleared .req .badge { color: var(--accent); opacity: 1; font-weight: 700; }
+.tile.task.cleared .req .badge::after { content: " ✓"; }
+
+/* Mini die face drawn on a task tile to show the target orientation. */
+.mini-die {
+  width: 46px;
+  height: 46px;
+  border-radius: 9px;
+  background: var(--die);
+  box-shadow: inset 0 0 0 2px var(--die-edge);
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  padding: 7px;
+  gap: 2px;
+}
+.mini-die .pip { width: 8px; height: 8px; border-radius: 50%; background: var(--pip); align-self: center; justify-self: center; }
+
+/* ---- Action tiles: move (conveyor), spin, portal ---- */
+.tile .glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--ink);
+  opacity: 0.9;
+}
+/* Conveyor: work-zone hatching, the one place stripes appear. */
+.tile.move {
+  background-color: var(--face);
+  background-image: repeating-linear-gradient(
+    -45deg, var(--accent-soft) 0 10px, transparent 10px 20px);
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 16px var(--tile-shade);
+}
+.tile.move .arrow { color: var(--accent); }
+
+/* Spin: same white face, dotted keyline — "turn in place". */
+.tile.spin {
+  background-color: var(--face);
+  box-shadow: inset 0 0 0 2px var(--muted), inset 0 0 16px var(--tile-shade);
+}
+.tile.spin::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 2px dotted var(--ink);
+  border-radius: 9px;
+  opacity: 0.55;
+}
+.tile.spin .glyph { color: var(--ink); }
+
+/* Portals: the inverted sign face, so a pair reads instantly across the board.
+   The two ends differ by ring style, not colour (see .portal-mark). */
+.tile.portal {
+  background-color: var(--sign-invert);
+  box-shadow: inset 0 0 0 2px var(--ink), inset 0 0 18px var(--tile-shade);
+}
+.tile.portal-a { background-color: var(--sign-invert); }
+.tile.portal-b { background-color: var(--sign-invert); }
+.portal-mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.portal-mark i {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 3px solid currentColor;
+  opacity: 0.7;
+  animation: portalSpin 3s linear infinite;
+}
+/* Both ends carry the accent; A is a solid outer ring, B a dashed one. */
+.portal-mark { color: var(--accent-bright); }
+.portal-b .portal-mark i { border-style: dashed; }
+.portal-mark i::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 2px dashed currentColor;
+}
+.portal-b .portal-mark i::before { border-style: solid; }
+.portal-mark b {
+  position: relative;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--sign-invert-ink);
+}
+@keyframes portalSpin { to { transform: rotate(360deg); } }
+
+/* ---- Level enter animation ---- */
+.tile.enter { animation: enterTile 0.4s ease-out both; }
+@keyframes enterTile {
+  from { opacity: 0; transform: translateZ(-40px) scale(0.6); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- The die ---- */
+/* .die is positioned at its cell and lifted so the cube rests on the board.
+   .roller carries the per-roll edge-pivot (transform-origin at the leading
+   bottom edge, set inline). .cube holds the accumulated orientation. */
+.die {
+  position: absolute;
+  width: var(--cube);
+  height: var(--cube);
+  transform-style: preserve-3d;
+  transform: translateZ(var(--half)); /* board-local +Z = world up */
+  pointer-events: none;
+  z-index: 5;
+}
+.roller {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+.cube {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.face {
+  position: absolute;
+  width: var(--cube);
+  height: var(--cube);
+  border-radius: 13px;
+  background: linear-gradient(155deg, var(--die), var(--die-2));
+  box-shadow: inset 0 0 0 2px var(--die-edge), 0 6px 18px var(--drop);
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  padding: 13px;
+  gap: 3px;
+  backface-visibility: hidden;
+}
+.face .pip {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--pip), var(--pip-shade));
+  align-self: center;
+  justify-self: center;
+}
+
+/* Pip placement by grid cell (1..9), classic die layouts. */
+.p1 { grid-area: 1 / 1; } .p2 { grid-area: 1 / 2; } .p3 { grid-area: 1 / 3; }
+.p4 { grid-area: 2 / 1; } .p5 { grid-area: 2 / 2; } .p6 { grid-area: 2 / 3; }
+.p7 { grid-area: 3 / 1; } .p8 { grid-area: 3 / 2; } .p9 { grid-area: 3 / 3; }
+
+/* Face placement in the die's body frame. Top = board-local +Z (world up);
+   front faces board-local -Y (screen up / forward). */
+.face.top    { transform: translateZ(var(--half)); }
+.face.bottom { transform: rotateX(180deg) translateZ(var(--half)); }
+.face.front  { transform: rotateX(90deg)  translateZ(var(--half)); }
+.face.back   { transform: rotateX(-90deg) translateZ(var(--half)); }
+.face.right  { transform: rotateY(90deg)  translateZ(var(--half)); }
+.face.left   { transform: rotateY(-90deg) translateZ(var(--half)); }
+
+/* ---- Win banner ---- */
+.banner {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--scrim);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.banner.show { opacity: 1; }
+.banner .card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 26px 34px;
+  text-align: center;
+  box-shadow: 0 24px 60px var(--drop);
+}
+.banner .card h2 { margin: 0 0 6px; color: var(--accent); letter-spacing: 0.08em; }
+.banner .card p { margin: 0; color: var(--muted); }

@@ -1,0 +1,35 @@
+---
+layout: note
+---
+
+{%- comment -%}
+  Game posts: a regular note that leads with a playable build.
+
+  Front matter:
+    layout: game
+    game:        folder name under /games/  (e.g. d6  ->  /games/d6/)
+    game_title:  optional iframe title / a11y label, defaults to page.title
+    game_height: optional CSS height for the frame, defaults to the stylesheet
+    game_controls: optional one-line control hint shown under the frame
+
+  The build itself is plain static files synced in from its own repo — see
+  tools/sync-d6.sh. It follows the site's day/night toggle on its own (same
+  origin, shared `theme` key) and garden.js posts the theme in on each flip.
+{%- endcomment -%}
+
+{% if page.game %}
+<div class="embed">
+  <iframe
+    class="embed__frame"
+    src="/games/{{ page.game }}/"
+    title="{{ page.game_title | default: page.title }} — playable build"
+    {% if page.game_height %}style="height: {{ page.game_height }};"{% endif %}
+    loading="lazy"></iframe>
+  <p class="embed__cap">
+    <span>{{ page.game_controls | default: "Click the board to give it focus, then play." }}</span>
+    <a href="/games/{{ page.game }}/" target="_blank" rel="noopener">Open full screen &rarr;</a>
+  </p>
+</div>
+{% endif %}
+
+{{ content }}

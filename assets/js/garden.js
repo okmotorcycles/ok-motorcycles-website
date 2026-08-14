@@ -8,17 +8,30 @@
   "use strict";
 
   /* ---------- light / dark theme toggle ---------- */
+  // Embedded games live in their own document, so the attribute on <html> can't
+  // cascade into them — hand each one the new theme directly.
+  function broadcastTheme(theme) {
+    var frames = document.querySelectorAll("iframe.embed__frame");
+    for (var i = 0; i < frames.length; i++) {
+      try {
+        frames[i].contentWindow.postMessage(
+          { type: "theme", theme: theme }, window.location.origin);
+      } catch (e) {}
+    }
+  }
+
   var themeBtn = document.getElementById("theme-toggle");
   if (themeBtn) {
     themeBtn.addEventListener("click", function () {
       var dark = document.documentElement.getAttribute("data-theme") === "dark";
+      var next = dark ? "light" : "dark";
       if (dark) {
         document.documentElement.removeAttribute("data-theme");
-        try { localStorage.setItem("theme", "light"); } catch (e) {}
       } else {
         document.documentElement.setAttribute("data-theme", "dark");
-        try { localStorage.setItem("theme", "dark"); } catch (e) {}
       }
+      try { localStorage.setItem("theme", next); } catch (e) {}
+      broadcastTheme(next);
     });
   }
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D6 — web prototype</title>
+  <script>
+    /* Day/night parity with okmotorcycles.com. The site stores its choice in
+       localStorage under "theme" and light is the default (no attribute). This
+       build is served from the same origin, so that key is readable whether the
+       game is embedded in the note or opened on its own — applied before paint
+       to avoid a flash. When embedded, the parent also posts the theme on every
+       toggle so the iframe flips instantly instead of waiting for a reload. */
+    (function () {
+      function apply(theme) {
+        var root = document.documentElement;
+        if (theme === "dark") root.setAttribute("data-theme", "dark");
+        else root.removeAttribute("data-theme");
+      }
+      try { apply(localStorage.getItem("theme")); } catch (e) {}
+
+      window.addEventListener("message", function (e) {
+        if (e.origin !== window.location.origin) return;
+        if (e.data && e.data.type === "theme") apply(e.data.theme);
+      });
+      window.addEventListener("storage", function (e) {
+        if (e.key === "theme") apply(e.newValue);
+      });
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
