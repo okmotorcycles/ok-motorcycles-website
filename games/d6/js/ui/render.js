@@ -26,7 +26,11 @@ const ROLL_ROT = {
   right: "rotateY(90deg)",
   left: "rotateY(-90deg)",
 };
-const SPIN_ROT = { cw: "rotateZ(-90deg)", ccw: "rotateZ(90deg)" };
+// Board-local +Z points up out of the board, so a spin about Z is the vertical
+// axis. spinFaces(cw) moves the FRONT face to the RIGHT (-Y -> +X), which is
+// rotateZ(90deg) in this frame; ccw is the inverse. Keep these in lockstep with
+// dice.js — a sign flip here silently desyncs the visible cube from the engine.
+const SPIN_ROT = { cw: "rotateZ(90deg)", ccw: "rotateZ(-90deg)" };
 
 // 90° edge-pivot rotation + the leading-bottom-edge origin, per roll direction.
 const EDGE_ROT = ROLL_ROT;
@@ -115,9 +119,11 @@ export function renderScene(root, game) {
     board, tileEls, die, roller, cube, banner, hud, picker,
     rot: "",                 // accumulated cube orientation string
     pos: { ...game.pos },
+    wobbleTimer: null,       // pending wobble settle-back (see cancelWobble)
 
     // Place the die at a cell/orientation with no animation (load, restart, carry).
     setImmediate(pos, rot) {
+      this.cancelWobble();
       this.pos = { ...pos };
       this.rot = rot;
       die.style.opacity = "1";
@@ -148,6 +154,7 @@ export function renderScene(root, game) {
 
     // Roll: tumble over the leading edge, then bake the rotation into the cube.
     rollStep(dir, to, done) {
+      this.cancelWobble();
       roller.style.transition = "none";
       roller.style.transform = "none";
       roller.style.transformOrigin = EDGE_ORIGIN[dir];
@@ -176,6 +183,7 @@ export function renderScene(root, game) {
 
     // Spin: 90° about the vertical axis in place, then bake into the cube.
     spinStep(ccw, done) {
+      this.cancelWobble();
       const rotStr = ccw ? SPIN_ROT.ccw : SPIN_ROT.cw;
       roller.style.transition = "none";
       roller.style.transform = "none";
@@ -221,18 +229,33 @@ export function renderScene(root, game) {
       void roller.offsetWidth;
     },
 
-    // Blocked move: tip toward the edge and settle back.
+    // Blocked move: tip toward the edge and settle back. A wobble does NOT set
+    // `busy`, so the player can (and constantly does) start a real roll before it
+    // finishes — bump a wall, then immediately go the right way. The settle-back
+    // is therefore cancellable: left pending it would fire mid-roll and snap the
+    // roller back to none, so the die would jump a cell without ever visibly
+    // tumbling and the player would lose track of which face is where.
     wobble(dir) {
+      this.cancelWobble();
       roller.style.transition = "none";
       roller.style.transform = "none";
       roller.style.transformOrigin = EDGE_ORIGIN[dir] || "50% 50%";
       void roller.offsetWidth;
       roller.style.transition = "transform 0.16s ease-out";
       roller.style.transform = WOBBLE_ROT[dir] || "none";
-      setTimeout(() => {
+      this.wobbleTimer = setTimeout(() => {
+        this.wobbleTimer = null;
         roller.style.transition = "transform 0.24s ease-in";
         roller.style.transform = "none";
       }, 160);
+    },
+
+    // Drop a pending settle-back so it can't stomp on whatever runs next.
+    cancelWobble() {
+      if (this.wobbleTimer !== null) {
+        clearTimeout(this.wobbleTimer);
+        this.wobbleTimer = null;
+      }
     },
 
     refreshTiles(g) {
