@@ -314,6 +314,10 @@ window.addEventListener("keydown", (e) => {
   const dir = KEY_DIR[e.code];
   if (!dir) return;
   e.preventDefault();
+  // One roll per press. Without this, holding a direction auto-repeats and the
+  // die walks continuously — the README has always claimed it does not, and the
+  // Unity original fires on the key-press edge, so the guard was simply missing.
+  if (e.repeat) return;
   handleMove(dir);
 });
 
@@ -333,6 +337,20 @@ window.__d6 = {
 root.addEventListener("click", (e) => {
   const btn = e.target.closest("[data-level]");
   if (btn) { btn.blur(); loadLevel(btn.dataset.level); }
+});
+
+// Touch controls. Bound on pointerup rather than click so a roll answers the
+// finger lifting rather than waiting on the browser's click synthesis, and
+// blurred straight after so the button does not then eat the SPACE key.
+root.addEventListener("pointerup", (e) => {
+  const btn = e.target.closest("[data-touch]");
+  if (!btn || !scene) return;
+  e.preventDefault();
+  btn.blur();
+  const action = btn.dataset.touch;
+  if (action === "rotate") rotateCamera();
+  else if (action === "restart") restart();
+  else handleMove(action);
 });
 
 // Boot. Waiting on the fetch before the first render avoids showing the

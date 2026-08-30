@@ -228,6 +228,27 @@ export function renderScene(root, game, opts = {}) {
   die.appendChild(roller);
   board.appendChild(die);
 
+  // Touch controls. The game was keyboard-only, which on a phone meant there
+  // was no way to roll, turn the camera or restart at all. A control cluster is
+  // used rather than swipe or tapping the board: at phone sizes the die renders
+  // about 36x21px and a neighbouring tile about 34x20 — under half the 44pt
+  // touch minimum — and because .die is pointer-events:none, a tap dead centre
+  // on the die hit-tests to the cell BEHIND it, so tapping the die would roll it
+  // backwards. Buttons also emit a screen direction straight into handleMove,
+  // so the camera-relative remap, the busy guard and wobble all keep working
+  // exactly as they do for the keyboard.
+  const pad = el("div", "pad", `
+    <button class="pad-btn rotate" data-touch="rotate" aria-label="Turn the view">\u21bb</button>
+    <div class="dpad">
+      <button class="pad-btn" data-touch="up" aria-label="Roll up">\u2191</button>
+      <button class="pad-btn" data-touch="left" aria-label="Roll left">\u2190</button>
+      <button class="pad-btn" data-touch="down" aria-label="Roll down">\u2193</button>
+      <button class="pad-btn" data-touch="right" aria-label="Roll right">\u2192</button>
+    </div>
+    <button class="pad-btn restart" data-touch="restart" aria-label="Restart">\u21ba</button>
+  `);
+  root.appendChild(pad);
+
   const banner = el("div", "banner",
     `<div class="card"><h2></h2><div class="award" hidden></div><p></p>` +
     `<div class="actions" hidden></div></div>`);
@@ -240,7 +261,7 @@ export function renderScene(root, game, opts = {}) {
   const TURN_EASE = getComputedStyle(stage).getPropertyValue("--cam-ease").trim();
 
   const ctrl = {
-    stage, camera, board, tileEls, die, roller, cube, banner, hud, picker,
+    stage, camera, board, tileEls, die, roller, cube, banner, hud, picker, pad,
     rot: "",                 // accumulated cube orientation string
     pos: { ...game.pos },
     wobbleTimer: null,       // pending wobble settle-back (see cancelWobble)

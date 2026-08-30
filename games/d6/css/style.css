@@ -159,6 +159,12 @@ html, body {
      Kept off .stage and everything below it: overflow is a grouping property
      there and would flatten the die. */
   overflow-x: hidden;
+  /* Repeated tapping on a game surface should not select text, flash a grey
+     highlight box, or trigger double-tap-to-zoom. */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
   background: var(--bg);
   color: var(--ink);
   font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -574,6 +580,61 @@ html, body {
 .face.back   { transform: rotateX(-90deg) translateZ(var(--half)); }
 .face.right  { transform: rotateY(90deg)  translateZ(var(--half)); }
 .face.left   { transform: rotateY(-90deg) translateZ(var(--half)); }
+
+/* ---- Touch controls ----
+   Hidden wherever there is a real pointer; the keyboard is better there and the
+   cluster would only take up room. `pointer: coarse` with no hover is the pair
+   that actually means "finger", rather than guessing from viewport width. */
+.pad { display: none; }
+
+@media (pointer: coarse) and (hover: none) {
+  .pad {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    position: sticky;
+    bottom: 0;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(to top, var(--bg) 72%, transparent);
+  }
+  .dpad {
+    display: grid;
+    grid-template-areas: ". u ." "l d r";
+    gap: 6px;
+  }
+  .dpad [data-touch="up"] { grid-area: u; }
+  .dpad [data-touch="left"] { grid-area: l; }
+  .dpad [data-touch="down"] { grid-area: d; }
+  .dpad [data-touch="right"] { grid-area: r; }
+  .pad-btn {
+    /* 46px: above the 44pt minimum, with the gaps keeping the gutters honest. */
+    width: 46px;
+    height: 46px;
+    font: 20px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    touch-action: manipulation;
+  }
+  .pad-btn:active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  /* A tap should not leave a focus ring sitting on the button afterwards, but
+     keyboard focus still has to be visible. */
+  .pad-btn:focus { outline: none; }
+  .pad-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Centre the board in what is left between the HUD and the controls. The pad
+     is pushed to the bottom of the flex column, and without this the board stays
+     pinned under the HUD with the whole difference — measured at 358px on a
+     390x844 phone — as dead space between them. */
+  .stage { margin-block: auto; }
+  .pad-btn.rotate, .pad-btn.restart { border-radius: 50%; font-size: 19px; }
+
+  /* The hints name keys a phone does not have. */
+  .hud .hint { display: none; }
+  .hud { gap: 12px; font-size: 14px; }
+}
 
 /* ---- Win banner ---- */
 .banner {

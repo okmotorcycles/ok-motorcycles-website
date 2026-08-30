@@ -587,6 +587,23 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   .embed__frame { height: 520px; }
 }
 
+// Phone stand-in for the frame (see _layouts/game.html).
+.embed__card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 22px;
+  border: 1px solid $asphalt-line;
+  border-radius: 10px;
+  background: $asphalt-panel;
+  text-decoration: none;
+  color: inherit;
+}
+.embed__card-title { font-weight: 700; letter-spacing: .04em; }
+.embed__card-sub { font-size: .86rem; color: $ink-faint; }
+.embed__card-cta { margin-top: 6px; font-weight: 600; }
+
 // category-sign legend (About page) — shields inherit $ink via currentColor
 .signkey { margin: 1.4em 0; }
 .signkey__row {

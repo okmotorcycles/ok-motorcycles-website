@@ -18,7 +18,7 @@ layout: note
 {%- endcomment -%}
 
 {% if page.game %}
-<div class="embed">
+<div class="embed" data-embed>
   <iframe
     class="embed__frame"
     src="/games/{{ page.game }}/"
@@ -29,6 +29,36 @@ layout: note
     <span>{{ page.game_controls | default: "Click the board to give it focus, then play." }}</span>
     <a href="/games/{{ page.game }}/" target="_blank" rel="noopener">Open full screen &rarr;</a>
   </p>
+
+  {%- comment -%}
+    On a touch phone the inline frame is worse than useless: it is short enough
+    that the game has almost no room, and it swallows vertical drags meant to
+    scroll this article — a finger dragged over the game scrolls the game's own
+    document instead of the page, so the reader is stuck. Below the breakpoint
+    the frame is REMOVED (not just hidden — a display:none iframe still loads)
+    and replaced with a card that hands the game the whole viewport instead.
+    Progressive enhancement: with no JS everyone keeps the frame as before.
+  {%- endcomment -%}
+  <template data-embed-card>
+    <a class="embed__card" href="/games/{{ page.game }}/">
+      <span class="embed__card-title">{{ page.game_title | default: page.title }}</span>
+      <span class="embed__card-sub">Best played full screen on a phone</span>
+      <span class="embed__card-cta">Play &rarr;</span>
+    </a>
+  </template>
+  <script>
+    (function () {
+      var wrap = document.currentScript.closest("[data-embed]");
+      if (!wrap || !window.matchMedia) return;
+      if (!matchMedia("(pointer: coarse) and (max-width: 760px)").matches) return;
+      var frame = wrap.querySelector(".embed__frame");
+      var card = wrap.querySelector("[data-embed-card]");
+      if (!frame || !card) return;
+      frame.replaceWith(card.content.cloneNode(true));
+      var cap = wrap.querySelector(".embed__cap");
+      if (cap) cap.remove(); // the controls line names keys a phone does not have
+    })();
+  </script>
 </div>
 {% endif %}
 
