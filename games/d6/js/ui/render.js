@@ -7,6 +7,22 @@
 // inside holds the accumulated orientation; on landing we "bake" — snap to the
 // new cell, fold the rotation into the cube, reset the roller. The die is
 // exactly cell-pitch sized so the bake is seamless.
+//
+// CAMERA. The view angle lives on a separate `.camera` wrapper that sits
+// between `.stage` and `.board`; `.board` itself is never rotated. Everything
+// below `.board` — ROLL_ROT, SPIN_ROT, EDGE_ORIGIN, the `.face` transforms —
+// is written in the BOARD's frame and is in exact lockstep with the pure
+// permutations in js/core/dice.js, so leaving the board unrotated means the die
+// maths stays valid at every camera angle without a single constant changing.
+// Rotating `.board` (or "fixing up" any of those constants for the camera) is
+// how you get a cube showing a 4 while the engine believes it is showing a 2.
+//
+// The camera is anchored on the DIE. Its transform is
+//     translate(anchor) rotateX(tilt) rotateZ(yaw) translate(-diePos)
+// so the die's cell centre is carried onto the rotation origin, turned there,
+// and placed at `anchor` on screen: the die is the pivot, and SPACE swings the
+// board around it rather than the other way about. See the framing notes below
+// for where the anchor comes from and why a turn must never touch it.
 
 import { TILE } from "../core/levels.js";
 import { DEFAULT_FACES } from "../core/dice.js";
@@ -17,6 +33,81 @@ const STEP = CELL;
 const HALF = CELL / 2;
 
 const DUR = { roll: 260, slide: 200, spin: 220, portal: 260 };
+const ROLL_EASE = "cubic-bezier(0.4, 0.15, 0.35, 1)";
+// The camera's own ease for a cell-to-cell pan. Softer at both ends than the
+// roll's so the view glides while the cube snaps.
+const PAN_EASE = "cubic-bezier(0.33, 0.06, 0.24, 1)";
+
+// --- Camera ------------------------------------------------------------------
+// Four stops, 90 degrees apart, on top of a 45 degree base yaw: the board reads
+// as a diamond at every stop, which is what makes the view isometric rather
+// than merely tilted. The pitch (--tilt) never changes; see css/style.css for
+// why it is atan(sqrt(2)) rather than the 2:1 game convention.
+const BASE_YAW = 45;
+// SPACE swings the CAMERA a quarter turn clockwise around the board — which is
+// the same thing as turning the board counter-clockwise under a fixed camera,
+// hence the negative sign on the yaw the board is given. Flipping this to +90
+// reverses the direction of the whole feature; main.js derives its input remap
+// from this same constant, so the two cannot drift apart.
+export const YAW_PER_TURN = -90;
+// The perspective is mild on purpose: isometric is strictly an orthographic
+// projection, but a little convergence keeps the die reading as a solid.
+const PERSPECTIVE = 1900;
+const MIN_FIT = 0.34;
+
+// --- Framing -----------------------------------------------------------------
+// The camera pivots on the die, which pins the die to one screen point and lets
+// the board swing around it. That point — the ANCHOR — must not depend on the
+// yaw: the instant it does, a turn drags the die across the screen and the
+// pivot is no longer the die. So the only question framing gets to answer is
+// where, as a function of the die's CELL, that point should be.
+//
+// It should be the centre of the frame, and the arithmetic is worth writing
+// down because the obvious alternative is a trap. With the anchor fixed, the
+// board's centre lands `M(yaw)*d` away from it, where d is the die's offset
+// from the board's centre. Over the four stops M(yaw)*d takes four values
+// spaced round a rhombus whose centre is the origin, so easing the anchor
+// "toward the board's centre" — a direction that is itself different at every
+// stop — buys one stop and pays for it double at the opposite one. Measured on
+// a 7x7 with the die in the corner, easing the anchor all the way to the board
+// leaves it perfectly framed at the stop you moved on and 730px off centre two
+// SPACE presses later, against a flat 365px worst case for leaving the anchor
+// where it is. Averaged over the four stops the board's centre IS the frame's
+// centre; holding the anchor there is both the best it can do and the only
+// choice that frames every stop alike, so a turn never springs a surprise.
+//
+// That leaves the board sliding around inside the frame as the die moves, and
+// FRAME_ALLOW is how much of that slide the stage reserves room for: the whole
+// board stays in frame while the die is within this many cells of the board's
+// centre. It is a CLAMP, not the worst case. Reserving the full die-in-the-far-
+// corner excursion of a 7x7 (4.2 cells) would shrink EVERY board by nearly half
+// for the sake of four cells; past the allowance the board's far edge — the
+// part furthest from the die, and the part the player is least interested in —
+// slides out of frame instead, and it does so gradually: a cell past the
+// allowance costs a cell of board. At two cells a 3x3 never loses anything, the
+// four corner cells of a 5x5 cost a tenth of the board, and the extreme corner
+// of a 7x7 — the worst cell on the biggest board there is — a fifth.
+const FRAME_ALLOW = 2; // cells of board-slide the stage box reserves room for
+
+// ...but only while it is affordable. The reserve is headroom for a situation
+// that is not on screen yet, and it is paid for by shrinking the board in every
+// situation that IS. On a narrow container (the note page iframes this at ~360px
+// on a phone) the full reserve costs more than it is worth: it pushed the whole
+// board off the right edge on move one. So the reserve is scaled back until it
+// costs no more than this fraction of the zoom the board would get with no
+// reserve at all — full headroom on a desktop, none on a phone, where the board
+// is simply allowed to slide out of frame as the die wanders.
+const RESERVE_FIT_KEEP = 0.8;
+
+// Read a CSS custom property off an element as a number (deg/px/ms all parse).
+function cssNum(el, name) {
+  return parseFloat(getComputedStyle(el).getPropertyValue(name));
+}
+
+// Screen-clockwise order of the grid directions. main.js indexes this to turn a
+// key press into a grid direction; it lives here because it is a property of
+// how the camera lays the board out, not of the engine.
+export const DIR_CLOCKWISE = Object.freeze(["up", "right", "down", "left"]);
 
 // Accumulated orientation deltas, prepended per step (applied in the board frame
 // so the visible faces stay in lockstep with the core die permutations).
@@ -57,6 +148,7 @@ function pips(value, cls = "pip") {
   return (PIP_LAYOUT[value] || []).map((n) => `<span class="${cls} p${n}"></span>`).join("");
 }
 
+function round1(n) { return Math.round(n * 10) / 10; }
 function cellLeft(c) { return c * STEP; }
 function cellTop(r) { return r * STEP; }
 
@@ -72,6 +164,7 @@ export function renderScene(root, game, opts = {}) {
     <div class="tasks"></div>
     <div class="moves"></div>
     <div class="hint">WASD / arrows to roll · R to restart</div>
+    <div class="hint">SPACE turns the view</div>
   `);
   root.appendChild(hud);
 
@@ -83,12 +176,14 @@ export function renderScene(root, game, opts = {}) {
     entries.map(({ key, label }) => `<button data-level="${key}">${label}</button>`).join(""));
   root.appendChild(picker);
 
+  // .stage (flat, holds the perspective) > .camera (view angle) > .board (grid).
   const stage = el("div", "stage");
+  const camera = el("div", "camera");
   const board = el("div", "board");
-  board.style.width = `${game.width * STEP}px`;
-  board.style.height = `${game.height * STEP}px`;
-  stage.appendChild(board);
+  camera.appendChild(board);
+  stage.appendChild(camera);
   root.appendChild(stage);
+  sizeStage(stage, board, game);
 
   // Tiles (with a staggered enter animation).
   const tileEls = [];
@@ -121,11 +216,89 @@ export function renderScene(root, game, opts = {}) {
   const banner = el("div", "banner", `<div class="card"><h2></h2><p></p></div>`);
   root.appendChild(banner);
 
+  // Camera constants, read off the stylesheet so there is one source of truth
+  // for the turn's timing (the counter-rotating tile labels share --cam-ms and
+  // --cam-ease, and a JS copy of either would drift from them).
+  const TURN_MS = cssNum(stage, "--cam-ms");
+  const TURN_EASE = getComputedStyle(stage).getPropertyValue("--cam-ease").trim();
+
   const ctrl = {
-    board, tileEls, die, roller, cube, banner, hud, picker,
+    stage, camera, board, tileEls, die, roller, cube, banner, hud, picker,
     rot: "",                 // accumulated cube orientation string
     pos: { ...game.pos },
     wobbleTimer: null,       // pending wobble settle-back (see cancelWobble)
+    camTurns: 0,             // quarter turns of the camera, unbounded (see setCamera)
+
+    // Aim the camera at the die's cell: move the PIVOT, which is the die's cell
+    // centre in board space measured from the board's centre. `ms` of 0 snaps.
+    // The anchor is not touched — it is a per-level constant (see the framing
+    // notes at the top of the file), which is precisely why a camera turn can
+    // leave both translations alone and rotate about the die exactly.
+    aimCamera(pos, ms = 0, ease = PAN_EASE) {
+      const px = cellLeft(pos.c) + HALF - (game.width * STEP) / 2;
+      const py = cellTop(pos.r) + HALF - (game.height * STEP) / 2;
+      camera.style.transition = ms ? `transform ${ms}ms ${ease}` : "none";
+      stage.style.setProperty("--die-px", `${round1(px)}px`);
+      stage.style.setProperty("--die-py", `${round1(py)}px`);
+      if (!ms) void camera.offsetWidth; // flush, so the next move animates from here
+    },
+
+    // Point the camera at quarter-turn `turns`. `turns` is deliberately NOT
+    // wrapped to 0..3: driving --yaw from the running total means the fourth
+    // press keeps going round instead of unwinding 270 degrees back to the
+    // start. Nothing below .board is touched, so the die stays in sync with the
+    // engine by construction.
+    setCamera(turns, animate = true) {
+      this.camTurns = turns;
+      camera.style.transition = animate ? `transform ${TURN_MS}ms ${TURN_EASE}` : "none";
+      // Killing the duration (rather than the transition shorthand) also stops
+      // the counter-rotating tile labels, which share --cam-ms.
+      if (!animate) stage.style.setProperty("--cam-ms", "0ms");
+      // ONLY the yaw. The anchor and the pivot are left exactly as they are, so
+      // the transform's two translations are identical either side of the turn
+      // and the interpolation is a pure rotation about the die. Re-framing here
+      // — however well justified by where the board ends up — would slide the
+      // die across the screen and the pivot would no longer be the die.
+      stage.style.setProperty("--yaw", `${BASE_YAW + YAW_PER_TURN * turns}deg`);
+      if (!animate) {
+        void stage.offsetWidth; // flush, so the restored duration can't animate this
+        stage.style.removeProperty("--cam-ms");
+      }
+    },
+
+    // Uniform zoom so the turned board still fits its container. A 45 degree
+    // board is ~1.4x wider than a square-on one, and this thing is iframed into
+    // a note page at whatever width the note is.
+    fitToContainer() {
+      const cs = getComputedStyle(root);
+      const availW = root.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const top = stage.getBoundingClientRect().top;
+      const availH = Math.max(240, window.innerHeight - top - 16);
+
+      // The box without any slide reserve, and the reserve sizeStage measured.
+      const baseW = parseFloat(stage.style.getPropertyValue("--base-w"));
+      const baseH = parseFloat(stage.style.getPropertyValue("--base-h"));
+      const resW = parseFloat(stage.style.getPropertyValue("--reserve-w")) || 0;
+      const resH = parseFloat(stage.style.getPropertyValue("--reserve-h")) || 0;
+
+      // How much of the reserve this container can afford. The box grows
+      // linearly with the reserve and the zoom is inversely proportional to the
+      // box, so the largest affordable share solves directly — no search.
+      const fit0 = Math.min(1, availW / baseW, availH / baseH);
+      const floor = Math.max(MIN_FIT, RESERVE_FIT_KEEP * fit0);
+      const room = (avail, base, res) => (res > 0 ? (avail / floor - base) / (2 * res) : 1);
+      const share = Math.max(0, Math.min(1, room(availW, baseW, resW), room(availH, baseH, resH)));
+
+      const w = Math.ceil(baseW + 2 * share * resW);
+      const h = Math.ceil(baseH + 2 * share * resH);
+      const fit = `${Math.round(Math.max(MIN_FIT, Math.min(1, availW / w, availH / h)) * 1000) / 1000}`;
+
+      // No-ops when unchanged: this runs from a ResizeObserver on #app, and
+      // #app's height follows the stage's, so writing unconditionally would loop.
+      if (`${w}px` !== stage.style.getPropertyValue("--stage-w")) stage.style.setProperty("--stage-w", `${w}px`);
+      if (`${h}px` !== stage.style.getPropertyValue("--stage-h")) stage.style.setProperty("--stage-h", `${h}px`);
+      if (fit !== stage.style.getPropertyValue("--fit")) stage.style.setProperty("--fit", fit);
+    },
 
     // Place the die at a cell/orientation with no animation (load, restart, carry).
     setImmediate(pos, rot) {
@@ -139,6 +312,7 @@ export function renderScene(root, game, opts = {}) {
       die.style.left = `${cellLeft(pos.c)}px`;
       die.style.top = `${cellTop(pos.r)}px`;
       cube.style.transform = rot || "rotateX(0deg)";
+      this.aimCamera(pos, 0);
     },
 
     // Play an ordered list of engine steps, calling onSettle after each and
@@ -165,8 +339,13 @@ export function renderScene(root, game, opts = {}) {
       roller.style.transform = "none";
       roller.style.transformOrigin = EDGE_ORIGIN[dir];
       void roller.offsetWidth;
-      roller.style.transition = `transform ${DUR.roll}ms cubic-bezier(0.4, 0.15, 0.35, 1)`;
+      roller.style.transition = `transform ${DUR.roll}ms ${ROLL_EASE}`;
       roller.style.transform = EDGE_ROT[dir];
+      // Pan with the roll, and pan to the CELL: the roller lifts the cube and
+      // arcs it over its leading edge, and a camera tracking that would heave
+      // the whole board up and down on every move. Starting the pan on the same
+      // frame as the tumble is what makes the two read as one movement.
+      this.aimCamera(to, DUR.roll);
       setTimeout(() => {
         this.rot = `${ROLL_ROT[dir]} ${this.rot}`.trim();
         this.bakeRoller(to);
@@ -180,6 +359,9 @@ export function renderScene(root, game, opts = {}) {
       void die.offsetWidth;
       die.style.left = `${cellLeft(to.c)}px`;
       die.style.top = `${cellTop(to.r)}px`;
+      // Same duration AND easing as the die's own slide, so the die holds its
+      // place in the frame and the board is what visibly moves.
+      this.aimCamera(to, DUR.slide, "ease-in-out");
       setTimeout(() => {
         die.style.transition = "none";
         this.pos = { ...to };
@@ -232,6 +414,10 @@ export function renderScene(root, game, opts = {}) {
         die.style.left = `${cellLeft(to.c)}px`;
         die.style.top = `${cellTop(to.r)}px`;
         this.pos = { ...to };
+        // Snap the camera in the same invisible instant. A portal pair can span
+        // the whole board, and gliding across it would be a long disorienting
+        // swoop over ground the die never travelled.
+        this.aimCamera(to, 0);
         void die.offsetWidth;
         this.setAlpha(1, half, "ease-out");
         setTimeout(() => {
@@ -251,6 +437,9 @@ export function renderScene(root, game, opts = {}) {
       die.style.top = `${cellTop(to.r)}px`;
       cube.style.transform = this.rot || "rotateX(0deg)";
       this.pos = { ...to };
+      // The pan has already landed on this cell; this only drops its transition
+      // so the next step starts clean.
+      this.aimCamera(to, 0);
       void roller.offsetWidth;
     },
 
@@ -312,7 +501,111 @@ export function renderScene(root, game, opts = {}) {
 
   ctrl.updateHud(game);
   ctrl.setImmediate(game.pos, "");
+  ctrl.fitToContainer();
+  watchResize(root, ctrl);
   return ctrl;
+}
+
+// Size the stage to the board's PROJECTION and centre that projection in it.
+//
+// Rather than deriving the bounding box from the tilt/yaw/perspective by hand
+// (easy to get subtly wrong, and wrong means a clipped board), this measures it:
+// the browser is asked for the projected box of the board plane and of a probe
+// plane one cube-height above it — together the shadow of the whole volume the
+// die can ever occupy — and it does that at all FOUR stops and takes the union.
+// A single box that already fits every stop is why the layout never resizes and
+// the view never lurches as the camera turns.
+//
+// The camera's transform-origin is its own centre, which sits at the stage's
+// centre, so every measurement is taken relative to that point; --cam-ax/ay —
+// the anchor the die is held at — is then the offset that lands the measured
+// box dead centre. The box is finally grown by the room the die-anchored camera
+// needs to slide the board around in; see FRAME_ALLOW.
+const PAD = 8;
+function sizeStage(stage, board, game) {
+  const bw = game.width * STEP;
+  const bh = game.height * STEP;
+  stage.style.setProperty("--board-w", `${bw}px`);
+  stage.style.setProperty("--board-h", `${bh}px`);
+  stage.style.setProperty("--persp", `${PERSPECTIVE}px`);
+  stage.style.setProperty("--fit", "1");
+  // Measure with the camera parked on the board's centre and no anchor offset,
+  // i.e. the plain rotateX/rotateZ view the box is defined against.
+  stage.style.setProperty("--die-px", "0px");
+  stage.style.setProperty("--die-py", "0px");
+  stage.style.setProperty("--cam-ax", "0px");
+  stage.style.setProperty("--cam-ay", "0px");
+
+  // A plane one cube-height above the board: the ceiling of the die's reach.
+  const probe = el("div", "probe");
+  probe.style.cssText =
+    `position:absolute;left:0;top:0;width:${bw}px;height:${bh}px;` +
+    `transform:translateZ(${CELL}px);visibility:hidden;`;
+  board.appendChild(probe);
+
+  const savedYaw = stage.style.getPropertyValue("--yaw");
+  stage.style.setProperty("--cam-ms", "0ms"); // measure, don't animate
+  let l = Infinity, r = -Infinity, t = Infinity, b = -Infinity;
+  for (let k = 0; k < 4; k++) {
+    stage.style.setProperty("--yaw", `${BASE_YAW + 90 * k}deg`);
+    const s = stage.getBoundingClientRect();
+    const cx = s.left + s.width / 2;   // == the camera's transform origin
+    const cy = s.top + s.height / 2;
+    for (const el of [board, probe]) {
+      const q = el.getBoundingClientRect(); // projected box, ancestors included
+      l = Math.min(l, q.left - cx); r = Math.max(r, q.right - cx);
+      t = Math.min(t, q.top - cy);  b = Math.max(b, q.bottom - cy);
+    }
+  }
+  probe.remove();
+  if (savedYaw) stage.style.setProperty("--yaw", savedYaw);
+  else stage.style.removeProperty("--yaw");
+
+  // ...then reserve room for the board to slide about inside that box, because
+  // the camera holds the die still and lets the board move. The board's centre
+  // sits M(yaw) * d from the frame's, d being the die's offset from the board's
+  // centre; over every cell and every stop that traces an ellipse of semi-axes
+  // (|d|, |d| cos tilt), so the reservation is symmetric on each side and
+  // flattened vertically by the pitch. FRAME_ALLOW clamps |d|: the full reach
+  // of a 7x7 would shrink every 7x7 board by nearly half for the sake of its
+  // corner cells, so past the allowance the board's far edge leaves the frame
+  // instead. Small boards never reach the clamp and always fit whole.
+  const cosTilt = Math.cos((cssNum(stage, "--tilt") * Math.PI) / 180);
+  const reach = Math.hypot(bw / 2 - HALF, bh / 2 - HALF) / CELL; // cells to the corner cell
+  const slack = Math.min(reach, FRAME_ALLOW) * CELL;
+
+  // Published separately so fitToContainer can decide how much of the reserve
+  // the container can actually afford (see RESERVE_FIT_KEEP). The anchor below
+  // is measured from the box alone and does not move with the reserve — the
+  // reserve is symmetric on both sides — so trimming it only ever changes how
+  // much empty room surrounds the board, never where the die sits.
+  stage.style.setProperty("--base-w", `${Math.ceil(r - l) + PAD}px`);
+  stage.style.setProperty("--base-h", `${Math.ceil(b - t) + PAD}px`);
+  stage.style.setProperty("--reserve-w", `${Math.round(slack)}px`);
+  stage.style.setProperty("--reserve-h", `${Math.round(slack * cosTilt)}px`);
+  stage.style.setProperty("--stage-w", `${Math.ceil(r - l + 2 * slack) + PAD}px`);
+  stage.style.setProperty("--stage-h", `${Math.ceil(b - t + 2 * slack * cosTilt) + PAD}px`);
+  // The anchor. Aiming the camera here puts the measured box dead centre, so a
+  // die standing on the board's centre sits in the middle of the picture and
+  // the framing matches the old board-centred camera exactly.
+  stage.style.setProperty("--cam-ax", `${Math.round(-(l + r) / 2)}px`);
+  stage.style.setProperty("--cam-ay", `${Math.round(-(t + b) / 2)}px`);
+  void stage.offsetWidth;
+  stage.style.removeProperty("--cam-ms");
+}
+
+// One observer for the life of the page. renderScene wipes and rebuilds root on
+// every level change, so the listener tracks whichever controller is current
+// instead of stacking up a new observer per level.
+let liveCtrl = null;
+let resizeWatched = false;
+function watchResize(root, ctrl) {
+  liveCtrl = ctrl;
+  if (resizeWatched) return;
+  resizeWatched = true;
+  const refit = () => { if (liveCtrl) liveCtrl.fitToContainer(); };
+  window.addEventListener("resize", refit);
+  if (typeof ResizeObserver === "function") new ResizeObserver(refit).observe(root);
 }
 
 function applyTileLook(te, tile, game) {

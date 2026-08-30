@@ -15,8 +15,69 @@
   --gap: 0px;     /* tiles touch; separation is drawn with an inset ring */
   --cube: 86px;
   --half: 43px;   /* half of --cube */
-  --tilt: 52deg;  /* board tilt for a 2.5D top-down look */
   --roll-ms: 260ms;
+
+  /* --- Isometric camera ------------------------------------------------------
+     The eye looks down the (1,1,1) diagonal: rotateX(54.736deg) rotateZ(45deg).
+     54.736deg = atan(sqrt(2)) is TRUE isometric — the one pitch at which all
+     three cube axes foreshorten by the same amount, so the die's top, front and
+     side faces stay equally legible. That is exactly what this camera is for
+     (the player rotates it to read the die), which is why it is preferred here
+     over the other common convention, 2:1 "game isometric" (rotateX(60deg)):
+     2:1 squashes the top face to half height, and the top face is the one the
+     task tiles are scored from.
+
+     --yaw is the ONLY thing SPACE changes. It accumulates (45, -45, -135, -225,
+     ...) instead of wrapping at 360, so every press continues turning the same
+     way round instead of unwinding three quarters of a turn.
+
+     BOTH angles live on .camera. They must NEVER be moved onto .board: the
+     die's tumble (ROLL_ROT / SPIN_ROT / EDGE_ORIGIN in js/ui/render.js) is
+     expressed in the board's own frame and is in lockstep with the pure
+     permutations in js/core/dice.js. .board stays an unrotated plane; the
+     camera is a separate wrapper above it, so the die maths is untouched and
+     stays correct at every stop for free. */
+  --tilt: 54.736deg;
+  --yaw: 45deg;
+  --cam-ms: 420ms;
+  --cam-ease: cubic-bezier(0.35, 0.02, 0.15, 1);
+
+  /* --- The camera is anchored on the DIE, not the board ----------------------
+     --die-px/--die-py are the die's CELL centre in board space, measured from
+     the board's centre. The camera transform reads
+
+         translate(anchor) . rotateX(tilt) . rotateZ(yaw) . translate(-die)
+
+     so the die's cell is carried onto the rotation origin, turned there, and
+     then dropped at the anchor: the die is the PIVOT and the board swings
+     around it. Crucially the anchor does not depend on --yaw, so SPACE changes
+     rotateZ and nothing else and the die is pinned to the pixel through a
+     whole turn. aimCamera in js/ui/render.js drives the pivot, one cell at a
+     time. */
+  --die-px: 0px;
+  --die-py: 0px;
+
+  /* Uniform zoom applied to the camera so a board that is ~1.4x wider once it
+     is turned 45deg still fits a narrow embed (the game is iframed into a note
+     page). Set from JS; perspective is scaled by the same factor so the zoom
+     is exact rather than a change of projection. */
+  --fit: 1;
+  --persp: 1900px;
+
+  /* Board footprint and the stage box that holds its projection; both are set
+     from JS per level (see sizeStage in js/ui/render.js). */
+  --board-w: 430px;
+  --board-h: 430px;
+  --stage-w: 660px;
+  --stage-h: 470px;
+  /* THE ANCHOR: the screen point, relative to the stage's centre, that the die
+     is held at. Measured by sizeStage in js/ui/render.js as the offset that
+     centres the board's projection in the stage — a die standing on the board's
+     centre should sit in the middle of the picture, and everything else follows
+     from moving the pivot out from under it. Constant for the life of a level;
+     see the framing notes in js/ui/render.js for why it must not track --yaw. */
+  --cam-ax: 0px;
+  --cam-ay: 0px;
 
   --bg: #f2f1ea;          /* page ground (site --bg) */
   --bg-2: #fafafa;        /* raised panels: picker, win card */
@@ -81,6 +142,14 @@
 html, body {
   margin: 0;
   height: 100%;
+  /* The camera holds the die still and lets the board slide, and past the room
+     the stage reserves for that (FRAME_ALLOW in js/ui/render.js) the board's far
+     edge runs out of frame. Off-camera has to mean off-camera: without this the
+     overhang widens the document and the page — or, embedded, the iframe — grows
+     a horizontal scrollbar over a board the player cannot usefully scroll to.
+     Kept off .stage and everything below it: overflow is a grouping property
+     there and would flatten the die. */
+  overflow-x: hidden;
   background: var(--bg);
   color: var(--ink);
   font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -142,15 +211,63 @@ html, body {
   font-weight: 600;
 }
 
-/* ---- Stage / board ---- */
+/* ---- Stage / camera / board ---- */
+/* .stage is a plain, non-transformed box big enough to hold the board's
+   projection at ANY camera stop. Because the four stops are 45deg apart on a
+   rectangle, the projected footprint is identical at all four (a w x h board
+   turned 45, 135, 225 or 315 degrees has the same axis-aligned bounding box,
+   (w+h)/sqrt(2) square), so the layout never resizes and the view never lurches
+   between stops. perspective-origin sits at the dead centre of that box for the
+   same reason. */
 .stage {
-  perspective: 1000px;
-  perspective-origin: 50% 42%;
-  padding: 30px;
+  position: relative;
+  width: calc(var(--stage-w) * var(--fit));
+  height: calc(var(--stage-h) * var(--fit));
+  perspective: calc(var(--persp) * var(--fit));
+  perspective-origin: 50% 50%;
 }
+
+/* THE CAMERA. Everything the player can look at from a different angle hangs
+   below this element, and only this element carries the view rotation.
+   scale3d is a uniform zoom (x, y AND z), and .stage scales its perspective by
+   the same --fit, so shrinking to fit a small embed is an exact zoom of the
+   same picture rather than a different projection.
+   NEVER give this element opacity < 1, a filter, a clip-path or a mask: per CSS
+   Transforms those are grouping properties and force transform-style: flat,
+   which would collapse the die into the board plane.
+   The element is board-sized and dead centre in the stage with no margin
+   offset, so its transform-origin (50% 50%) sits exactly on the stage's centre,
+   which is also the perspective-origin. Everything that shifts the view lives
+   in the transform instead, which means --fit is an exact zoom about that one
+   point rather than a scale about a nudged origin.
+   Read the transform right to left: -die puts the die's cell on the origin, the
+   two rotations turn the board about it, and the anchor places it on screen.
+   The transition is set inline per movement by js/ui/render.js — a camera TURN
+   and a cell-to-cell PAN want different durations — so the value here is only
+   the fallback. */
+.camera {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--board-w);
+  height: var(--board-h);
+  margin-left: calc(var(--board-w) / -2);
+  margin-top: calc(var(--board-h) / -2);
+  transform-style: preserve-3d;
+  transform: scale3d(var(--fit), var(--fit), var(--fit))
+             translate3d(var(--cam-ax), var(--cam-ay), 0)
+             rotateX(var(--tilt))
+             rotateZ(var(--yaw))
+             translate3d(calc(-1 * var(--die-px)), calc(-1 * var(--die-py)), 0);
+  transition: transform var(--cam-ms) var(--cam-ease);
+}
+
+/* The board itself is deliberately UNROTATED. Its local axes are the grid axes
+   the engine speaks in, and the die's tumble is written in this frame. */
 .board {
   position: relative;
-  transform: rotateX(var(--tilt));
+  width: var(--board-w);
+  height: var(--board-h);
   transform-style: preserve-3d;
   transition: width 0.2s, height 0.2s;
 }
@@ -205,18 +322,23 @@ html, body {
 .tile .req {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
   transform-style: preserve-3d;
 }
+/* Stacked above the mini die rather than pinned to a corner: the label box is
+   counter-rotated against the camera (see "Upright labels" below), and a corner
+   anchor swings outside the tile at the 45deg stops. Centred content stays
+   within the tile's inscribed square at every angle. */
 .tile .req .badge {
-  font-size: 12px;
+  font-size: 11px;
+  line-height: 1;
   letter-spacing: 0.1em;
   color: var(--ink);
   opacity: 0.85;
-  position: absolute;
-  top: 6px;
-  left: 8px;
 }
 .tile.task.cleared .req .mini-die { opacity: 0.3; }
 .tile.task.cleared .req .badge { color: var(--accent); opacity: 1; font-weight: 700; }
@@ -313,6 +435,30 @@ html, body {
   color: var(--sign-invert-ink);
 }
 @keyframes portalSpin { to { transform: rotate(360deg); } }
+
+/* ---- Upright labels -------------------------------------------------------
+   Tile content is painted on the board plane, so it rides the camera and ends
+   up sideways or upside down at the 90/180/270 stops. Cancelling the camera's
+   yaw (and only the yaw — the tilt is kept so the label still lies flat on the
+   board) holds every readable thing upright at all four stops. They share the
+   camera's duration and easing so label and board turn as one movement. */
+.tile .req,
+.tile .glyph,
+.tile .portal-mark {
+  transform: rotateZ(calc(-1 * var(--yaw)));
+  transform-origin: 50% 50%;
+  transition: transform var(--cam-ms) var(--cam-ease);
+}
+/* ...with one deliberate exception. A conveyor arrow is not a label, it is a
+   DIRECTION: it names the neighbouring cell the tile shoves the die into. Held
+   "upright" it would point at the wrong cell as soon as the camera turned, so
+   it rides the board like the tiles do and keeps telling the truth. An arrow
+   has no upright to lose. */
+.tile.move .glyph.arrow {
+  transform: none;
+}
+/* The portal ring keeps its own spin animation; only its wrapper is
+   counter-rotated, so the digit inside stays readable. */
 
 /* ---- Level enter animation ---- */
 .tile.enter { animation: enterTile 0.4s ease-out both; }
