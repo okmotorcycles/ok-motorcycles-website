@@ -125,21 +125,32 @@ const levelNames = () => [...(daily ? [DAILY] : []), ...Object.keys(LEVELS)];
 // that can possibly win it — so platinum is genuinely "you found the best line
 // there is", not "you beat a designer's guess".
 //
-// The tiers below it widen with par, because the room to go wrong does too: two
-// wasted rolls on an 8-move Monday is a third of the puzzle, on a 22-move Sunday
-// it is a rounding error. Hence a percentage with a floor rather than a flat
-// allowance. Bronze has no upper bound on purpose — finishing a puzzle should
-// always be worth something.
+// Every tier below it is a pair: a flat allowance and a multiple of par,
+// whichever is MORE generous. The flat one governs short boards, where a
+// percentage collapses to nothing (half of a 7-move Monday is three moves); the
+// multiple governs long ones, where a flat allowance stops meaning anything.
+// They cross over at par 12 for all three tiers.
+//
+// These are deliberately loose. Platinum is the only tier that demands
+// precision; the rest are there to tell you roughly how well the run went, and
+// a player who wanders a bit on the way to the answer has still solved the
+// puzzle. Past bronze there is no medal at all, which takes real effort — three
+// times the optimal route.
 const MEDAL_TIERS = [
   ["platinum", (par) => par],
-  ["gold", (par) => Math.max(par + 2, Math.ceil(par * 1.15))],
-  ["silver", (par) => Math.max(par + 4, Math.ceil(par * 1.4))],
+  ["gold", (par) => Math.max(par + 6, Math.ceil(par * 1.5))],
+  ["silver", (par) => Math.max(par + 12, Math.ceil(par * 2))],
+  ["bronze", (par) => Math.max(par + 24, Math.ceil(par * 3))],
 ];
+
+// Shown when the run has gone past bronze. Named rather than blank so the disc
+// never just vanishes mid-run.
+const UNRANKED = "unranked";
 
 function medalFor(moves, par) {
   if (!par) return null;
   for (const [name, limit] of MEDAL_TIERS) if (moves <= limit(par)) return name;
-  return "bronze";
+  return UNRANKED;
 }
 
 const KEY_DIR = {

@@ -520,7 +520,8 @@ export function renderScene(root, game, opts = {}) {
       award.hidden = !medal;
       // Never colour alone: the medal is named as well as shown, so it still
       // reads for anyone who can't separate the platinum and silver discs.
-      award.innerHTML = medal ? `<span class="medal lg ${medal}"></span><b>${medal}</b>` : "";
+      const label = medal === "unranked" ? "no medal" : medal;
+      award.innerHTML = medal ? `<span class="medal lg ${medal}"></span><b>${label}</b>` : "";
       const row = banner.querySelector(".actions");
       row.innerHTML = "";
       for (const a of actions) {
@@ -548,7 +549,7 @@ export function renderScene(root, game, opts = {}) {
       const m = hud.querySelector(".medal");
       m.hidden = !medal;
       m.className = medal ? `medal ${medal}` : "medal";
-      m.title = medal ? `on track for ${medal}` : "";
+      m.title = medal === "unranked" ? "past bronze" : medal ? `on track for ${medal}` : "";
     },
 
     // "par 22 · best 22 moves · 1:34" — the record to beat, or hidden if none.
