@@ -218,7 +218,6 @@ html, body {
 .medal.unranked { background: #c4c4bc; }
 
 .hud .time { color: var(--ink); font-variant-numeric: tabular-nums; }
-.hud .par { color: var(--muted); font-variant-numeric: tabular-nums; }
 .hud .hint { color: var(--muted); font-size: 13px; }
 .hud .back,
 .hud .retry {

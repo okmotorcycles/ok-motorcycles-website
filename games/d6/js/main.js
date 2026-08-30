@@ -224,9 +224,10 @@ function loadLevel(name) {
   scene.setBackLink(goBack);
   if (name === DAILY && daily) {
     scene.setTime(0, true);
-    const best = solvedToday();
-    scene.setPar(best ? daily.par : null);
-    scene.setMedal(best ? medalFor(0, daily.par) : null);
+    // Par itself is never shown in the HUD — the disc carries the standing, and
+    // the number belongs on the win screen. The medal still only appears once
+    // the puzzle has been solved at least once today.
+    scene.setMedal(solvedToday() ? medalFor(0, daily.par) : null);
   }
   busy = false;
 }
@@ -281,7 +282,6 @@ function handleMove(keyDir) {
         const ms = clockElapsed();
         scene.setTime(ms);
         const { result, first, beatMoves, beatTime } = recordSolve(daily.date, game.moveCount, ms);
-        scene.setPar(daily.par);
         const medal = medalFor(game.moveCount, daily.par);
         scene.setMedal(medal);
         const run = `${game.moveCount} moves \u00b7 ${formatTime(ms)}`;
