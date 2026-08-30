@@ -136,6 +136,12 @@ const EDGE_ORIGIN = {
   right: `${CELL}px ${HALF}px ${-HALF}px`,
   left: `0px ${HALF}px ${-HALF}px`,
 };
+// Board-space offset to the next cell, for panning the shadow across during a
+// roll. Rows increase downward, so "up" is negative Y.
+const SHADOW_STEP = {
+  up: [0, -STEP], down: [0, STEP], left: [-STEP, 0], right: [STEP, 0],
+};
+
 const WOBBLE_ROT = {
   up: "rotateX(15deg)", down: "rotateX(-15deg)",
   right: "rotateY(15deg)", left: "rotateY(-15deg)",
@@ -220,7 +226,12 @@ export function renderScene(root, game, opts = {}) {
 
   // Die: .die (positioned at cell) > .roller (per-step pivot) > .cube (orientation).
   const die = el("div", "die");
-  die.appendChild(el("div", "die-shadow")); // ground shadow, outside .roller so it never tumbles
+  // Ground shadow. Outside .roller so it never tumbles with the cube — but it
+  // does have to travel: .die stays on the old cell for the whole roll and only
+  // snaps across when the roller bakes, so a shadow parented to it sits under
+  // the cell the die just left until the animation ends.
+  const shadow = el("div", "die-shadow");
+  die.appendChild(shadow);
   const roller = el("div", "roller");
   const cube = el("div", "cube");
   cube.innerHTML = FACE_HTML;
@@ -342,6 +353,8 @@ export function renderScene(root, game, opts = {}) {
     // Place the die at a cell/orientation with no animation (load, restart, carry).
     setImmediate(pos, rot) {
       this.cancelWobble();
+      shadow.style.transition = "none";
+      shadow.style.removeProperty("transform");
       this.pos = { ...pos };
       this.rot = rot;
       this.setAlpha(1, 0);
@@ -380,6 +393,17 @@ export function renderScene(root, game, opts = {}) {
       void roller.offsetWidth;
       roller.style.transition = `transform ${DUR.roll}ms ${ROLL_EASE}`;
       roller.style.transform = EDGE_ROT[dir];
+      // Walk the shadow to the cell the die is landing on, on the same clock and
+      // the same easing as the tumble, so the two move as one. bakeRoller clears
+      // this at the instant .die itself jumps to that cell, and the two cancel
+      // exactly — the shadow is already there, so nothing moves on the swap.
+      const [sx, sy] = SHADOW_STEP[dir];
+      shadow.style.transition = `transform ${DUR.roll}ms ${ROLL_EASE}`;
+      // The Z here restates .die-shadow's resting depth from the stylesheet
+      // (translateZ(calc(-1 * var(--half) + 1px))) because setting `transform`
+      // replaces it wholesale; both derive from the same half-cell, so they move
+      // together if the cell size ever changes.
+      shadow.style.transform = `translate3d(${sx}px, ${sy}px, ${1 - HALF}px)`;
       // Pan with the roll, and pan to the CELL: the roller lifts the cube and
       // arcs it over its leading edge, and a camera tracking that would heave
       // the whole board up and down on every move. Starting the pan on the same
@@ -471,6 +495,11 @@ export function renderScene(root, game, opts = {}) {
     bakeRoller(to) {
       roller.style.transition = "none";
       roller.style.transform = "none";
+      // Hand the shadow back to its resting rule as .die lands on the new cell:
+      // it was sitting one cell ahead of .die, and .die is about to move one
+      // cell forward, so removing the offset leaves it exactly where it was.
+      shadow.style.transition = "none";
+      shadow.style.removeProperty("transform");
       die.style.transition = "none";
       die.style.left = `${cellLeft(to.c)}px`;
       die.style.top = `${cellTop(to.r)}px`;
