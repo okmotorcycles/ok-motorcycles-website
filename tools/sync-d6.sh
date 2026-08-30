@@ -10,8 +10,11 @@ DEST="$ROOT/games/d6"
 [ -f "$SRC/index.html" ] || { echo "no D6 web build at $SRC" >&2; exit 1; }
 
 mkdir -p "$DEST"
+# daily.json is GENERATED into this repo by the d6-daily workflow, not authored
+# in the source repo — without this exclusion, --delete would wipe today's
+# puzzle every time the game is hand-synced.
 rsync -a --delete \
-  --exclude 'test/' --exclude 'run.sh' --exclude 'README.md' \
+  --exclude 'test/' --exclude 'run.sh' --exclude 'README.md' --exclude 'daily.json' \
   "$SRC/" "$DEST/"
 
 echo "synced $SRC -> $DEST"

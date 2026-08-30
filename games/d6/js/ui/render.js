@@ -61,7 +61,9 @@ function cellLeft(c) { return c * STEP; }
 function cellTop(r) { return r * STEP; }
 
 // Build the whole scene into root and return a controller for live updates.
-export function renderScene(root, game) {
+// `opts.extraLevels` prepends buttons to the level picker for levels that don't
+// live in LEVELS — the generated daily puzzle, which arrives over the network.
+export function renderScene(root, game, opts = {}) {
   root.innerHTML = "";
 
   const hud = el("div", "hud", `
@@ -73,9 +75,12 @@ export function renderScene(root, game) {
   `);
   root.appendChild(hud);
 
+  const entries = [
+    ...(opts.extraLevels || []),
+    ...Object.keys(LEVELS).map((name) => ({ key: name, label: prettyLevel(name) })),
+  ];
   const picker = el("div", "picker",
-    Object.keys(LEVELS).map((name) =>
-      `<button data-level="${name}">${prettyLevel(name)}</button>`).join(""));
+    entries.map(({ key, label }) => `<button data-level="${key}">${label}</button>`).join(""));
   root.appendChild(picker);
 
   const stage = el("div", "stage");
@@ -284,7 +289,7 @@ export function renderScene(root, game) {
       }
     },
     updateHud(g) {
-      hud.querySelector(".level").textContent = prettyLevel(g.levelName);
+      hud.querySelector(".level").textContent = g.displayName || prettyLevel(g.levelName);
       hud.querySelector(".moves").textContent = `moves ${g.moveCount}`;
       const tasksEl = hud.querySelector(".tasks");
       if (g.totalTasks === 0) {
