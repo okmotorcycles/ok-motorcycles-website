@@ -114,6 +114,15 @@ function clockReset() {
   clockMs = 0;
 }
 
+// Leaving the full-screen game. Prefer real history so the reader lands back
+// where they were mid-article; fall back to the note itself when the game was
+// opened cold (a shared link, a new tab), where there is nothing to go back to.
+function goBack() {
+  const sameOrigin = document.referrer && document.referrer.startsWith(location.origin);
+  if (sameOrigin && history.length > 1) history.back();
+  else location.href = "/notes/projects/d6/";
+}
+
 const sceneOpts = () => ({
   showPicker: SHOW_LEVELS,
   extraLevels: daily ? [{ key: DAILY, label: "Daily" }] : [],
@@ -210,6 +219,8 @@ function loadLevel(name) {
   // player's chosen angle across a level change.
   scene.setCamera(camTurns, false);
   clockReset();
+  scene.setRetry(false);
+  scene.setBackLink(goBack);
   if (name === DAILY && daily) {
     scene.setTime(0, true);
     const best = solvedToday();
@@ -281,6 +292,7 @@ function handleMove(keyDir) {
         else if (beatMoves) note = `${run} — fewest moves yet (${par})`;
         else if (beatTime) note = `${run} — fastest yet (${par})`;
         else note = `${run} — ${bestLabel(result, daily.par)}`;
+        scene.setRetry(true);
         scene.showBanner("SOLVED", note, {
           medal,
           actions: [

@@ -167,6 +167,7 @@ export function renderScene(root, game, opts = {}) {
   root.innerHTML = "";
 
   const hud = el("div", "hud", `
+    <button class="back" hidden>\u2190 Notes</button>
     <div class="title">D<span>6</span></div>
     <div class="level"></div>
     <div class="tasks"></div>
@@ -174,6 +175,7 @@ export function renderScene(root, game, opts = {}) {
     <div class="medal" hidden></div>
     <div class="time" hidden></div>
     <div class="best" hidden></div>
+    <button class="retry" data-touch="restart" hidden>Retry</button>
     <div class="hint">WASD / arrows to roll · R to restart</div>
     <div class="hint">SPACE turns the view</div>
   `);
@@ -560,6 +562,25 @@ export function renderScene(root, game, opts = {}) {
       const t = hud.querySelector(".time");
       t.hidden = !show;
       if (show) t.textContent = formatTime(ms);
+    },
+
+    // A way back out of the full-screen game. Only when this is the top-level
+    // document: embedded in the note there is already a page around it, and a
+    // "back" inside the frame would navigate the frame, not the reader.
+    setBackLink(onClick) {
+      const b = hud.querySelector(".back");
+      b.hidden = window.self !== window.top;
+      if (!b.hidden && !b.dataset.wired) {
+        b.dataset.wired = "1";
+        b.addEventListener("click", () => { b.blur(); onClick(); });
+      }
+    },
+
+    // Offered once the puzzle is solved. Closing the win banner used to leave
+    // the player on a finished board with no visible way to play it again —
+    // R worked, but nothing said so, and on a phone there is no R.
+    setRetry(show) {
+      hud.querySelector(".retry").hidden = !show;
     },
 
     // The medal the player is still on course for. Rolls only ever add moves, so

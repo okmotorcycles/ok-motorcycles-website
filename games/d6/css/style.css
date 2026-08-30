@@ -205,21 +205,36 @@ html, body {
   width: 11px;
   height: 11px;
   border-radius: 50%;
-  /* A dark inner rim reads on the pale discs, a hairline outer one on the dark
-     theme, so every tier keeps an edge against either background. */
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.28), 0 0 0 1px var(--line);
 }
 .medal.lg { width: 16px; height: 16px; }
-.medal.platinum { background: linear-gradient(150deg, #ffffff, #b8c6cf); }
-.medal.gold     { background: linear-gradient(150deg, #f7d774, #c08f13); }
-.medal.silver   { background: linear-gradient(150deg, #d3d8dc, #8b949b); }
-.medal.bronze   { background: linear-gradient(150deg, #dda06a, #8c4f24); }
-/* Past bronze: hollow, so the disc stays in place rather than disappearing. */
-.medal.unranked { background: none; box-shadow: inset 0 0 0 1.5px var(--muted); }
+/* Flat single colours, no rim and no gradient. Each is picked dark enough to
+   hold its own against the pale board without needing an outline — platinum in
+   particular is a cool grey rather than the near-white it "should" be, because
+   near-white on an off-white page is not a disc, it is nothing. */
+.medal.platinum { background: #9fb3c0; }
+.medal.gold     { background: #d8a227; }
+.medal.silver   { background: #98a2a9; }
+.medal.bronze   { background: #a86a34; }
+.medal.unranked { background: #c4c4bc; }
 
 .hud .time { color: var(--ink); font-variant-numeric: tabular-nums; }
 .hud .best { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .hud .hint { color: var(--muted); font-size: 13px; }
+.hud .back,
+.hud .retry {
+  font: inherit;
+  font-size: 13px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--ink);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.hud .back:hover,
+.hud .retry:hover { border-color: var(--accent); }
+.hud .retry { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
 
 /* ---- Level picker ---- */
 .picker {
