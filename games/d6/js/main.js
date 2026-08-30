@@ -80,8 +80,9 @@ function recordSolve(date, moves, ms) {
 }
 
 const bestFor = (date) => loadResults()[date] || null;
-const bestLabel = (b, par) =>
-  b ? `par ${par} \u00b7 best ${b.moves} moves \u00b7 ${formatTime(b.ms)}` : "";
+// Only ever rendered on the win screen now, so it names itself in full.
+const bestLabel = (b) =>
+  b ? `best ${b.moves} moves \u00b7 ${formatTime(b.ms)}` : "";
 
 // Par and the live medal are the reward for having finished once: the first run
 // is left as pure discovery, with no target to measure yourself against.
@@ -224,7 +225,7 @@ function loadLevel(name) {
   if (name === DAILY && daily) {
     scene.setTime(0, true);
     const best = solvedToday();
-    scene.setBest(bestLabel(best, daily.par));
+    scene.setPar(best ? daily.par : null);
     scene.setMedal(best ? medalFor(0, daily.par) : null);
   }
   busy = false;
@@ -280,7 +281,7 @@ function handleMove(keyDir) {
         const ms = clockElapsed();
         scene.setTime(ms);
         const { result, first, beatMoves, beatTime } = recordSolve(daily.date, game.moveCount, ms);
-        scene.setBest(bestLabel(result, daily.par));
+        scene.setPar(daily.par);
         const medal = medalFor(game.moveCount, daily.par);
         scene.setMedal(medal);
         const run = `${game.moveCount} moves \u00b7 ${formatTime(ms)}`;
@@ -291,7 +292,7 @@ function handleMove(keyDir) {
         else if (beatMoves && beatTime) note = `${run} — a new best on both (${par})`;
         else if (beatMoves) note = `${run} — fewest moves yet (${par})`;
         else if (beatTime) note = `${run} — fastest yet (${par})`;
-        else note = `${run} — ${bestLabel(result, daily.par)}`;
+        else note = `${run} — ${par}, ${bestLabel(result)}`;
         scene.setRetry(true);
         scene.showBanner("SOLVED", note, {
           medal,

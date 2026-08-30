@@ -174,7 +174,7 @@ export function renderScene(root, game, opts = {}) {
     <div class="moves"></div>
     <div class="medal" hidden></div>
     <div class="time" hidden></div>
-    <div class="best" hidden></div>
+    <div class="par" hidden></div>
     <button class="retry" data-touch="restart" hidden>Retry</button>
     <div class="hint">WASD / arrows to roll · R to restart</div>
     <div class="hint">SPACE turns the view</div>
@@ -594,11 +594,13 @@ export function renderScene(root, game, opts = {}) {
       m.title = medal === "unranked" ? "past bronze" : medal ? `on track for ${medal}` : "";
     },
 
-    // "par 22 · best 22 moves · 1:34" — the record to beat, or hidden if none.
-    setBest(text) {
-      const b = hud.querySelector(".best");
-      b.hidden = !text;
-      b.textContent = text || "";
+    // Just the optimum, once the player has earned the right to see it. The
+    // player's own record is not here on purpose — it belongs on the win screen,
+    // where it is read once, rather than in a row scanned on every move.
+    setPar(par) {
+      const b = hud.querySelector(".par");
+      b.hidden = !par;
+      b.textContent = par ? `par ${par}` : "";
     },
     hideBanner() { banner.classList.remove("show"); },
   };
