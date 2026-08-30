@@ -39,19 +39,24 @@ const ROLL_EASE = "cubic-bezier(0.4, 0.15, 0.35, 1)";
 const PAN_EASE = "cubic-bezier(0.33, 0.06, 0.24, 1)";
 
 // --- Camera ------------------------------------------------------------------
-// Four stops, 90 degrees apart, on top of a 45 degree base yaw: the board reads
-// as a diamond at every stop, which is what makes the view isometric rather
-// than merely tilted. The pitch (--tilt) never changes; see css/style.css for
-// why it is atan(sqrt(2)) rather than the 2:1 game convention.
-const BASE_YAW = 45;
+// Four stops, 90 degrees apart, on a base yaw of ZERO: the camera looks straight
+// down a grid axis, so the board reads as a rectangle and the die shows exactly
+// two faces — its top and the one facing the camera. Its east and west faces are
+// edge-on, projecting to nothing, and the ONLY way to see them is to press SPACE
+// and bring them round. That hidden information is the point of the view; it is
+// deliberately not isometric, which is what a 45 degree yaw would make it (all
+// three cube axes foreshortened equally, two side faces always in sight).
+// The pitch (--tilt) never changes; only the yaw does.
+const BASE_YAW = 0;
 // SPACE swings the CAMERA a quarter turn clockwise around the board — which is
 // the same thing as turning the board counter-clockwise under a fixed camera,
 // hence the negative sign on the yaw the board is given. Flipping this to +90
 // reverses the direction of the whole feature; main.js derives its input remap
 // from this same constant, so the two cannot drift apart.
 export const YAW_PER_TURN = -90;
-// The perspective is mild on purpose: isometric is strictly an orthographic
-// projection, but a little convergence keeps the die reading as a solid.
+// The perspective is mild on purpose: the projection is essentially an
+// orthographic elevation, but a little convergence keeps the die reading as a
+// solid rather than a flat arrangement of quads.
 const PERSPECTIVE = 1900;
 const MIN_FIT = 0.34;
 
@@ -205,6 +210,7 @@ export function renderScene(root, game, opts = {}) {
 
   // Die: .die (positioned at cell) > .roller (per-step pivot) > .cube (orientation).
   const die = el("div", "die");
+  die.appendChild(el("div", "die-shadow")); // ground shadow, outside .roller so it never tumbles
   const roller = el("div", "roller");
   const cube = el("div", "cube");
   cube.innerHTML = FACE_HTML;

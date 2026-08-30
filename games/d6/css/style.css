@@ -17,17 +17,22 @@
   --half: 43px;   /* half of --cube */
   --roll-ms: 260ms;
 
-  /* --- Isometric camera ------------------------------------------------------
-     The eye looks down the (1,1,1) diagonal: rotateX(54.736deg) rotateZ(45deg).
-     54.736deg = atan(sqrt(2)) is TRUE isometric — the one pitch at which all
-     three cube axes foreshorten by the same amount, so the die's top, front and
-     side faces stay equally legible. That is exactly what this camera is for
-     (the player rotates it to read the die), which is why it is preferred here
-     over the other common convention, 2:1 "game isometric" (rotateX(60deg)):
-     2:1 squashes the top face to half height, and the top face is the one the
-     task tiles are scored from.
+  /* --- Camera ----------------------------------------------------------------
+     A pitched, axis-aligned three-quarter view: rotateX(52deg) with a yaw of
+     ZERO. The camera looks straight down a grid axis, so the die presents its
+     top face and the one face turned toward the viewer, and its east and west
+     faces are exactly edge-on — they project to nothing and cannot be read at
+     all. Turning the camera with SPACE is the only way to bring them into view.
+     Hiding two of the die's faces behind a deliberate action is the point.
 
-     --yaw is the ONLY thing SPACE changes. It accumulates (45, -45, -135, -225,
+     This is NOT isometric, and the difference is the yaw, not the pitch: a 45deg
+     yaw is what makes a view isometric (all three cube axes foreshortened
+     equally, two side faces permanently in sight), which is precisely the
+     property this view is rejecting. 52deg pitch is the original board tilt —
+     enough of the top face to read the pips the task tiles score, enough of the
+     front face for the die to read as a cube rather than a sticker.
+
+     --yaw is the ONLY thing SPACE changes. It accumulates (0, -90, -180, -270,
      ...) instead of wrapping at 360, so every press continues turning the same
      way round instead of unwinding three quarters of a turn.
 
@@ -37,8 +42,12 @@
      permutations in js/core/dice.js. .board stays an unrotated plane; the
      camera is a separate wrapper above it, so the die maths is untouched and
      stays correct at every stop for free. */
-  --tilt: 54.736deg;
-  --yaw: 45deg;
+  /* Pitch only — the yaw starts at zero so the camera faces straight down a
+     grid axis and the die's side faces are edge-on until SPACE turns them into
+     view. 52deg is the original board tilt: enough of the top face to read the
+     pips that task tiles score, enough of the front face to read as a cube. */
+  --tilt: 52deg;
+  --yaw: 0deg;
   --cam-ms: 420ms;
   --cam-ease: cubic-bezier(0.35, 0.02, 0.15, 1);
 
@@ -491,13 +500,31 @@ html, body {
   transform-style: preserve-3d;
 }
 
+/* The die's shadow: a single soft patch lying flat on the BOARD plane, pushed
+   back down the height the .die is lifted by so it sits on the floor rather than
+   riding at cube height. It never rotates with the cube — a shadow on the ground
+   does not tumble — and it stays put during a roll, which reads correctly since
+   the cube is pivoting about its contact edge. */
+.die-shadow {
+  position: absolute;
+  inset: 7%;
+  transform: translateZ(calc(-1 * var(--half) + 1px));
+  background: radial-gradient(closest-side, var(--drop), transparent 76%);
+  border-radius: 46%;
+  pointer-events: none;
+}
+
 .face {
   position: absolute;
   width: var(--cube);
   height: var(--cube);
   border-radius: 13px;
   background: linear-gradient(155deg, var(--die), var(--die-2));
-  box-shadow: inset 0 0 0 2px var(--die-edge), 0 6px 18px var(--drop);
+  /* Rim only. A drop shadow here is drawn in each FACE's own plane, so with the
+     camera square-on to the board the top face casts its shadow straight down
+     across the front face — a dark bar sitting on the die like a mouth. The
+     die's shadow belongs on the ground, not on its own faces: see .die-shadow. */
+  box-shadow: inset 0 0 0 2px var(--die-edge);
   display: grid;
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
   padding: 13px;

@@ -48,7 +48,7 @@ const KEY_DIR = {
 // ---- Input frame -------------------------------------------------------------
 // TRUE  = camera-relative: a key means a SCREEN direction, so "up" always rolls
 //         the die away from the viewer no matter which way the camera faces.
-//         This is what rotatable isometric games do, and it is the default.
+//         This is what games with a rotatable camera do, and it is the default.
 // FALSE = board-fixed: a key always means the same grid direction, so after a
 //         quarter turn "up" rolls sideways on screen.
 // Either way the ENGINE only ever sees a plain grid direction — the rotation is
