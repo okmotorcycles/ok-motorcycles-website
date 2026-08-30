@@ -160,6 +160,9 @@ function cellTop(r) { return r * STEP; }
 // Build the whole scene into root and return a controller for live updates.
 // `opts.extraLevels` prepends buttons to the level picker for levels that don't
 // live in LEVELS — the generated daily puzzle, which arrives over the network.
+// `opts.showPicker` gates the picker itself: the page leads with the daily
+// puzzle and nothing else, so the campaign is only offered when explicitly
+// asked for (see SHOW_LEVELS in main.js).
 export function renderScene(root, game, opts = {}) {
   root.innerHTML = "";
 
@@ -168,6 +171,7 @@ export function renderScene(root, game, opts = {}) {
     <div class="level"></div>
     <div class="tasks"></div>
     <div class="moves"></div>
+    <div class="medal" hidden></div>
     <div class="time" hidden></div>
     <div class="best" hidden></div>
     <div class="hint">WASD / arrows to roll · R to restart</div>
@@ -175,12 +179,15 @@ export function renderScene(root, game, opts = {}) {
   `);
   root.appendChild(hud);
 
-  const entries = [
-    ...(opts.extraLevels || []),
-    ...Object.keys(LEVELS).map((name) => ({ key: name, label: prettyLevel(name) })),
-  ];
+  const entries = opts.showPicker
+    ? [
+        ...(opts.extraLevels || []),
+        ...Object.keys(LEVELS).map((name) => ({ key: name, label: prettyLevel(name) })),
+      ]
+    : [];
   const picker = el("div", "picker",
     entries.map(({ key, label }) => `<button data-level="${key}">${label}</button>`).join(""));
+  picker.hidden = entries.length === 0;
   root.appendChild(picker);
 
   // .stage (flat, holds the perspective) > .camera (view angle) > .board (grid).
@@ -222,7 +229,8 @@ export function renderScene(root, game, opts = {}) {
   board.appendChild(die);
 
   const banner = el("div", "banner",
-    `<div class="card"><h2></h2><p></p><div class="actions" hidden></div></div>`);
+    `<div class="card"><h2></h2><div class="award" hidden></div><p></p>` +
+    `<div class="actions" hidden></div></div>`);
   root.appendChild(banner);
 
   // Camera constants, read off the stylesheet so there is one source of truth
@@ -505,9 +513,14 @@ export function renderScene(root, game, opts = {}) {
     // means the card is the ONLY thing that can carry an affordance — without
     // one the win screen reads as a dead end, since every control behind it is
     // dimmed and blurred, the restart hint included.
-    showBanner(title, sub, actions = []) {
+    showBanner(title, sub, { actions = [], medal = null } = {}) {
       banner.querySelector("h2").textContent = title;
       banner.querySelector("p").textContent = sub;
+      const award = banner.querySelector(".award");
+      award.hidden = !medal;
+      // Never colour alone: the medal is named as well as shown, so it still
+      // reads for anyone who can't separate the platinum and silver discs.
+      award.innerHTML = medal ? `<span class="medal lg ${medal}"></span><b>${medal}</b>` : "";
       const row = banner.querySelector(".actions");
       row.innerHTML = "";
       for (const a of actions) {
@@ -527,7 +540,18 @@ export function renderScene(root, game, opts = {}) {
       if (show) t.textContent = formatTime(ms);
     },
 
-    // "best 22 moves · 1:34" — the record to beat, or hidden if there isn't one.
+    // The medal the player is still on course for. Rolls only ever add moves, so
+    // this can only ever degrade: it opens on platinum and drops a tier each time
+    // the move count crosses a threshold, which is the whole feedback loop —
+    // you watch it slip while you dither.
+    setMedal(medal) {
+      const m = hud.querySelector(".medal");
+      m.hidden = !medal;
+      m.className = medal ? `medal ${medal}` : "medal";
+      m.title = medal ? `on track for ${medal}` : "";
+    },
+
+    // "par 22 · best 22 moves · 1:34" — the record to beat, or hidden if none.
     setBest(text) {
       const b = hud.querySelector(".best");
       b.hidden = !text;

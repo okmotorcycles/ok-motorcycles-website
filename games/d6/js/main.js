@@ -14,6 +14,10 @@ const root = document.getElementById("app");
 // missing, stale or unreachable, the hand-made campaign loads instead and
 // nothing about the game breaks.
 const DAILY = "daily";
+// The page leads with the daily puzzle and nothing else. The hand-made campaign
+// still ships — it is what teaches each tile type — but it is off the front
+// surface; ?levels brings back the picker and the number-key shortcuts.
+const SHOW_LEVELS = new URLSearchParams(location.search).has("levels");
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 let daily = null;
 
@@ -76,7 +80,12 @@ function recordSolve(date, moves, ms) {
 }
 
 const bestFor = (date) => loadResults()[date] || null;
-const bestLabel = (b) => (b ? `best ${b.moves} moves \u00b7 ${formatTime(b.ms)}` : "");
+const bestLabel = (b, par) =>
+  b ? `par ${par} \u00b7 best ${b.moves} moves \u00b7 ${formatTime(b.ms)}` : "";
+
+// Par and the live medal are the reward for having finished once: the first run
+// is left as pure discovery, with no target to measure yourself against.
+const solvedToday = () => (daily ? bestFor(daily.date) : null);
 
 // ---- Run clock --------------------------------------------------------------
 // Starts on the first move that actually moves the die, not on load: staring at
@@ -105,8 +114,33 @@ function clockReset() {
   clockMs = 0;
 }
 
-const sceneOpts = () => ({ extraLevels: daily ? [{ key: DAILY, label: "Daily" }] : [] });
+const sceneOpts = () => ({
+  showPicker: SHOW_LEVELS,
+  extraLevels: daily ? [{ key: DAILY, label: "Daily" }] : [],
+});
 const levelNames = () => [...(daily ? [DAILY] : []), ...Object.keys(LEVELS)];
+
+// ---- Medals -----------------------------------------------------------------
+// Par is the solver's exhaustive optimum for the day's board — the fewest rolls
+// that can possibly win it — so platinum is genuinely "you found the best line
+// there is", not "you beat a designer's guess".
+//
+// The tiers below it widen with par, because the room to go wrong does too: two
+// wasted rolls on an 8-move Monday is a third of the puzzle, on a 22-move Sunday
+// it is a rounding error. Hence a percentage with a floor rather than a flat
+// allowance. Bronze has no upper bound on purpose — finishing a puzzle should
+// always be worth something.
+const MEDAL_TIERS = [
+  ["platinum", (par) => par],
+  ["gold", (par) => Math.max(par + 2, Math.ceil(par * 1.15))],
+  ["silver", (par) => Math.max(par + 4, Math.ceil(par * 1.4))],
+];
+
+function medalFor(moves, par) {
+  if (!par) return null;
+  for (const [name, limit] of MEDAL_TIERS) if (moves <= limit(par)) return name;
+  return "bronze";
+}
 
 const KEY_DIR = {
   ArrowUp: "up", KeyW: "up",
@@ -167,7 +201,9 @@ function loadLevel(name) {
   clockReset();
   if (name === DAILY && daily) {
     scene.setTime(0, true);
-    scene.setBest(bestLabel(bestFor(daily.date)));
+    const best = solvedToday();
+    scene.setBest(bestLabel(best, daily.par));
+    scene.setMedal(best ? medalFor(0, daily.par) : null);
   }
   busy = false;
 }
@@ -198,7 +234,12 @@ function handleMove(keyDir) {
     scene.wobble(dir);
     return;
   }
-  if (timed) clockStart();
+  if (timed) {
+    clockStart();
+    // Re-read every move so the disc degrades the instant a threshold is passed,
+    // rather than only revealing the damage at the end.
+    if (solvedToday()) scene.setMedal(medalFor(game.moveCount, daily.par));
+  }
 
   // Play the roll and any follow-ups (conveyor slides, spins, portals) the
   // engine chained, reflecting tile/task/goal changes after each step.
@@ -217,21 +258,28 @@ function handleMove(keyDir) {
         const ms = clockElapsed();
         scene.setTime(ms);
         const { result, first, beatMoves, beatTime } = recordSolve(daily.date, game.moveCount, ms);
-        scene.setBest(bestLabel(result));
+        scene.setBest(bestLabel(result, daily.par));
+        const medal = medalFor(game.moveCount, daily.par);
+        scene.setMedal(medal);
         const run = `${game.moveCount} moves \u00b7 ${formatTime(ms)}`;
+        const par = `par ${daily.par}`;
         let note;
-        if (first) note = `${run} — your first solve today`;
-        else if (beatMoves && beatTime) note = `${run} — a new best on both`;
-        else if (beatMoves) note = `${run} — fewest moves yet`;
-        else if (beatTime) note = `${run} — fastest yet`;
-        else note = `${run} — ${bestLabel(result)}`;
-        scene.showBanner("SOLVED", note, [
-          { label: "Retry", primary: true, onClick: () => { scene.hideBanner(); loadLevel(DAILY); } },
-          { label: "Close", onClick: () => scene.hideBanner() },
-        ]);
+        if (medal === "platinum") note = `${run} — the shortest route there is (${par})`;
+        else if (first) note = `${run} — your first solve today (${par})`;
+        else if (beatMoves && beatTime) note = `${run} — a new best on both (${par})`;
+        else if (beatMoves) note = `${run} — fewest moves yet (${par})`;
+        else if (beatTime) note = `${run} — fastest yet (${par})`;
+        else note = `${run} — ${bestLabel(result, daily.par)}`;
+        scene.showBanner("SOLVED", note, {
+          medal,
+          actions: [
+            { label: "Retry", primary: true, onClick: () => { scene.hideBanner(); loadLevel(DAILY); } },
+            { label: "Close", onClick: () => scene.hideBanner() },
+          ],
+        });
         return;
       }
-      scene.showBanner("LEVEL CLEAR", "next level loading…");
+      scene.showBanner("LEVEL CLEAR", "next level loading\u2026");
       setTimeout(() => { scene.hideBanner(); nextLevel(); }, 1100);
     }
   );
@@ -243,8 +291,10 @@ window.addEventListener("keydown", (e) => {
   // default, and would also re-fire whichever level button was last clicked.
   if (e.code === "Space") { e.preventDefault(); rotateCamera(); return; }
   if (e.code === "KeyR") { restart(); return; }
-  // Number keys jump straight to a level (handy for trying the action tiles).
-  if (/^Digit[1-9]$/.test(e.code)) {
+  // Number keys jump straight to a level — a shortcut for the campaign, so it
+  // rides along with the picker rather than silently throwing a daily player out
+  // of the puzzle they are mid-way through.
+  if (SHOW_LEVELS && /^Digit[1-9]$/.test(e.code)) {
     const idx = Number(e.code.slice(5)) - 1;
     const names = levelNames();
     if (idx < names.length) loadLevel(names[idx]);

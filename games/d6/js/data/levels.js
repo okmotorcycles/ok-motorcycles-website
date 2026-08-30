@@ -7,7 +7,11 @@
 //   level_spin     — a spin tile is REQUIRED to orient the needed face
 //   level_portal   — a portal is the only link between two halves
 //   level_1/level_2 — ported 1:1 from the Unity Assets/Resources (floor grids)
-// The debug_* levels are the original's tile-test sandboxes (chain each other).
+//
+// The original's debug_1/debug_2 tile-test sandboxes are gone: they were dev
+// scaffolding, they were never designed to be won, and the game now leads with a
+// generated daily puzzle. Their grids are in git history if a tile-test board is
+// ever wanted again.
 
 export const START_LEVEL = "level_0";
 
@@ -63,25 +67,4 @@ g # # # G
 0 # # # 0
 0 0 # 0 0
 :level_0:`,
-
-  // Ported 1:1 from Assets/Resources/debug_1.txt — exercises every tile type
-  // (portals, tasks, spins, conveyors, goal). A tile-test sandbox, not winnable.
-  debug_1: `# # P0 # #
-# g # T5 #
-# MR S # #
-# # 0 # #
-# # s ML #
-# B2 # G #
-# # P0 # #
-:debug_2:`,
-
-  // Ported 1:1 from Assets/Resources/debug_2.txt.
-  debug_2: `# # T3 # #
-# # MU G #
-# P0 S # #
-# 0 # 0 #
-# # s P0 #
-# g MD # #
-# # B1 # #
-:debug_1:`,
 };

@@ -192,6 +192,23 @@ html, body {
 .hud .tasks { color: var(--ink); }
 .hud .tasks.done { color: var(--accent); font-weight: 600; }
 .hud .moves { color: var(--muted); font-variant-numeric: tabular-nums; }
+/* Medal disc: the tier the run is still on course for. Sits with the move
+   counter because moves are what it is scored on. */
+.hud .medal { align-self: center; }
+.medal {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  /* A dark inner rim reads on the pale discs, a hairline outer one on the dark
+     theme, so every tier keeps an edge against either background. */
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.28), 0 0 0 1px var(--line);
+}
+.medal.lg { width: 16px; height: 16px; }
+.medal.platinum { background: linear-gradient(150deg, #ffffff, #b8c6cf); }
+.medal.gold     { background: linear-gradient(150deg, #f7d774, #c08f13); }
+.medal.silver   { background: linear-gradient(150deg, #d3d8dc, #8b949b); }
+.medal.bronze   { background: linear-gradient(150deg, #dda06a, #8c4f24); }
+
 .hud .time { color: var(--ink); font-variant-numeric: tabular-nums; }
 .hud .best { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .hud .hint { color: var(--muted); font-size: 13px; }
@@ -582,6 +599,17 @@ html, body {
 .banner .card { pointer-events: auto; }
 .banner .card h2 { margin: 0 0 6px; color: var(--accent); letter-spacing: 0.08em; }
 .banner .card p { margin: 0; color: var(--muted); }
+.banner .award {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
 .banner .actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
 .banner .actions button {
   font: inherit;
