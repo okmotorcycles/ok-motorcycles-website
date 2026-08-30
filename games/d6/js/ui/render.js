@@ -168,6 +168,8 @@ export function renderScene(root, game, opts = {}) {
     <div class="level"></div>
     <div class="tasks"></div>
     <div class="moves"></div>
+    <div class="time" hidden></div>
+    <div class="best" hidden></div>
     <div class="hint">WASD / arrows to roll · R to restart</div>
     <div class="hint">SPACE turns the view</div>
   `);
@@ -219,7 +221,8 @@ export function renderScene(root, game, opts = {}) {
   die.appendChild(roller);
   board.appendChild(die);
 
-  const banner = el("div", "banner", `<div class="card"><h2></h2><p></p></div>`);
+  const banner = el("div", "banner",
+    `<div class="card"><h2></h2><p></p><div class="actions" hidden></div></div>`);
   root.appendChild(banner);
 
   // Camera constants, read off the stylesheet so there is one source of truth
@@ -497,10 +500,38 @@ export function renderScene(root, game, opts = {}) {
       picker.querySelectorAll("button").forEach((b) =>
         b.classList.toggle("current", b.dataset.level === g.levelName));
     },
-    showBanner(title, sub) {
+    // `actions` is [{ label, onClick, primary }]. The banner's scrim is
+    // pointer-events: none so the board stays clickable behind it, which also
+    // means the card is the ONLY thing that can carry an affordance — without
+    // one the win screen reads as a dead end, since every control behind it is
+    // dimmed and blurred, the restart hint included.
+    showBanner(title, sub, actions = []) {
       banner.querySelector("h2").textContent = title;
       banner.querySelector("p").textContent = sub;
+      const row = banner.querySelector(".actions");
+      row.innerHTML = "";
+      for (const a of actions) {
+        const b = el("button", a.primary ? "primary" : "", a.label);
+        b.addEventListener("click", () => { b.blur(); a.onClick(); });
+        row.appendChild(b);
+      }
+      row.hidden = actions.length === 0;
       banner.classList.add("show");
+    },
+
+    // Run clock. Deliberately separate from updateHud: the clock ticks several
+    // times a second and the rest of the HUD only changes on a move.
+    setTime(ms, show = true) {
+      const t = hud.querySelector(".time");
+      t.hidden = !show;
+      if (show) t.textContent = formatTime(ms);
+    },
+
+    // "best 22 moves · 1:34" — the record to beat, or hidden if there isn't one.
+    setBest(text) {
+      const b = hud.querySelector(".best");
+      b.hidden = !text;
+      b.textContent = text || "";
     },
     hideBanner() { banner.classList.remove("show"); },
   };
@@ -663,6 +694,12 @@ function el(tag, cls, html) {
   if (cls) e.className = cls;
   if (html != null) e.innerHTML = html;
   return e;
+}
+
+// m:ss — the scale a puzzle run lives on.
+export function formatTime(ms) {
+  const total = Math.max(0, Math.round(ms / 1000));
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
 }
 
 function prettyLevel(name) {

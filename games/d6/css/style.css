@@ -192,6 +192,8 @@ html, body {
 .hud .tasks { color: var(--ink); }
 .hud .tasks.done { color: var(--accent); font-weight: 600; }
 .hud .moves { color: var(--muted); font-variant-numeric: tabular-nums; }
+.hud .time { color: var(--ink); font-variant-numeric: tabular-nums; }
+.hud .best { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .hud .hint { color: var(--muted); font-size: 13px; }
 
 /* ---- Level picker ---- */
@@ -575,5 +577,25 @@ html, body {
   text-align: center;
   box-shadow: 0 24px 60px var(--drop);
 }
+/* The scrim ignores pointer events so the board stays live behind it; the card
+   has to opt back IN or its buttons are unclickable. */
+.banner .card { pointer-events: auto; }
 .banner .card h2 { margin: 0 0 6px; color: var(--accent); letter-spacing: 0.08em; }
 .banner .card p { margin: 0; color: var(--muted); }
+.banner .actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+.banner .actions button {
+  font: inherit;
+  padding: 7px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+.banner .actions button:hover { border-color: var(--accent); }
+.banner .actions button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}

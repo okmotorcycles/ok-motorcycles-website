@@ -3,7 +3,7 @@
 
 import { CONFIG, advanceLevel } from "./core/state.js";
 import { createGame, createGameFromText, tryMove } from "./core/engine.js";
-import { renderScene, DIR_CLOCKWISE, YAW_PER_TURN } from "./ui/render.js";
+import { renderScene, formatTime, DIR_CLOCKWISE, YAW_PER_TURN } from "./ui/render.js";
 import { LEVELS } from "./data/levels.js";
 
 const root = document.getElementById("app");
@@ -33,6 +33,76 @@ async function fetchDaily() {
 function dailyLabel(iso) {
   const [, m, d] = String(iso || "").split("-").map(Number);
   return MONTHS[m - 1] ? `${MONTHS[m - 1]} ${d}` : "today";
+}
+
+// ---- Daily results ----------------------------------------------------------
+// Solving today's puzzle is remembered across reloads, so the page can offer a
+// retry against your own record instead of quietly forgetting you ever played.
+// Best moves and best time are tracked separately — they are different runs to
+// chase, and a 22-move crawl and a sloppy sprint are both worth beating.
+// Everything here degrades to "no records" if storage is unavailable (private
+// windows throw on access), because none of it may break the game.
+const STORE_KEY = "d6.daily.results";
+const KEEP_DAYS = 60;
+
+function loadResults() {
+  try {
+    return JSON.parse(localStorage.getItem(STORE_KEY) || "{}") || {};
+  } catch {
+    return {};
+  }
+}
+
+function recordSolve(date, moves, ms) {
+  const all = loadResults();
+  const prev = all[date];
+  const result = {
+    moves: Math.min(prev?.moves ?? Infinity, moves),
+    ms: Math.min(prev?.ms ?? Infinity, ms),
+    solves: (prev?.solves ?? 0) + 1,
+  };
+  const beatMoves = prev != null && moves < prev.moves;
+  const beatTime = prev != null && ms < prev.ms;
+  all[date] = result;
+  // Keep the map from growing forever; dates sort lexically as ISO strings.
+  const trimmed = {};
+  for (const k of Object.keys(all).sort().slice(-KEEP_DAYS)) trimmed[k] = all[k];
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(trimmed));
+  } catch {
+    /* storage full or blocked — the run still counts for this session */
+  }
+  return { result, first: prev == null, beatMoves, beatTime };
+}
+
+const bestFor = (date) => loadResults()[date] || null;
+const bestLabel = (b) => (b ? `best ${b.moves} moves \u00b7 ${formatTime(b.ms)}` : "");
+
+// ---- Run clock --------------------------------------------------------------
+// Starts on the first move that actually moves the die, not on load: staring at
+// a fresh board working out the route is thinking time, not run time.
+let clockFrom = null;
+let clockMs = 0;
+let clockTimer = null;
+
+function clockElapsed() {
+  return clockFrom == null ? 0 : clockTimer ? performance.now() - clockFrom : clockMs;
+}
+function clockStart() {
+  if (clockFrom != null) return;
+  clockFrom = performance.now();
+  clockTimer = setInterval(() => scene && scene.setTime(clockElapsed()), 250);
+}
+function clockStop() {
+  if (clockFrom != null && clockTimer) clockMs = performance.now() - clockFrom;
+  clearInterval(clockTimer);
+  clockTimer = null;
+}
+function clockReset() {
+  clearInterval(clockTimer);
+  clockTimer = null;
+  clockFrom = null;
+  clockMs = 0;
 }
 
 const sceneOpts = () => ({ extraLevels: daily ? [{ key: DAILY, label: "Daily" }] : [] });
@@ -94,6 +164,11 @@ function loadLevel(name) {
   // Pins the view rather than trusting the CSS default, and carries the
   // player's chosen angle across a level change.
   scene.setCamera(camTurns, false);
+  clockReset();
+  if (name === DAILY && daily) {
+    scene.setTime(0, true);
+    scene.setBest(bestLabel(bestFor(daily.date)));
+  }
   busy = false;
 }
 
@@ -115,6 +190,7 @@ function nextLevel() {
 
 function handleMove(keyDir) {
   if (busy || !game || game.won) return;
+  const timed = game.levelName === DAILY;
 
   const dir = toGridDir(keyDir); // screen -> grid; the engine only sees grid
   const res = tryMove(game, dir);
@@ -122,6 +198,7 @@ function handleMove(keyDir) {
     scene.wobble(dir);
     return;
   }
+  if (timed) clockStart();
 
   // Play the roll and any follow-ups (conveyor slides, spins, portals) the
   // engine chained, reflecting tile/task/goal changes after each step.
@@ -136,7 +213,22 @@ function handleMove(keyDir) {
       // level to chain to, so stop here instead of dumping the player into
       // level_0 the moment they finish it.
       if (game.levelName === DAILY) {
-        scene.showBanner("SOLVED", `${game.moveCount} moves — new puzzle tomorrow`);
+        clockStop();
+        const ms = clockElapsed();
+        scene.setTime(ms);
+        const { result, first, beatMoves, beatTime } = recordSolve(daily.date, game.moveCount, ms);
+        scene.setBest(bestLabel(result));
+        const run = `${game.moveCount} moves \u00b7 ${formatTime(ms)}`;
+        let note;
+        if (first) note = `${run} — your first solve today`;
+        else if (beatMoves && beatTime) note = `${run} — a new best on both`;
+        else if (beatMoves) note = `${run} — fewest moves yet`;
+        else if (beatTime) note = `${run} — fastest yet`;
+        else note = `${run} — ${bestLabel(result)}`;
+        scene.showBanner("SOLVED", note, [
+          { label: "Retry", primary: true, onClick: () => { scene.hideBanner(); loadLevel(DAILY); } },
+          { label: "Close", onClick: () => scene.hideBanner() },
+        ]);
         return;
       }
       scene.showBanner("LEVEL CLEAR", "next level loading…");
