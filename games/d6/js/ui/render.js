@@ -108,6 +108,7 @@ export function renderScene(root, game) {
   const roller = el("div", "roller");
   const cube = el("div", "cube");
   cube.innerHTML = FACE_HTML;
+  const faces = [...cube.children];
   roller.appendChild(cube);
   die.appendChild(roller);
   board.appendChild(die);
@@ -126,7 +127,7 @@ export function renderScene(root, game) {
       this.cancelWobble();
       this.pos = { ...pos };
       this.rot = rot;
-      die.style.opacity = "1";
+      this.setAlpha(1, 0);
       roller.style.transition = "none";
       roller.style.transform = "none";
       die.style.transition = "none";
@@ -198,21 +199,40 @@ export function renderScene(root, game) {
       }, DUR.spin + 15);
     },
 
-    // Portal: fade out, teleport, fade in. Orientation/faces unchanged.
+    // Die alpha, applied to the six .face elements — NEVER to .die/.roller/.cube.
+    // Per CSS Transforms, opacity < 1 is a "grouping" property: it forces
+    // transform-style: flat on the element it sits on, so putting it on any 3D
+    // ancestor collapses the whole cube into the board plane for the length of
+    // the fade. Under the board's rotateX tilt that reads as the die being
+    // squashed vertically for a frame — which is exactly what the old portal
+    // fade did. The faces have no 3D children of their own, so fading them
+    // individually is free of that, and looks identical: backface-visibility
+    // hides the rear faces and the visible ones tile the silhouette without
+    // overlapping, so there is no double-blending seam mid-fade.
+    setAlpha(a, ms, ease = "linear") {
+      for (const f of faces) {
+        f.style.transition = ms ? `opacity ${ms}ms ${ease}` : "none";
+        f.style.opacity = `${a}`;
+      }
+    },
+
+    // Portal: fade out, teleport, fade in. Orientation/faces unchanged, and the
+    // cube keeps its full 3D shape the whole way through.
     portalStep(to, done) {
       const half = DUR.portal / 2;
-      die.style.transition = `opacity ${half}ms ease-in`;
-      void die.offsetWidth;
-      die.style.opacity = "0";
+      this.setAlpha(0, half, "ease-in");
       setTimeout(() => {
+        // Invisible at this point: snap to the far portal with no transition.
         die.style.transition = "none";
         die.style.left = `${cellLeft(to.c)}px`;
         die.style.top = `${cellTop(to.r)}px`;
         this.pos = { ...to };
         void die.offsetWidth;
-        die.style.transition = `opacity ${half}ms ease-out`;
-        die.style.opacity = "1";
-        setTimeout(done, half + 15);
+        this.setAlpha(1, half, "ease-out");
+        setTimeout(() => {
+          this.setAlpha(1, 0); // drop the transition so later steps start clean
+          done();
+        }, half + 15);
       }, half + 15);
     },
 
