@@ -1,0 +1,75 @@
+name: D6 daily puzzle
+
+on:
+  schedule:
+    - cron: "17 7 * * *"
+  workflow_dispatch:
+
+# The generator commits with GITHUB_TOKEN, and a push made with that token does
+# NOT trigger other workflows — pages.yml would never see the bot's commit. So
+# this job builds and deploys the site inline instead of relying on it.
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # gen-daily.mjs writes ../daily.json relative to the tools dir, i.e.
+      # games/d6/daily.json. It solves and then independently replays the board
+      # before writing, so an unsolvable puzzle fails the job rather than shipping.
+      - name: Generate today's puzzle
+        run: node games/d6/tools/gen-daily.mjs
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- games/d6/daily.json; then
+            echo "puzzle unchanged — nothing to commit"
+          else
+            git add games/d6/daily.json
+            git commit -m "D6 daily puzzle for $(date -u +%F)"
+            git push
+          fi
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.1"
+          bundler-cache: true
+
+      - name: Build with Jekyll
+        run: bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
