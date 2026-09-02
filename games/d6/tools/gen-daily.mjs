@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Writes the puzzle of the day to daily.json, which the game fetches on load.
 //
-//   node tools/gen-daily.mjs                      # today (UTC) -> ./daily.json
+//   node tools/gen-daily.mjs                      # today (Pacific) -> ./daily.json
 //   node tools/gen-daily.mjs --date 2026-09-04    # a specific day
 //   node tools/gen-daily.mjs --preview            # print it, write nothing
 //   node tools/gen-daily.mjs --check 30           # self-test the next 30 days
@@ -27,7 +27,15 @@ function arg(name, fallback = null) {
   return v && !v.startsWith("--") ? v : true;
 }
 
-const today = () => new Date().toISOString().slice(0, 10);
+// The puzzle's date is the AUDIENCE's date, not UTC. The site publishes on a
+// Pacific schedule and the board is labelled "Daily · Sep 1" to a Pacific
+// reader, so a run landing after UTC midnight — an evening manual run, or the
+// cron once daylight saving shifts it — must not publish tomorrow's board while
+// it is still today where the players are. Override with D6_TZ if that ever
+// stops being the right assumption.
+const ZONE = process.env.D6_TZ || "America/Los_Angeles";
+const today = () =>
+  new Intl.DateTimeFormat("en-CA", { timeZone: ZONE }).format(new Date());
 
 // Independent second opinion on whatever we're about to ship: re-solve the
 // emitted text from scratch and replay the solution through the engine. The
