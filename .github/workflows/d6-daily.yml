@@ -1,8 +1,13 @@
 name: D6 daily puzzle
 
+# 9am Pacific, year-round. GitHub's scheduler speaks only UTC and does not
+# observe daylight saving, so one fixed hour is 9am for part of the year and
+# 8 or 10 for the rest. Firing on both candidate hours covers both halves of
+# the year; the gate below decides which run actually does the work.
 on:
   schedule:
-    - cron: "17 7 * * *"
+    - cron: "0 16 * * *" # 09:00 PDT (Mar-Nov)
+    - cron: "0 17 * * *" # 09:00 PST (Nov-Mar)
   workflow_dispatch:
 
 # The generator commits with GITHUB_TOKEN, and a push made with that token does
@@ -20,13 +25,35 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.gate.outputs.go }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # Two scheduled slots fire each day and only one should ship a puzzle, but
+      # gating on the clock is brittle: GitHub queues scheduled runs late under
+      # load — by nearly five hours on 2026-09-02 — and an hour check would have
+      # thrown that run away, leaving the day with no puzzle at all. So the gate
+      # asks what actually matters: does today already have one? A late run still
+      # ships. The day's second slot finds the work done and exits in seconds.
+      - name: Does today already have a puzzle?
+        id: gate
+        run: |
+          today=$(TZ=America/Los_Angeles date +%F)
+          have=$(jq -r .date games/d6/daily.json)
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$have" = "$today" ]; then
+            echo "$today already shipped — skipping."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true (have $have, today $today, event ${{ github.event_name }})"
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup Node
+        if: steps.gate.outputs.go == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -35,9 +62,11 @@ jobs:
       # games/d6/daily.json. It solves and then independently replays the board
       # before writing, so an unsolvable puzzle fails the job rather than shipping.
       - name: Generate today's puzzle
+        if: steps.gate.outputs.go == 'true'
         run: node games/d6/tools/gen-daily.mjs
 
       - name: Commit if changed
+        if: steps.gate.outputs.go == 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -45,26 +74,30 @@ jobs:
             echo "puzzle unchanged — nothing to commit"
           else
             git add games/d6/daily.json
-            git commit -m "D6 daily puzzle for $(date -u +%F)"
+            git commit -m "D6 daily puzzle for $(TZ=America/Los_Angeles date +%F)"
             git push
           fi
 
       - name: Setup Ruby
+        if: steps.gate.outputs.go == 'true'
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.1"
           bundler-cache: true
 
       - name: Build with Jekyll
+        if: steps.gate.outputs.go == 'true'
         run: bundle exec jekyll build
         env:
           JEKYLL_ENV: production
 
       - name: Upload artifact
+        if: steps.gate.outputs.go == 'true'
         uses: actions/upload-pages-artifact@v3
 
   deploy:
     needs: build
+    if: needs.build.outputs.go == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
