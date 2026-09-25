@@ -1,19 +1,20 @@
 {
-  "date": "2026-09-24",
-  "day": "Thursday",
-  "par": 15,
-  "text": "0 0 0 # P0 0\n0 0 0 # 0 #\n# # # # # #\nG # # T3 # g\n# # # # P0 T5",
-  "generated": "2026-09-24T19:51:42.687Z",
+  "date": "2026-09-25",
+  "day": "Friday",
+  "par": 20,
+  "text": "B3 # # T2 # 0\n0 g # P0 B3 #\n0 0 # # # #\n0 # # G ML #\n0 0 # # # P0\n0 0 0 # # #",
+  "generated": "2026-09-25T19:53:46.855Z",
   "stats": {
-    "pressure": 2.14,
-    "freePar": 7,
-    "optimalRoutes": 11,
+    "pressure": 2.22,
+    "freePar": 9,
+    "optimalRoutes": 9,
     "tiles": [
-      "portal"
+      "portal",
+      "conveyor"
     ],
-    "tasks": 2,
-    "size": "6x5",
-    "states": 817
+    "tasks": 3,
+    "size": "6x6",
+    "states": 3547
   },
   "history": [
     {
@@ -115,6 +116,10 @@
     {
       "date": "2026-09-24",
       "hash": "7fc302cf"
+    },
+    {
+      "date": "2026-09-25",
+      "hash": "f6b35794"
     }
   ]
 }
