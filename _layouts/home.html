@@ -17,7 +17,10 @@ layout: default
   {%- assign note_url = k | split: "|" | last -%}
   {%- assign note = site.posts | where: "url", note_url | first -%}
   {% assign cat = site.data.categories | where: "id", note.category | first %}
-  <a class="sign-card note-link" href="{{ note.url }}">
+  {%- comment -%} In Progress notes are dimmed and not clickable — a plain div, not a link, until
+    they move out of In Progress (the url itself still resolves). {%- endcomment -%}
+  {%- assign paving = false -%}{%- if note.status == "in-progress" -%}{%- assign paving = true -%}{%- endif -%}
+  {% if paving %}<div class="sign-card sign-card--paving" aria-disabled="true">{% else %}<a class="sign-card note-link" href="{{ note.url }}">{% endif %}
     <div class="sign-card__face">
       <div class="sign-card__topline">
         <span>{{ cat.label | default: "Note" }}</span>
@@ -37,6 +40,6 @@ layout: default
         <span class="sign-card__cat">{% if note.last_modified_at %}{{ note.last_modified_at | date: "%b %Y" }}{% else %}{{ note.date | date: "%b %Y" }}{% endif %}</span>
       </div>
     </div>
-  </a>
+  {% if paving %}</div>{% else %}</a>{% endif %}
   {% endfor %}
 </div>

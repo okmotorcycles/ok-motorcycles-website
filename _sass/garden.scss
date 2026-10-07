@@ -464,6 +464,16 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 // resize since it's index-based); :not(:hover) lets the hover-to-green still win
 .sign-card:nth-child(2n):not(:hover) .sign-card__face { background: #101216; color: #f3f3ec; }
 
+// In Progress notes: dimmed, unclickable. The face drops to the body's panel
+// colour (no black/white alternation, no hover lift) and the copy fades.
+.sign-card--paving { cursor: default; }
+.sign-card--paving:hover { transform: none; border-color: $asphalt-line; box-shadow: none; }
+.sign-card.sign-card--paving:nth-child(n) .sign-card__face { background: $asphalt-panel; color: $ink-faint; }
+.sign-card--paving .sign-card__face::before { opacity: .45; }
+.sign-card--paving .sign-card__arrow { visibility: hidden; }
+.sign-card--paving .sign-card__desc,
+.sign-card--paving .sign-card__foot .tag--sign { color: $ink-faint; }
+
 .sign-card__topline {
   position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px;
   color: inherit; font-family: "Highway Gothic", sans-serif;
