@@ -566,6 +566,46 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .prose th { background: $asphalt-panel; color: $ink; font-family: "Highway Gothic", sans-serif;
   letter-spacing: .06em; text-transform: uppercase; font-size: .8rem; }
 
+// ballot — the Props post's TL;DR board + per-prop headings. YES = lit accent
+// sign face (green by day, orange by night); NO = plain black-on-white face.
+.ballot {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+  gap: 10px; margin: 1.2em 0 2em;
+}
+.prose a.ballot__tile {
+  position: relative; display: flex; flex-direction: column; align-items: center;
+  padding: 14px 6px 12px; border-radius: 8px; text-decoration: none;
+  font-family: "Highway Gothic", sans-serif; line-height: 1;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.ballot__tile::before {   // inner keyline, follows the face colour (as on .sign-card__face)
+  content: ""; position: absolute; inset: 5px; border: 2px solid currentColor;
+  border-radius: 5px; pointer-events: none; opacity: .9;
+}
+.prose a.ballot__tile--yes { background: var(--sign-accent); color: $sign-white; }
+.prose a.ballot__tile--no  { background: $sign-white; color: #16171b; box-shadow: inset 0 0 0 1px $asphalt-line; }
+.prose a.ballot__tile:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+.ballot__num  { font-size: 1.7rem; }
+.ballot__vote { margin-top: 6px; font-size: .7rem; letter-spacing: .16em; }
+
+.prose h2.ballot-head {
+  display: flex; align-items: center; gap: 12px;
+  border-left: 0; padding-left: 0; margin-top: 2em; scroll-margin-top: $header-height + 16px;
+}
+.ballot-head__num {   // black route plaque
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 2.2em; height: 1.75em; padding: 0 .3em; border-radius: 6px;
+  background: $ink; color: $asphalt-panel; font-size: 1.15em; line-height: 1;
+}
+.ballot-head__sep {   // kept in the text (TOC + copy/paste read "1 : YES"), hidden visually
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+.ballot-head__vote {
+  padding: 5px 12px; border-radius: 4px; font-size: .8em; letter-spacing: .16em; line-height: 1;
+}
+.ballot-head--yes .ballot-head__vote { background: var(--sign-accent); color: $sign-white; }
+.ballot-head--no  .ballot-head__vote { box-shadow: inset 0 0 0 2px $ink; color: $ink; }
+
 .message {
   background: $asphalt-panel; border: 1px solid $asphalt-line; border-left: 4px solid $ink;
   border-radius: 8px; padding: 14px 18px; color: $ink-dim;
