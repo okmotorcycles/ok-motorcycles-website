@@ -255,4 +255,36 @@
       if (!ticking) { ticking = true; requestAnimationFrame(measure); }
     }, { passive: true });
   }
+
+  /* ---------- copy-to-clipboard buttons ----------
+     Any <button data-copy="…"> copies its value (the post share button copies the
+     post's URL; the Props TL;DR copies the vote list). Flashes .is-copied for a
+     moment; a .copy-btn__text label swaps to its data-copied text meanwhile. */
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (resolve, reject) {   // fallback for non-secure / older browsers
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", "");
+      ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    var label = btn.querySelector(".copy-btn__text");
+    var idle = label ? label.textContent : "";
+    var timer;
+    btn.addEventListener("click", function () {
+      copyText(btn.getAttribute("data-copy")).then(function () {
+        btn.classList.add("is-copied");
+        if (label) label.textContent = label.getAttribute("data-copied") || "Copied";
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          btn.classList.remove("is-copied");
+          if (label) label.textContent = idle;
+        }, 1800);
+      });
+    });
+  });
 })();

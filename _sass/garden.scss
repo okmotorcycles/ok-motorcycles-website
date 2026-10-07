@@ -525,6 +525,34 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .trail__sep { color: $ink-faint; }
 .trail span { color: $ink; }
 
+// breadcrumb + share button row: trail flush left, share pinned to the column's right edge
+.note__topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 24px; }
+.note__topbar .trail { margin-bottom: 0; }
+.note__share { margin-left: auto; }
+
+// copy-to-clipboard button (share link, Props TL;DR) — same plaque as the headlight toggle
+.copy-btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  flex: 0 0 auto; height: 34px; min-width: 34px; padding: 0 8px; cursor: pointer;
+  background: none; border: 1px solid $asphalt-line; border-radius: 8px;
+  color: $ink; font-family: "Highway Gothic", sans-serif; font-size: .72rem;
+  letter-spacing: .1em; text-transform: uppercase; line-height: 1;
+  transition: color .15s ease, border-color .15s ease;
+}
+.copy-btn:hover, .copy-btn.is-copied { color: var(--accent); border-color: var(--accent); }
+.copy-btn svg { display: block; width: 18px; height: 18px; }
+.copy-btn__done { display: none !important; }
+.copy-btn.is-copied .copy-btn__icon { display: none; }
+.copy-btn.is-copied .copy-btn__done { display: block !important; }
+.copy-btn--text { padding: 0 12px 0 10px; }
+.copy-btn__tip {   // "Link copied" bubble under the share button
+  position: absolute; top: calc(100% + 6px); right: 0; white-space: nowrap;
+  padding: 5px 9px; border-radius: 6px; background: $ink; color: $asphalt;
+  font-size: .66rem; letter-spacing: .1em; pointer-events: none;
+  opacity: 0; transform: translateY(-3px); transition: opacity .15s ease, transform .15s ease;
+}
+.copy-btn.is-copied .copy-btn__tip { opacity: 1; transform: none; }
+
 // title as a black-bordered white sign — same plaque language as the wordmark
 .note__sign {   // theme-aware sign: white-on-black flips with light/dark mode
   background: $asphalt-panel; border: 3px solid $ink; border-radius: 14px;
@@ -578,7 +606,8 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 // ballot — the Props post's TL;DR table + per-prop headings. YES = lit accent
 // tag (green by day, orange by night); NO = outlined ink tag.
-.prose table.ballot-table { width: auto; min-width: 260px; }
+.ballot { display: flex; align-items: flex-start; gap: 12px; margin: 1.4em 0; }
+.prose table.ballot-table { width: auto; min-width: 220px; margin: 0; }
 .ballot-table th, .ballot-table td { padding: 7px 22px; }
 .ballot-table td { font-family: "Highway Gothic", sans-serif; letter-spacing: .06em; }
 .ballot-table td:first-child a { display: block; text-underline-offset: 3px; }
