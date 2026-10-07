@@ -606,7 +606,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 // ballot — the Props post's TL;DR table + per-prop headings. YES = lit accent
 // tag (green by day, orange by night); NO = outlined ink tag.
-.ballot { display: flex; align-items: flex-start; gap: 12px; margin: 1.4em 0; }
+.ballot { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px; margin: 1.4em 0; }
 .prose table.ballot-table { width: auto; min-width: 220px; margin: 0; }
 .ballot-table th, .ballot-table td { padding: 7px 22px; }
 .ballot-table td { font-family: "Highway Gothic", sans-serif; letter-spacing: .06em; }
@@ -828,8 +828,19 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   .latest__desc { display: none; }
   .latest__exit { width: 40px; }
   .hero__legend { font-size: 1.7rem; }
+  .gantry { gap: 10px; }   // keep the nav inside the screen on phones (no sideways scroll)
+  .gantry__nav { gap: 4px; }
   .gantry__nav a { padding: 6px 8px; font-size: .74rem; }
   .note-preview { display: none !important; }
+
+// small phones (320–400px): shrink the header so wordmark + toggle + nav still fit
+@media (max-width: 400px) {
+  .gantry { gap: 8px; }
+  .brand-sign { padding: 6px 10px; }
+  .brand-sign__legend { font-size: .92rem; }
+  .theme-toggle { width: 32px; height: 32px; }
+  .gantry__nav a { padding: 5px 6px; }
+}
 }
 
 
