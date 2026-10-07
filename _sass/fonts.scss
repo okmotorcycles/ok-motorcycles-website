@@ -14,12 +14,8 @@
   font-style: normal;
   src: url('../fonts/highway-gothic/HWYGWDE.TTF') format('truetype');
 }
-@font-face {
-  font-family: 'Highway Gothic';
-  font-weight: 400;
-  font-style: italic;
-  src: url('../fonts/highway-gothic/HWYGNRRW.TTF') format('truetype');
-}
+// No italic face ships with Highway Gothic — <em> gets a browser-synthesized
+// slant of the wide legend (an italic face pointed at NRRW made em upright-narrow).
 
 // Condensed — for dense labels, breadcrumbs, exit tabs
 @font-face {
