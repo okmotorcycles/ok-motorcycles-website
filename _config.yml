@@ -2,6 +2,10 @@
 title: OK MOTORCYCLES
 description: MOTORCYCLES ARE OK
 url: https://okmotorcycles.com
+# Explicit empty baseurl: when it's unset, jekyll-github-metadata (production builds)
+# guesses one from the repo and every canonical/sitemap/og:url gets a bogus
+# /pages/okmotorcycles/ok-motorcycles-website/ prefix.
+baseurl: ""
 author: Grey Sköld
 lang: en-US
 # Needed so jekyll-github-metadata (bundled with github-pages) resolves outside
