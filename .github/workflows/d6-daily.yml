@@ -24,7 +24,8 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest moved to 26.04, which has no Ruby 3.1 build.
+    runs-on: ubuntu-24.04
     outputs:
       go: ${{ steps.gate.outputs.go }}
     steps:
@@ -65,19 +66,6 @@ jobs:
         if: steps.gate.outputs.go == 'true'
         run: node games/d6/tools/gen-daily.mjs
 
-      - name: Commit if changed
-        if: steps.gate.outputs.go == 'true'
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- games/d6/daily.json; then
-            echo "puzzle unchanged — nothing to commit"
-          else
-            git add games/d6/daily.json
-            git commit -m "D6 daily puzzle for $(TZ=America/Los_Angeles date +%F)"
-            git push
-          fi
-
       - name: Setup Ruby
         if: steps.gate.outputs.go == 'true'
         uses: ruby/setup-ruby@v1
@@ -91,6 +79,22 @@ jobs:
         env:
           JEKYLL_ENV: production
 
+      # Commit only after the site builds. The gate above treats a committed
+      # daily.json as "today shipped", so committing before a failed build
+      # (2026-10-26/27) left the next slot skipping and the live puzzle stale.
+      - name: Commit if changed
+        if: steps.gate.outputs.go == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- games/d6/daily.json; then
+            echo "puzzle unchanged — nothing to commit"
+          else
+            git add games/d6/daily.json
+            git commit -m "D6 daily puzzle for $(TZ=America/Los_Angeles date +%F)"
+            git push
+          fi
+
       - name: Upload artifact
         if: steps.gate.outputs.go == 'true'
         uses: actions/upload-pages-artifact@v3
@@ -98,7 +102,7 @@ jobs:
   deploy:
     needs: build
     if: needs.build.outputs.go == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
