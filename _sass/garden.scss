@@ -822,6 +822,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
     border-left: 4px solid var(--highlight); border-radius: 8px;
   }
   .toc-inline .toc__head { margin-bottom: 8px; }
+  .toc-inline[hidden] { display: none; }   // garden.js only unhides it when a note has 2+ headings
 }
 
 @media (max-width: 560px) {
@@ -844,3 +845,24 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 }
 
 
+
+// tip jar (/tip/) — plain form posting straight to the tips Worker, which redirects to Stripe
+.tipjar { display: grid; gap: 18px; max-width: 460px; margin: 8px 0 24px; }
+.tipjar__amounts { display: flex; flex-wrap: wrap; gap: 8px; border: 0; padding: 0; margin: 0; }
+.tipjar__amounts legend { padding: 0; margin-bottom: 8px; color: $ink-dim; font-size: .85rem; }
+.tipjar__amounts label {
+  display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 12px;
+  border: 1px solid $asphalt-line; border-radius: 8px; cursor: pointer;
+}
+.tipjar__amounts label:has(input:checked) { border-color: var(--accent); color: var(--accent); }
+.tipjar__amounts input[type="radio"] { accent-color: var(--accent); margin: 0; }
+.tipjar__custom input { width: 5.5em; border: 0; background: none; color: $ink; font: inherit; }
+.tipjar__field { display: grid; gap: 6px; color: $ink-dim; font-size: .85rem; }
+.tipjar__field small { color: $ink-faint; font-size: inherit; }
+.tipjar__field input, .tipjar__field textarea {
+  width: 100%; box-sizing: border-box; padding: 9px 10px; font: inherit; font-size: 1rem;
+  color: $ink; background: $asphalt-panel; border: 1px solid $asphalt-line; border-radius: 8px;
+}
+.tipjar__field input:focus, .tipjar__field textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.tipjar__go { justify-self: start; height: 40px; padding: 0 16px; font-size: .8rem; }
+.tipjar__error { color: var(--accent); border-left: 3px solid var(--accent); padding-left: 10px; }
