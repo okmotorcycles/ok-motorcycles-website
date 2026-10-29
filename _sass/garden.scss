@@ -143,6 +143,7 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .hwy-app { min-height: 100vh; display: flex; flex-direction: column; }
 
 .hwy-body {
+  flex: 1 0 auto;   // fill the column so short pages still push the footer to the bottom
   display: flex;
   align-items: flex-start;
   width: 100%;
@@ -848,21 +849,39 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 // tip jar (/tip/) — plain form posting straight to the tips Worker, which redirects to Stripe
 .tipjar { display: grid; gap: 18px; max-width: 460px; margin: 8px 0 24px; }
-.tipjar__amounts { display: flex; flex-wrap: wrap; gap: 8px; border: 0; padding: 0; margin: 0; }
+.tipjar__amounts { display: flex; flex-wrap: wrap; gap: 14px; border: 0; padding: 0; margin: 0; }
 .tipjar__amounts legend { padding: 0; margin-bottom: 8px; color: $ink-dim; font-size: .85rem; }
-.tipjar__amounts label {
-  display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 12px;
-  border: 1px solid $asphalt-line; border-radius: 8px; cursor: pointer;
+// each amount is a California state-route spade
+.tipjar__sign { position: relative; display: block; cursor: pointer; color: $ink; }
+.tipjar__sign input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.tipshield {
+  display: block; width: 76px; height: 76px; overflow: visible;
+  transition: transform .15s ease, color .15s ease;
 }
-.tipjar__amounts label:has(input:checked) { border-color: var(--accent); color: var(--accent); }
-.tipjar__amounts input[type="radio"] { accent-color: var(--accent); margin: 0; }
-.tipjar__custom input { width: 5.5em; border: 0; background: none; color: $ink; font: inherit; }
+.tipshield__face {
+  fill: $asphalt-panel; stroke: currentColor; stroke-width: 3.5px; stroke-linejoin: round;
+  vector-effect: non-scaling-stroke; transition: fill .15s ease;
+}
+.tipshield__num {
+  fill: currentColor; text-anchor: middle; dominant-baseline: central;
+  font-family: "Highway Gothic", sans-serif; transition: fill .15s ease;
+}
+.tipjar__sign:hover .tipshield { transform: translateY(-2px); color: var(--accent); }
+.tipjar__sign input:checked + .tipshield { color: var(--sign-accent-deep); transform: translateY(-2px); }
+.tipjar__sign input:checked + .tipshield .tipshield__face { fill: var(--sign-accent); }
+.tipjar__sign input:checked + .tipshield .tipshield__num { fill: $true-white; }
+.tipjar__sign input:focus-visible + .tipshield { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .tipjar__field { display: grid; gap: 6px; color: $ink-dim; font-size: .85rem; }
-.tipjar__field small { color: $ink-faint; font-size: inherit; }
+.tipjar__field > span { display: flex; justify-content: space-between; }
+.tipjar__count { color: $ink-faint; font-size: inherit; font-variant-numeric: tabular-nums; }
+.tipjar__field textarea { resize: none; }
+.tipjar__trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .tipjar__field input, .tipjar__field textarea {
   width: 100%; box-sizing: border-box; padding: 9px 10px; font: inherit; font-size: 1rem;
   color: $ink; background: $asphalt-panel; border: 1px solid $asphalt-line; border-radius: 8px;
 }
 .tipjar__field input:focus, .tipjar__field textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.tipjar__go:disabled { opacity: .55; cursor: wait; }
 .tipjar__go { justify-self: start; height: 40px; padding: 0 16px; font-size: .8rem; }
 .tipjar__error { color: var(--accent); border-left: 3px solid var(--accent); padding-left: 10px; }
