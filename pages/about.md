@@ -50,3 +50,5 @@ Built with Jekyll and the [Highway Gothic](https://en.wikipedia.org/wiki/Highway
 typeface (FHWA Series), hosted on GitHub Pages. Black and white, and Caltrans guide-sign green
 (or highway-construction orange) all over. Flip the headlight toggle up in the corner and the
 highway crew changes shifts.
+
+The tip jar's hand icon is based on an icon by [Icons8](https://icons8.com).

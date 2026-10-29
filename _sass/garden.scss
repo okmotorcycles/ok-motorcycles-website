@@ -885,3 +885,20 @@ html::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .tipjar__go:disabled { opacity: .55; cursor: wait; }
 .tipjar__go { justify-self: start; height: 40px; padding: 0 16px; font-size: .8rem; }
 .tipjar__error { color: var(--accent); border-left: 3px solid var(--accent); padding-left: 10px; }
+
+// tip jar button (home page only). The zero-height rail is sticky to the viewport
+// bottom, so the button rides in the corner while scrolling and comes to rest just
+// above the footer instead of covering its SOURCE link.
+.tip-fab-rail { position: sticky; bottom: 0; z-index: 40; height: 0; width: 100%; pointer-events: none; }
+.tip-fab {
+  position: absolute; right: max(18px, env(safe-area-inset-right)); bottom: max(18px, env(safe-area-inset-bottom));
+  display: grid; place-items: center; width: 58px; height: 58px; pointer-events: auto;
+  color: $ink; background: $asphalt-panel; border: 3px solid $ink; border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .14);
+  transition: color .15s ease, background-color .15s ease, border-color .15s ease;
+}
+// hover fills the plaque with the sign accent (green by day, orange by night) and flips the
+// icon to the page colour: white on green, black on orange. It never moves.
+.tip-fab:hover, .tip-fab:focus-visible { background: var(--sign-accent); border-color: var(--sign-accent); color: $asphalt; }
+.tip-fab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.tip-fab__icon { display: block; width: 40px; height: 40px; }
