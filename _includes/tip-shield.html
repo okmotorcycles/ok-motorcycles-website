@@ -1,0 +1,23 @@
+{%- comment -%}
+  Tip-amount sign: a route shield with the dollar amount on its face, for the
+  /tip/ picker. Outlines are the ones in shield.html, but drawn as face + border
+  so the selected state can fill the face with the accent colour.
+  Usage: {% include tip-shield.html type="us" amount=5 %}
+  types: ca | us | hov | octagon
+{%- endcomment -%}
+<svg class="tipshield" viewBox="{% case include.type %}{% when "ca" %}-8 -2 401 401{% when "us" %}-15 -15 630 630{% when "hov" %}2 2 96 96{% when "octagon" %}9 9 82 82{% endcase %}" aria-hidden="true">
+  {%- case include.type -%}
+  {%- when "ca" -%}
+  <path class="tipshield__face" d="M192.5,13.1c104.5,34.4,180,132.9,180,248.9v63.6c0,24.2-17.2,44.4-40,49c-45.2,9-92.3,13.8-140,13.8s-94.8-4.8-140-13.8c-22.8-4.6-40.5-24.9-40.5-49.1v-63.6C12,145.9,88,47.5,192.5,13.1z"/>
+  <text class="tipshield__num" x="192" y="240" font-size="132">${{ include.amount }}</text>
+  {%- when "us" -%}
+  <path class="tipshield__face" d="M300,10c23.6,20.1,54.1,32.2,87.5,32.2S451.4,30.1,475,10l115,115c-21.2,30.1-33.6,66.8-33.6,106.3c0,28.5,6.4,55.4,17.9,79.5C584.2,331.7,590,355.4,590,380c0,88.4-71.6,160-160,160h-25.1C362.5,540,324.8,559.5,300,590c-24.8-30.5-62.5-50-104.9-50h-25.1c-88.4,0-160-71.6-160-160c0-24.6,5.8-48.3,15.7-69.2c11.5-24.1,17.9-51,17.9-79.5C43.6,191.8,31.2,155.1,10,125L125,10c23.6,20.1,54.1,32.2,87.5,32.2C245.9,42.2,276.4,30.1,300,10z"/>
+  <text class="tipshield__num" x="300" y="315" font-size="215">${{ include.amount }}</text>
+  {%- when "hov" -%}
+  <rect class="tipshield__face" x="20" y="20" width="60" height="60" rx="6" transform="rotate(45 50 50)"/>
+  <text class="tipshield__num" x="50" y="51" font-size="25">${{ include.amount }}</text>
+  {%- when "octagon" -%}
+  <path class="tipshield__face" d="M34 14H66L86 34V66L66 86H34L14 66V34Z"/>
+  <text class="tipshield__num" x="50" y="51" font-size="26">${{ include.amount }}</text>
+  {%- endcase -%}
+</svg>

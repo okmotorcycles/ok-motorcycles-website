@@ -19,6 +19,9 @@ permalink: /notes/:categories/:title/
 # GitHub Actions Pages deploy to keep okmotorcycles.com).
 include: ["CNAME"]
 
+# Tip jar backend: Cloudflare Worker from ~/claude/projects/tipjar.
+tip_worker: https://okmotorcycles-tips.okmotorcycles.workers.dev
+
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
